@@ -1,6 +1,9 @@
 <Solution>
   <Project Path="BusinessLogic/BusinessLogic.csproj" />
-  <Project Path="DB/DB.csproj" />
+  <Project Path="DB_temp/DB.sqlproj" Id="d1170b68-97eb-408e-8c35-2f430af4adfb">
+    <Build />
+    <Deploy />
+  </Project>
   <Project Path="Model/Model.csproj" />
   <Project Path="UI/UI.csproj" />
 </Solution>
