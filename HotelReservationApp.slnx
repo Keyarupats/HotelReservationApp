@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="BusinessLogic/BusinessLogic.csproj" />
+  <Project Path="DB/DB.csproj" />
+  <Project Path="Model/Model.csproj" />
   <Project Path="UI/UI.csproj" />
 </Solution>
