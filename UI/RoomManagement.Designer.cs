@@ -75,6 +75,7 @@
             label1.Size = new Size(115, 20);
             label1.TabIndex = 0;
             label1.Text = "Total Rooms:";
+            label1.Click += label1_Click;
             // 
             // panel5
             // 

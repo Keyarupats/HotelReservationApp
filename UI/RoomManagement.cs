@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BusinessLogic.Controller;
 using HotelReservation.Model;
+using HotelReswervation;
 namespace HotelReservation
 {
     public partial class RoomManagement : Form
@@ -146,6 +147,15 @@ namespace HotelReservation
 
                 txtStatus.Text = row.Cells["Status"].Value?.ToString() ?? string.Empty;
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            
+            GuestLookup guestLookupForm = new GuestLookup();
+            guestLookupForm.ShowDialog();
+            this.Show();
+            this.Hide();
         }
     }
 }
