@@ -73,12 +73,15 @@
     <Build Include="dbo\StoredProc\spGetUsers.sql" />
     <Build Include="dbo\StoredProc\spValidateUserCredentials.sql" />
     <Build Include="dbo\PostScript\initialScript.sql" />
-    <PostDeploy Include="dbo\PostScript\SeedUsers.sql" />
     <Build Include="dbo\Table\tblUsers.sql" />
     <Build Include="dbo\Table\tblGuests.sql" />
     <Build Include="dbo\Table\tblRooms.sql" />
+    <PostDeploy Include="dbo\PostScript\SeedUsers.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\PostScript\Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
