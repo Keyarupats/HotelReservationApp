@@ -1,4 +1,5 @@
-﻿using HotelReservation.BusinessLogic.Repository;
+﻿using System;
+using HotelReservation.BusinessLogic.Repository;
 using HotelReservation.Model;
 
 namespace HotelReservation.BusinessLogic.Controller
@@ -7,22 +8,20 @@ namespace HotelReservation.BusinessLogic.Controller
     {
         private readonly UserRepository _userRepository;
 
-        public UserController(string connectionString = null)
+        public UserController()
         {
-            _userRepository = new UserRepository(connectionString);
+            _userRepository = new UserRepository();
         }
 
-        public UserModel Login(string username, string password, string role)
+        public UserModel Authenticate(string username, string password)
         {
-            // Business Rule: Reject blank or empty field inputs immediately
-            if (string.IsNullOrWhiteSpace(username) ||
-                string.IsNullOrWhiteSpace(password) ||
-                string.IsNullOrWhiteSpace(role))
+            // Simple validation before hitting the database
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
                 return null;
             }
 
-            return _userRepository.ValidateUserCredentials(username, password, role);
+            return _userRepository.AuthenticateUser(username.Trim(), password.Trim());
         }
     }
 }

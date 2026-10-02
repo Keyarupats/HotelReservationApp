@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Data.SqlClient;
 using HotelReservation.Model;
 
@@ -7,48 +6,50 @@ namespace HotelReservation.BusinessLogic.Repository
 {
     public class UserRepository
     {
-        private readonly string _connectionString = @"Data Source=Keyaru\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;";
+        // Use your actual SQL Server connection string
+        private readonly string _connectionString = @"Data Source=Keyaru\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;";
 
-        public UserRepository(string connectionString = null)
-        {
-            if (!string.IsNullOrWhiteSpace(connectionString))
-            {
-                _connectionString = connectionString;
-            }
-        }
-
-        public UserModel ValidateUserCredentials(string username, string password, string role)
+        public UserModel AuthenticateUser(string username, string password)
         {
             UserModel user = null;
 
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            using (SqlCommand cmd = new SqlCommand("dbo.spValidateUserCredentials", conn))
+            try
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@Username", username);
-                cmd.Parameters.AddWithValue("@Password", password);
-                cmd.Parameters.AddWithValue("@Role", role);
-
-                conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    if (reader.Read())
+                    conn.Open();
+
+                    // Query to check matching Username and Password
+                    string query = @"SELECT UserId, Username, Role 
+                                     FROM dbo.tblUsers 
+                                     WHERE Username = @Username AND Password = @Password AND IsActive = 1";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        user = new UserModel
+                        cmd.Parameters.AddWithValue("@Username", username);
+                        cmd.Parameters.AddWithValue("@Password", password);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            Id = Convert.ToInt32(reader["Id"]),
-                            UserId = reader["UserId"].ToString(),
-                            Username = reader["Username"].ToString(),
-                            Password = reader["Password"].ToString(),
-                            Role = reader["Role"].ToString(),
-                        };
+                            if (reader.Read())
+                            {
+                                user = new UserModel
+                                {
+                                    UserId = reader["UserId"].ToString(),
+                                    Username = reader["Username"].ToString(),
+                                    Role = reader["Role"].ToString() // "Admin" or "Staff"
+                                };
+                            }
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception("Database error during authentication: " + ex.Message);
+            }
 
-            return user;
+            return user; // Returns null if username/password don't match
         }
     }
 }
