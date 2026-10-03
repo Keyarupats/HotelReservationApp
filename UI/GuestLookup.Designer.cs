@@ -131,7 +131,7 @@
             lblGuestsCount.Name = "lblGuestsCount";
             lblGuestsCount.Size = new Size(29, 20);
             lblGuestsCount.TabIndex = 8;
-            lblGuestsCount.Text = "52";
+            lblGuestsCount.Text = "00";
             // 
             // label5
             // 

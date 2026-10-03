@@ -74,21 +74,18 @@ namespace HotelReswervation
             string username = txtUsername.Text.Trim();
             string password = txtPassword.Text.Trim();
 
-            // Authenticate user against your DB controller
             UserModel user = _userController.Authenticate(username, password);
 
             if (user != null)
             {
-                // 1. Save information into UserSession
                 UserSession.CurrentUsername = user.Username;
-                UserSession.CurrentRole = user.Role; // "Admin" or "Staff"
+                UserSession.CurrentRole = user.Role; 
 
                 MessageBox.Show($"Welcome, {user.Username}!", "Login Successful",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // 2. Open GuestLookup directly
-                GuestLookup guestLookupForm = new GuestLookup();
-                guestLookupForm.Show();
+                RoomManagement room = new RoomManagement();
+                room.Show();
                 this.Hide();
             }
             else

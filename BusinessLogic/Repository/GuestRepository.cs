@@ -6,8 +6,7 @@ namespace HotelReservation.BusinessLogic.Repository
 {
     public class GuestRepository
     {
-        private readonly string _connectionString = @"Data Source=Keyaru\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;";
-
+        private readonly string _connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;";
         public GuestRepository(string connectionString = null)
         {
             if (!string.IsNullOrWhiteSpace(connectionString) && !connectionString.Contains("Multiple Active Result Sets"))
@@ -86,7 +85,78 @@ namespace HotelReservation.BusinessLogic.Repository
         }
 
 
+        public bool UpdateGuest(GuestModel guest)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    string query = @"UPDATE dbo.tblGuests 
+                             SET FirstName = @FirstName,
+                                 LastName = @LastName,
+                                 MI = @MI,
+                                 Age = @Age,
+                                 Address = @Address,
+                                 Email = @Email,
+                                 IDType = @IDType,
+                                 IDNum = @IDNum
+                             WHERE ContactNo = @ContactNo";
 
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@FirstName", guest.FirstName ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@LastName", guest.LastName ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@MI", guest.MI ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Age", guest.Age);
+                        cmd.Parameters.AddWithValue("@Address", guest.Address ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Email", guest.Email ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@IDType", guest.IDType ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@IDNum", guest.IDNum ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ContactNo", guest.ContactNo);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating guest record: " + ex.Message);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+        public bool CheckGuestExists(string contactNo)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT COUNT(1) FROM dbo.tblGuests WHERE ContactNo = @ContactNo";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ContactNo", contactNo);
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error checking guest existence: " + ex.Message);
+            }
+        }
 
 
 

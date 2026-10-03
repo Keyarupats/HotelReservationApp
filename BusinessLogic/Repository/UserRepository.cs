@@ -1,14 +1,11 @@
-﻿using System;
+﻿using HotelReservation.Model;
 using System.Data.SqlClient;
-using HotelReservation.Model;
 
 namespace HotelReservation.BusinessLogic.Repository
 {
     public class UserRepository
     {
-        // Use your actual SQL Server connection string
-        private readonly string _connectionString = @"Data Source=Keyaru\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;";
-
+        private readonly string _connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;";
         public UserModel AuthenticateUser(string username, string password)
         {
             UserModel user = null;
@@ -19,7 +16,6 @@ namespace HotelReservation.BusinessLogic.Repository
                 {
                     conn.Open();
 
-                    // Query to check matching Username and Password
                     string query = @"SELECT UserId, Username, Role 
                                      FROM dbo.tblUsers 
                                      WHERE Username = @Username AND Password = @Password AND IsActive = 1";

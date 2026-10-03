@@ -6,8 +6,7 @@ namespace BusinessLogic.Repository
 {
     public class RoomRepository
     {
-        private readonly string _connectionString = @"Data Source=Keyaru\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;";
-
+        private readonly string _connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;";
         public RoomRepository(string connectionString = null)
         {
             if (!string.IsNullOrWhiteSpace(connectionString))
@@ -58,7 +57,6 @@ namespace BusinessLogic.Repository
                 command.Parameters.AddWithValue("@Status", room.Status ?? "Available");
 
                 connection.Open();
-                // Returns the auto-generated RoomId
                 var result = command.ExecuteScalar();
                 return Convert.ToInt32(result);
             }

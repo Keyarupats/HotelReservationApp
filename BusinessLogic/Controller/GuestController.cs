@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using HotelReservation.BusinessLogic.Repository;
+﻿using HotelReservation.BusinessLogic.Repository;
 using HotelReservation.Model;
 
 namespace HotelReservation.BusinessLogic.Controller
@@ -45,7 +43,6 @@ namespace HotelReservation.BusinessLogic.Controller
             if (string.IsNullOrWhiteSpace(guest.IDNum))
                 throw new ArgumentException("ID Number is required.", nameof(guest.IDNum));
 
-            // Clean inputs before sending down to Repository
             guest.ContactNo = guest.ContactNo.Trim();
             guest.FirstName = guest.FirstName.Trim();
             guest.LastName = guest.LastName.Trim();
@@ -57,6 +54,30 @@ namespace HotelReservation.BusinessLogic.Controller
 
             return _guestRepository.AddGuest(guest);
         }
+
+
+
+        public bool UpdateGuest(GuestModel guest)
+        {
+            if (guest == null)
+            {
+                throw new ArgumentNullException(nameof(guest), "Guest data cannot be null.");
+            }
+
+            if (string.IsNullOrWhiteSpace(guest.ContactNo))
+            {
+                throw new ArgumentException("Contact number is required to locate the guest record.");
+            }
+
+            if (string.IsNullOrWhiteSpace(guest.FirstName) || string.IsNullOrWhiteSpace(guest.LastName))
+            {
+                throw new ArgumentException("First Name and Last Name are required.");
+            }
+
+            return _guestRepository.UpdateGuest(guest);
+        }
+
+
 
         public List<GuestModel> GetActiveGuests()
         {
@@ -76,6 +97,33 @@ namespace HotelReservation.BusinessLogic.Controller
             }
 
             return _guestRepository.SoftDeleteGuest(contactNo.Trim());
+        }
+
+
+
+        public bool SaveGuest(GuestModel guest)
+        {
+            if (guest == null || string.IsNullOrWhiteSpace(guest.ContactNo))
+            {
+                throw new ArgumentException("Contact number is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(guest.FirstName) || string.IsNullOrWhiteSpace(guest.LastName))
+            {
+                throw new ArgumentException("First Name and Last Name are required.");
+            }
+
+            bool exists = _guestRepository.CheckGuestExists(guest.ContactNo);
+
+            if (exists)
+            {
+                return _guestRepository.UpdateGuest(guest);
+            }
+            else
+            {
+                int newId = _guestRepository.AddGuest(guest);
+                return newId > 0;
+            }
         }
     }
 }

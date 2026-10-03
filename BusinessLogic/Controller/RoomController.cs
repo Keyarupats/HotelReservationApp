@@ -9,7 +9,7 @@ namespace BusinessLogic.Controller
 
         public RoomController(string connectionString)
         {
-            _roomRepository = new RoomRepository(connectionString);
+            _roomRepository = new RoomRepository();
         }
 
         public List<RoomModel> GetAllRooms()

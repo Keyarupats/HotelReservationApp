@@ -128,23 +128,14 @@ namespace HotelReswervation
         {
             string searchNumber = txtSearch.Text.Trim();
 
-            if (searchNumber == "")
+            if (string.IsNullOrEmpty(searchNumber))
             {
                 MessageBox.Show("Please enter a mobile number to search.", "Input Required",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            GuestModel foundGuest = null;
-
-            foreach (GuestModel guest in _allGuestsMasterList)
-            {
-                if (guest.ContactNo == searchNumber)
-                {
-                    foundGuest = guest;
-                    break; 
-                }
-            }
+            GuestModel foundGuest = _allGuestsMasterList.FirstOrDefault(g => g.ContactNo == searchNumber);
 
             if (foundGuest != null)
             {
@@ -156,7 +147,6 @@ namespace HotelReswervation
                 txtAddress.Text = foundGuest.Address;
                 txtEmail.Text = foundGuest.Email;
                 txtIDNum.Text = foundGuest.IDNum;
-
                 cmbIDType.SelectedItem = foundGuest.IDType;
 
                 foreach (DataGridViewRow row in dgvGuests.Rows)
@@ -165,7 +155,11 @@ namespace HotelReswervation
                     if (rowGuest != null && rowGuest.ContactNo == foundGuest.ContactNo)
                     {
                         row.Selected = true;
-                        dgvGuests.CurrentCell = row.Cells[0];
+
+                        if (dgvGuests.Columns["ContactNo"] != null)
+                        {
+                            dgvGuests.CurrentCell = row.Cells["ContactNo"];
+                        }
                         break;
                     }
                 }
@@ -181,79 +175,77 @@ namespace HotelReswervation
         {
             if (e.RowIndex >= 0)
             {
-                GuestModel selectedGuest = dgvGuests.Rows[e.RowIndex].DataBoundItem as GuestModel;
+                DataGridViewRow row = dgvGuests.Rows[e.RowIndex];
 
-                if (selectedGuest != null)
-                {
-                    SelectedGuest = selectedGuest;
-
-                    txtSearch.Text = selectedGuest.ContactNo;
-                    txtFirstName.Text = selectedGuest.FirstName;
-                    txtLastName.Text = selectedGuest.LastName;
-                    txtMI.Text = selectedGuest.MI;
-                    txtAge.Text = selectedGuest.Age.ToString();
-                    txtAddress.Text = selectedGuest.Address;
-                    txtEmail.Text = selectedGuest.Email;
-                    txtIDNum.Text = selectedGuest.IDNum;
-
-                    if (!string.IsNullOrEmpty(selectedGuest.IDType) && cmbIDType.Items.Contains(selectedGuest.IDType))
-                    {
-                        cmbIDType.SelectedItem = selectedGuest.IDType;
-                    }
-                    else
-                    {
-                        cmbIDType.SelectedIndex = -1;
-                    }
-                }
+                txtSearch.Text = row.Cells["ContactNo"].Value?.ToString();
+                txtFirstName.Text = row.Cells["FirstName"].Value?.ToString();
+                txtLastName.Text = row.Cells["LastName"].Value?.ToString();
+                txtMI.Text = row.Cells["MI"].Value?.ToString();
+                txtAge.Text = row.Cells["Age"].Value?.ToString();
+                txtAddress.Text = row.Cells["Address"].Value?.ToString();
+                txtEmail.Text = row.Cells["Email"].Value?.ToString();
+                cmbIDType.Text = row.Cells["IDType"].Value?.ToString();
+                txtIDNum.Text = row.Cells["IDNum"].Value?.ToString();
             }
         }
 
+
+
+
+
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtSearch.Text) ||
-                string.IsNullOrWhiteSpace(txtFirstName.Text) ||
-                string.IsNullOrWhiteSpace(txtLastName.Text) ||
-                string.IsNullOrWhiteSpace(txtAge.Text) ||
-                string.IsNullOrWhiteSpace(txtAddress.Text) ||
-                string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                cmbIDType.SelectedIndex == -1 ||
-                string.IsNullOrWhiteSpace(txtIDNum.Text))
+            string contactNo = txtSearch.Text.Trim();
+
+            if (string.IsNullOrEmpty(contactNo))
             {
-                MessageBox.Show("Please fill in all required fields.", "Validation Error",
+                MessageBox.Show("Please enter or select a Contact Number.", "Validation Error",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            if (!int.TryParse(txtAge.Text.Trim(), out int age))
+            {
+                MessageBox.Show("Please enter a valid age.", "Validation Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            GuestModel guest = new GuestModel
+            {
+                ContactNo = contactNo,
+                FirstName = txtFirstName.Text.Trim(),
+                LastName = txtLastName.Text.Trim(),
+                MI = txtMI.Text.Trim(),
+                Age = age,
+                Address = txtAddress.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
+                IDType = cmbIDType.Text.Trim(),
+                IDNum = txtIDNum.Text.Trim()
+            };
+
             try
             {
-                int.TryParse(txtAge.Text.Trim(), out int age);
+                bool success = _guestController.SaveGuest(guest);
 
-                var newGuest = new GuestModel
+                if (success)
                 {
-                    ContactNo = txtSearch.Text.Trim(),
-                    FirstName = txtFirstName.Text.Trim(),
-                    LastName = txtLastName.Text.Trim(),
-                    MI = txtMI.Text.Trim(),
-                    Age = age,
-                    Address = txtAddress.Text.Trim(),
-                    Email = txtEmail.Text.Trim(),
-                    IDType = cmbIDType.SelectedItem?.ToString() ?? string.Empty,
-                    IDNum = txtIDNum.Text.Trim()
-                };
+                    MessageBox.Show("Guest record saved successfully!", "Success",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                int newGuestId = _guestController.RegisterGuest(newGuest);
-
-                MessageBox.Show("Guest registered successfully!", "Success",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                btnClear_Click(sender, e);
-
-                LoadGuestData();
+                    btnClear_Click(sender, e); 
+                    LoadGuestData();           
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save guest record.", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Validation / Database Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Error saving guest: " + ex.Message, "Database Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -329,6 +321,7 @@ namespace HotelReswervation
                 }
             }
         }
+            
 
         private void GuestLookup_Load_1(object sender, EventArgs e)
         {

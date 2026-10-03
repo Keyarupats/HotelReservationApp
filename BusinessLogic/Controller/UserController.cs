@@ -15,7 +15,6 @@ namespace HotelReservation.BusinessLogic.Controller
 
         public UserModel Authenticate(string username, string password)
         {
-            // Simple validation before hitting the database
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
                 return null;
