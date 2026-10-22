@@ -40,6 +40,7 @@
             panel3 = new Panel();
             panel4 = new Panel();
             panel5 = new Panel();
+            flpRooms = new FlowLayoutPanel();
             SuspendLayout();
             // 
             // lblRoomType
@@ -152,11 +153,21 @@
             panel5.Size = new Size(20, 20);
             panel5.TabIndex = 12;
             // 
+            // flpRooms
+            // 
+            flpRooms.AutoScroll = true;
+            flpRooms.Dock = DockStyle.Bottom;
+            flpRooms.Location = new Point(0, 93);
+            flpRooms.Name = "flpRooms";
+            flpRooms.Size = new Size(1920, 792);
+            flpRooms.TabIndex = 13;
+            // 
             // RoomsUserControl
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GradientInactiveCaption;
+            Controls.Add(flpRooms);
             Controls.Add(panel5);
             Controls.Add(panel4);
             Controls.Add(panel3);
@@ -190,5 +201,6 @@
         private Panel panel3;
         private Panel panel4;
         private Panel panel5;
+        private FlowLayoutPanel flpRooms;
     }
 }
