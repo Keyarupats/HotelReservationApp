@@ -86,8 +86,9 @@
     <Build Include="dbo\StoredProc\spUpdateGuest.sql" />
     <Build Include="dbo\StoredProc\spCreateReservation.sql" />
     <Build Include="dbo\StoredProc\spGetReservations.sql" />
-    <Build Include="dbo\StoredProc\spGetAvailableRooms_1.sql" />
     <Build Include="dbo\StoredProc\spUpdateRoomTypeRate.sql" />
+    <Build Include="dbo\PostScript\SeedGuests.sql" />
+    <Build Include="dbo\PostScript\SeedRooms.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
@@ -95,5 +96,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dbo\PostScript\Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\PostScript\Script_1.PostDeployment.sql" />
   </ItemGroup>
 </Project>
