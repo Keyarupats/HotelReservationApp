@@ -77,9 +77,12 @@
     <Build Include="dbo\Table\tblGuests.sql" />
     <Build Include="dbo\Table\tblRooms.sql" />
     <PostDeploy Include="dbo\PostScript\SeedUsers.sql" />
+    <Build Include="dbo\Table\tblRoomTypes.sql" />
+    <Build Include="dbo\StoredProc\spGetRoomTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
+    <None Include="dbo\StoredProc\spUpdateReservationStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dbo\PostScript\Script.PostDeployment.sql" />
