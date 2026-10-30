@@ -79,6 +79,7 @@
     <PostDeploy Include="dbo\PostScript\SeedUsers.sql" />
     <Build Include="dbo\Table\tblRoomTypes.sql" />
     <Build Include="dbo\StoredProc\spGetRoomTypes.sql" />
+    <Build Include="dbo\StoredProc\spUpdateRoomStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
