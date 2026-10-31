@@ -80,6 +80,12 @@
     <Build Include="dbo\Table\tblRoomTypes.sql" />
     <Build Include="dbo\StoredProc\spGetRoomTypes.sql" />
     <Build Include="dbo\StoredProc\spUpdateRoomStatus.sql" />
+    <Build Include="dbo\StoredProc\spDeleteGuest.sql" />
+    <Build Include="dbo\StoredProc\spGetAvailableRooms.sql" />
+    <Build Include="dbo\StoredProc\spSearchGuests.sql" />
+    <Build Include="dbo\StoredProc\spUpdateGuest.sql" />
+    <Build Include="dbo\StoredProc\spCreateReservation.sql" />
+    <Build Include="dbo\StoredProc\spGetReservations.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
