@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spValidateUserCredentials]
+﻿CREATE PROCEDURE spValidateUserCredentials
     @Username NVARCHAR(50),
     @Password NVARCHAR(100),
     @Role NVARCHAR(30)
@@ -7,16 +7,14 @@ BEGIN
     SET NOCOUNT ON;
 
     SELECT 
-        Id, 
-        UserId, 
-        Username, 
-        Password, 
-        Role, 
-        IsActive 
-    FROM dbo.tblUsers 
+        UserId,
+        UserCode,
+        Username,
+        Role,
+        IsActive
+    FROM tblUsers
     WHERE Username = @Username 
       AND Password = @Password 
-      AND Role = @Role 
+      AND Role = @Role
       AND IsActive = 1;
 END
-GO

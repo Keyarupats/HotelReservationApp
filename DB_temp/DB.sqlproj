@@ -86,6 +86,8 @@
     <Build Include="dbo\StoredProc\spUpdateGuest.sql" />
     <Build Include="dbo\StoredProc\spCreateReservation.sql" />
     <Build Include="dbo\StoredProc\spGetReservations.sql" />
+    <Build Include="dbo\StoredProc\spGetAvailableRooms_1.sql" />
+    <Build Include="dbo\StoredProc\spUpdateRoomTypeRate.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
