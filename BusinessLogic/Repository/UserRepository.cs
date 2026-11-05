@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
-using HotelReservation.Model;
+using Model;
 
 namespace HotelReservation.BusinessLogic.Repository
 {

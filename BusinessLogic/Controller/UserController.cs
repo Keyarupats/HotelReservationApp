@@ -1,6 +1,6 @@
 ﻿using System;
 using HotelReservation.BusinessLogic.Repository;
-using HotelReservation.Model;
+using Model;
 
 namespace HotelReservation.BusinessLogic.Controller
 {
@@ -15,12 +15,10 @@ namespace HotelReservation.BusinessLogic.Controller
 
         public UserModel Authenticate(string username, string password)
         {
-            // Simple validation before hitting the database
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
                 return null;
             }
-
             return _userRepository.AuthenticateUser(username.Trim(), password.Trim());
         }
     }

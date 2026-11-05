@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HotelReservation.BusinessLogic.Repository;
-using HotelReservation.Model;
+using Model;
 
 namespace HotelReservation.BusinessLogic.Controller
 {
