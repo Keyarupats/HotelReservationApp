@@ -60,40 +60,35 @@
     <Folder Include="dbo\Table" />
     <Folder Include="dbo\PostScript" />
     <Folder Include="dbo\StoredProc" />
-    <Folder Include="dbo\View" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\View\vwGuests.sql" />
-    <Build Include="dbo\View\vwRooms.sql" />
-    <Build Include="dbo\View\vwUsers.sql" />
     <Build Include="dbo\StoredProc\spAddGuests.sql" />
     <Build Include="dbo\StoredProc\spAddRoom.sql" />
     <Build Include="dbo\StoredProc\spGetAllRooms.sql" />
     <Build Include="dbo\StoredProc\spGetGuests.sql" />
-    <Build Include="dbo\StoredProc\spGetUsers.sql" />
     <Build Include="dbo\StoredProc\spValidateUserCredentials.sql" />
-    <Build Include="dbo\PostScript\initialScript.sql" />
     <Build Include="dbo\Table\tblUsers.sql" />
     <Build Include="dbo\Table\tblGuests.sql" />
     <Build Include="dbo\Table\tblRooms.sql" />
     <PostDeploy Include="dbo\PostScript\SeedUsers.sql" />
     <Build Include="dbo\Table\tblRoomTypes.sql" />
+    <Build Include="dbo\Table\tblReservations.sql" />
     <Build Include="dbo\StoredProc\spGetRoomTypes.sql" />
+    <Build Include="dbo\StoredProc\spUpdateRoomTypeRate.sql" />
     <Build Include="dbo\StoredProc\spUpdateRoomStatus.sql" />
-    <Build Include="dbo\StoredProc\spDeleteGuest.sql" />
-    <Build Include="dbo\StoredProc\spGetAvailableRooms.sql" />
-    <Build Include="dbo\StoredProc\spSearchGuests.sql" />
     <Build Include="dbo\StoredProc\spUpdateGuest.sql" />
+    <Build Include="dbo\StoredProc\spDeleteGuest.sql" />
     <Build Include="dbo\StoredProc\spCreateReservation.sql" />
     <Build Include="dbo\StoredProc\spGetReservations.sql" />
+    <Build Include="dbo\StoredProc\spUpdateReservationStatus.sql" />
     <Build Include="dbo\StoredProc\spGetAvailableRooms_1.sql" />
-    <Build Include="dbo\StoredProc\spUpdateRoomTypeRate.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
-    <None Include="dbo\StoredProc\spUpdateReservationStatus.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="dbo\PostScript\Script.PostDeployment.sql" />
+    <None Include="dbo\StoredProc\spGetAvailableRooms.sql" />
+    <None Include="dbo\StoredProc\spSearchGuests.sql" />
+    <None Include="dbo\PostScript\SeedRooms.sql" />
+    <None Include="dbo\PostScript\SeedGuests.sql" />
+    <None Include="dbo\PostScript\Script_1.PostDeployment.sql" />
   </ItemGroup>
 </Project>
