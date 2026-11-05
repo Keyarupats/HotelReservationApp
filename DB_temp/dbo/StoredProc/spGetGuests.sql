@@ -1,15 +1,16 @@
-CREATE PROCEDURE [dbo].[spGetGuests]
+CREATE PROCEDURE spGetGuests
     @IncludeInactive BIT = 0
 AS
 BEGIN
     SET NOCOUNT ON;
-
     SELECT 
         GuestId,
+        GuestCode,
         ContactNo,
         FirstName,
         LastName,
         MI,
+        (FirstName + ' ' + ISNULL(MI + '. ', '') + LastName) AS FullName,
         Age,
         Address,
         Email,
@@ -17,8 +18,8 @@ BEGIN
         IDNum,
         IsActive,
         CreatedAt
-    FROM dbo.tblGuests
+    FROM tblGuests
     WHERE (@IncludeInactive = 1 OR IsActive = 1)
     ORDER BY GuestId DESC;
-END;
+END
 GO
