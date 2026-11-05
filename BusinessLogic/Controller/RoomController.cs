@@ -9,7 +9,7 @@ namespace HotelReservation.BusinessLogic.Controller
     {
         private RoomRepository roomRepository;
 
-        public RoomController(string connectionString)
+        public RoomController()
         {
             roomRepository = new RoomRepository();
         }
