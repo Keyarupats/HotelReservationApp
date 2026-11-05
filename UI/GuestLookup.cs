@@ -31,14 +31,7 @@ namespace HotelReswervation
                 bool isAdmin = UserSession.CurrentRole.Equals("Admin", StringComparison.OrdinalIgnoreCase);
 
                 
-                if (isAdmin)
-                {
-                    _allGuestsMasterList = _guestController.GetAllGuestsForAdmin();
-                }
-                else
-                {
-                    _allGuestsMasterList = _guestController.GetActiveGuests();
-                }
+                
 
                 BindAndFormatGrid(_allGuestsMasterList);
 
