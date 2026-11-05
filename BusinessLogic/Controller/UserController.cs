@@ -1,25 +1,42 @@
-﻿using System;
-using HotelReservation.BusinessLogic.Repository;
+﻿using HotelReservation.BusinessLogic.Repository;
 using Model;
 
 namespace HotelReservation.BusinessLogic.Controller
 {
     public class UserController
     {
-        private readonly UserRepository _userRepository;
+        private UserRepository userRepository;
 
         public UserController()
         {
-            _userRepository = new UserRepository();
+            userRepository = new UserRepository();
         }
 
-        public UserModel Authenticate(string username, string password)
+        public UserModel Authenticate(string username, string password, string selectedRole)
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(selectedRole))
             {
                 return null;
             }
-            return _userRepository.AuthenticateUser(username.Trim(), password.Trim());
+
+            string cleanUsername = username.Trim();
+            string cleanPassword = password.Trim();
+            string cleanRole = selectedRole.Trim();
+
+            UserModel user = userRepository.AuthenticateUser(cleanUsername, cleanPassword, cleanRole);
+
+            if (user != null)
+            {
+                UserSession.CurrentUsername = user.Username;
+                UserSession.CurrentRole = user.Role;
+            }
+
+            return user;
+        }
+
+        public void Logout()
+        {
+            UserSession.Clear();
         }
     }
 }

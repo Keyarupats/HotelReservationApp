@@ -1,11 +1,13 @@
-﻿using HotelReservation.BusinessLogic.Controller;
-using Model;
+﻿using HotelReservation;
+using HotelReservation.BusinessLogic.Controller;
 using System;
 using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
+using UI;
+using Model;
 
-namespace HotelReswervation
+namespace HotelReservation
 {
     public partial class LoginForm : Form
     {
@@ -71,28 +73,26 @@ namespace HotelReswervation
         {
             string username = txtUsername.Text.Trim();
             string password = txtPassword.Text.Trim();
-
-            // Authenticate user against your DB controller
-            UserModel user = _userController.Authenticate(username, password);
-
+            string role = cmbRole.SelectedItem != null ? cmbRole.SelectedItem.ToString() : "";
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(role))
+            {
+                lblErrorMessage.Text = "Please fill in Username, Password, and select a Role.";
+                lblErrorMessage.Visible = true;
+                return;
+            }
+            UserController userController = new UserController();
+            UserModel user = userController.Authenticate(username, password, role);
             if (user != null)
             {
-                // 1. Save information into UserSession
-                UserSession.CurrentUsername = user.Username;
-                UserSession.CurrentRole = user.Role; // "Admin" or "Staff"
-
-                MessageBox.Show($"Welcome, {user.Username}!", "Login Successful",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // 2. Open GuestLookup directly
-                GuestLookup guestLookupForm = new GuestLookup();
-                guestLookupForm.Show();
+                lblErrorMessage.Visible = false;
+                LandingPageForm landingPage = new LandingPageForm();
+                landingPage.Show();
                 this.Hide();
             }
             else
             {
-                MessageBox.Show("Invalid username or password.", "Login Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lblErrorMessage.Text = "Invalid username, password, or role mismatch.";
+                lblErrorMessage.Visible = true;
             }
         }
     }
