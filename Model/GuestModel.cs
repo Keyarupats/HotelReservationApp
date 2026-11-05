@@ -1,10 +1,11 @@
 ﻿using System;
 
-namespace HotelReservation.Model
+namespace Model
 {
     public class GuestModel
     {
         public int GuestId { get; set; }
+        public string GuestCode { get; set; }
         public string ContactNo { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -17,8 +18,31 @@ namespace HotelReservation.Model
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public string FullName => string.IsNullOrWhiteSpace(MI)
-            ? $"{FirstName} {LastName}"
-            : $"{FirstName} {MI}. {LastName}";
+        public string FullName
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(MI))
+                {
+                    return FirstName + " " + LastName;
+                }
+                return FirstName + " " + MI + ". " + LastName;
+            }
+        }
+
+        public GuestModel()
+        {
+            GuestCode = string.Empty;
+            ContactNo = string.Empty;
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            MI = string.Empty;
+            Address = string.Empty;
+            Email = string.Empty;
+            IDType = string.Empty;
+            IDNum = string.Empty;
+            IsActive = true;
+            CreatedAt = DateTime.Now;
+        }
     }
 }

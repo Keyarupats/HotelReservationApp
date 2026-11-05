@@ -1,4 +1,4 @@
-﻿namespace HotelReservation.Model
+﻿namespace Model
 {
     public class UserModel
     {
@@ -8,5 +8,14 @@
         public string Password { get; set; }
         public string Role { get; set; }
         public bool IsActive { get; set; }
+
+        public UserModel()
+        {
+            UserId = string.Empty;
+            Username = string.Empty;
+            Password = string.Empty;
+            Role = string.Empty;
+            IsActive = true;
+        }
     }
 }
