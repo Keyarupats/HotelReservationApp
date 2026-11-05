@@ -1,7 +1,5 @@
-﻿using BusinessLogic.Controller;
-using HotelReservation;
-using HotelReservation.BusinessLogic.Controller;
-using HotelReservation.Model;
+﻿using HotelReservation.BusinessLogic.Controller;
+using Model;
 using System;
 using System.Collections;
 using System.Drawing;

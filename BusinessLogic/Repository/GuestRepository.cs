@@ -1,4 +1,4 @@
-﻿using HotelReservation.Model;
+﻿using Model;
 using System.Data;
 using System.Data.SqlClient;
 

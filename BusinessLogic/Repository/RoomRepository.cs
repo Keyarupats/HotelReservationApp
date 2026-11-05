@@ -1,66 +1,147 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using HotelReservation.Model;
+using Model;
 
-namespace BusinessLogic.Repository
+namespace HotelReservation.BusinessLogic.Repository
 {
     public class RoomRepository
     {
-        private readonly string _connectionString = @"Data Source=Keyaru\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;";
+        private string connectionString;
 
-        public RoomRepository(string connectionString = null)
+        public RoomRepository()
         {
-            if (!string.IsNullOrWhiteSpace(connectionString))
-            {
-                _connectionString = connectionString;
-            }
+            connectionString = DatabaseConfig.ConnectionString;
         }
 
-        public List<RoomModel> GetAllRooms()
+        public List<RoomModel> GetAllRooms(string typeFilter)
         {
-            var rooms = new List<RoomModel>();
+            List<RoomModel> list = new List<RoomModel>();
 
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (var command = new SqlCommand("spGetAllRooms", connection))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                command.CommandType = CommandType.StoredProcedure;
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
+                using (SqlCommand cmd = new SqlCommand("spGetAllRooms", conn))
                 {
-                    while (reader.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@TypeNameFilter", string.IsNullOrEmpty(typeFilter) ? "ALL" : typeFilter);
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        rooms.Add(new RoomModel
+                        while (reader.Read())
                         {
-                            RoomId = Convert.ToInt32(reader["RoomId"]),
-                            RoomNumber = reader["RoomNumber"].ToString() ?? string.Empty,
-                            RoomType = reader["RoomType"].ToString() ?? string.Empty,
-                            RatePerNight = Convert.ToDecimal(reader["RatePerNight"]),
-                            Status = reader["Status"].ToString() ?? "Available"
-                        });
+                            RoomModel room = new RoomModel();
+                            room.RoomId = Convert.ToInt32(reader["RoomId"]);
+                            room.RoomTypeId = Convert.ToInt32(reader["RoomTypeId"]);
+                            room.TypeName = reader["TypeName"].ToString();
+                            room.RatePerAdult = Convert.ToDecimal(reader["RatePerAdult"]);
+                            room.BedCount = Convert.ToInt32(reader["BedCount"]);
+                            room.MaxAdults = Convert.ToInt32(reader["MaxAdults"]);
+                            room.MaxChildren = Convert.ToInt32(reader["MaxChildren"]);
+                            room.Status = reader["Status"].ToString();
+                            list.Add(room);
+                        }
                     }
                 }
             }
-
-            return rooms;
+            return list;
         }
 
-        public int AddRoom(RoomModel room)
+        public bool UpdateRoomStatus(int roomId, string status)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (SqlCommand command = new SqlCommand("spAddRoom", connection))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                command.CommandType = CommandType.StoredProcedure;
+                using (SqlCommand cmd = new SqlCommand("spUpdateRoomStatus", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@RoomId", roomId);
+                    cmd.Parameters.AddWithValue("@Status", status);
 
-                command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
-                command.Parameters.AddWithValue("@RoomType", room.RoomType);
-                command.Parameters.AddWithValue("@RatePerNight", room.RatePerNight);
-                command.Parameters.AddWithValue("@Status", room.Status ?? "Available");
+                    conn.Open();
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        }
 
-                connection.Open();
-                // Returns the auto-generated RoomId
-                var result = command.ExecuteScalar();
-                return Convert.ToInt32(result);
+        public List<RoomModel> GetAvailableRooms(DateTime checkIn, DateTime checkOut, int adults, int children)
+        {
+            List<RoomModel> list = new List<RoomModel>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("spGetAvailableRooms", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@CheckIn", checkIn);
+                    cmd.Parameters.AddWithValue("@CheckOut", checkOut);
+                    cmd.Parameters.AddWithValue("@Adults", adults);
+                    cmd.Parameters.AddWithValue("@Children", children);
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            RoomModel room = new RoomModel();
+                            room.RoomId = Convert.ToInt32(reader["RoomId"]);
+                            room.TypeName = reader["TypeName"].ToString();
+                            room.RatePerAdult = Convert.ToDecimal(reader["RatePerAdult"]);
+                            room.BedCount = Convert.ToInt32(reader["BedCount"]);
+                            room.MaxAdults = Convert.ToInt32(reader["MaxAdults"]);
+                            room.MaxChildren = Convert.ToInt32(reader["MaxChildren"]);
+                            room.Status = reader["Status"].ToString();
+                            list.Add(room);
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        public decimal GetTierRate(string typeName)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT RatePerAdult FROM tblRoomTypes WHERE TypeName = @TypeName";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TypeName", typeName);
+
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        return Convert.ToDecimal(result);
+                    }
+                    return 0.00m;
+                }
+            }
+        }
+
+        public bool UpdateTierRate(string typeName, decimal newRate)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("spUpdateRoomTypeRate", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@TypeName", typeName);
+                    cmd.Parameters.AddWithValue("@NewRate", newRate);
+
+                    conn.Open();
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
             }
         }
     }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using BusinessLogic.Controller;
-using HotelReservation.Model;
-using HotelReswervation;
+using HotelReservation.BusinessLogic.Controller;
+using Model;
+
 namespace HotelReservation
 {
     public partial class RoomManagement : Form
@@ -14,10 +14,7 @@ namespace HotelReservation
         public RoomManagement()
         {
             InitializeComponent();
-            _roomController = new RoomController(@"Data Source=Keyaru\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;");
-
-            List<RoomModel> rooms = _roomController.GetAllRooms();
-            _allRoomsMasterList = new List<RoomModel>();
+            
         }
 
 
@@ -26,7 +23,6 @@ namespace HotelReservation
             InitializeComponent();
             _roomController = new RoomController(connectionString);
 
-            List<RoomModel> roomsToDisplay = preloadedRooms ?? _roomController.GetAllRooms();
         }
 
 
@@ -45,12 +41,7 @@ namespace HotelReservation
             }
             else
             {
-                filteredRooms = _allRoomsMasterList
-                    .Where(r => r.RoomType != null &&
-                                r.RoomType.Equals(selectedTier, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
             }
-            BindAndFormatGrid(filteredRooms);
         }
 
         private void BindAndFormatGrid(List<RoomModel> roomList)
@@ -94,7 +85,6 @@ namespace HotelReservation
 
         private void RoomManagement_Load(object sender, EventArgs e)
         {
-            FetchRoomsFromDatabase();
 
             cmbRoomType.Items.Clear();
             cmbRoomType.Items.Add("ALL TIER");
@@ -105,19 +95,7 @@ namespace HotelReservation
             cmbRoomType.SelectedIndex = 0;
         }
 
-        private void FetchRoomsFromDatabase()
-        {
-            try
-            {
-                // Retrieve pre-seeded records from tblRooms via spGetAllRooms[cite: 3]
-                _allRoomsMasterList = _roomController.GetAllRooms() ?? new List<RoomModel>();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading database records: {ex.Message}", "Database Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        
 
 
         private void cmbRoomType_SelectedIndexChanged(object sender, EventArgs e)
@@ -152,10 +130,6 @@ namespace HotelReservation
         private void label1_Click(object sender, EventArgs e)
         {
             
-            GuestLookup guestLookupForm = new GuestLookup();
-            guestLookupForm.ShowDialog();
-            this.Show();
-            this.Hide();
         }
     }
 }

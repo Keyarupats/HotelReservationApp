@@ -1,30 +1,60 @@
-﻿using BusinessLogic.Repository;
-using HotelReservation.Model;
+﻿using System;
+using System.Collections.Generic;
+using HotelReservation.BusinessLogic.Repository;
+using Model;
 
-namespace BusinessLogic.Controller
+namespace HotelReservation.BusinessLogic.Controller
 {
     public class RoomController
     {
-        private readonly RoomRepository _roomRepository;
+        private RoomRepository roomRepository;
 
         public RoomController(string connectionString)
         {
-            _roomRepository = new RoomRepository(connectionString);
+            roomRepository = new RoomRepository();
         }
 
-        public List<RoomModel> GetAllRooms()
+        public List<RoomModel> GetRooms(string categoryFilter)
         {
-            return _roomRepository.GetAllRooms();
+            return roomRepository.GetAllRooms(categoryFilter);
         }
 
-        public int CreateRoom(RoomModel room)
+        public bool ChangeRoomStatus(int roomId, string newStatus)
         {
-            if (string.IsNullOrWhiteSpace(room.Status))
+            if (string.IsNullOrWhiteSpace(newStatus))
             {
-                room.Status = "Available";
+                return false;
             }
 
-            return _roomRepository.AddRoom(room);
+            if (newStatus != "Available" && newStatus != "Reserved" && newStatus != "Occupied" && newStatus != "Cleaning" && newStatus != "Maintenance")
+            {
+                return false;
+            }
+
+            return roomRepository.UpdateRoomStatus(roomId, newStatus);
         }
+
+        public List<RoomModel> GetAvailableRooms(DateTime checkIn, int adults, int children)
+        {
+            DateTime checkOut = checkIn.AddHours(22);
+            return roomRepository.GetAvailableRooms(checkIn, checkOut, adults, children);
+        }
+
+        public decimal GetTierRate(string typeName)
+        {
+            return roomRepository.GetTierRate(typeName);
+        }
+
+        public bool UpdateTierRate(string typeName, decimal newRate)
+        {
+            if (newRate <= 0)
+            {
+                return false;
+            }
+
+            return roomRepository.UpdateTierRate(typeName, newRate);
+        }
+
+
     }
 }
