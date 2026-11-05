@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HotelReservation.BusinessLogic.Repository;
 using Model;
 
@@ -7,75 +6,96 @@ namespace HotelReservation.BusinessLogic.Controller
 {
     public class GuestController
     {
-        private readonly GuestRepository _guestRepository;
+        private GuestRepository guestRepository;
 
-        public GuestController(string connectionString = null)
+        public GuestController()
         {
-            _guestRepository = new GuestRepository(connectionString);
+            guestRepository = new GuestRepository();
         }
 
         public int RegisterGuest(GuestModel guest)
         {
-            if (guest == null) throw new ArgumentNullException(nameof(guest));
+            if (guest == null)
+            {
+                return 0;
+            }
 
-            if (string.IsNullOrWhiteSpace(guest.ContactNo))
-                throw new ArgumentException("Contact Number is required.", nameof(guest.ContactNo));
+            if (string.IsNullOrWhiteSpace(guest.FirstName) || string.IsNullOrWhiteSpace(guest.LastName) || string.IsNullOrWhiteSpace(guest.Address))
+            {
+                return 0;
+            }
 
-            if (string.IsNullOrWhiteSpace(guest.FirstName))
-                throw new ArgumentException("First Name is required.", nameof(guest.FirstName));
-
-            if (string.IsNullOrWhiteSpace(guest.LastName))
-                throw new ArgumentException("Last Name is required.", nameof(guest.LastName));
-
-            if (string.IsNullOrWhiteSpace(guest.MI))
-                throw new ArgumentException("Middle Initial is required.", nameof(guest.MI));
+            if (string.IsNullOrWhiteSpace(guest.ContactNo) || guest.ContactNo.Trim().Length != 11)
+            {
+                return 0;
+            }
 
             if (guest.Age < 18)
-                throw new ArgumentException("Guest must be at least 18 years old.", nameof(guest.Age));
+            {
+                return 0;
+            }
 
-            if (string.IsNullOrWhiteSpace(guest.Address))
-                throw new ArgumentException("Address is required.", nameof(guest.Address));
-
-            if (string.IsNullOrWhiteSpace(guest.Email))
-                throw new ArgumentException("Email is required.", nameof(guest.Email));
-
-            if (string.IsNullOrWhiteSpace(guest.IDType))
-                throw new ArgumentException("ID Type selection is required.", nameof(guest.IDType));
-
-            if (string.IsNullOrWhiteSpace(guest.IDNum))
-                throw new ArgumentException("ID Number is required.", nameof(guest.IDNum));
-
-            // Clean inputs before sending down to Repository
-            guest.ContactNo = guest.ContactNo.Trim();
-            guest.FirstName = guest.FirstName.Trim();
-            guest.LastName = guest.LastName.Trim();
-            guest.MI = guest.MI.Trim();
-            guest.Address = guest.Address.Trim();
-            guest.Email = guest.Email.Trim();
-            guest.IDType = guest.IDType.Trim();
-            guest.IDNum = guest.IDNum.Trim();
-
-            return _guestRepository.AddGuest(guest);
+            return guestRepository.AddGuest(guest);
         }
 
-        public List<GuestModel> GetActiveGuests()
+        public bool UpdateGuest(GuestModel guest)
         {
-            return _guestRepository.GetActiveGuests();
-        }
+            if (guest == null || guest.GuestId <= 0)
+            {
+                return false;
+            }
 
-        public List<GuestModel> GetAllGuestsForAdmin()
-        {
-            return _guestRepository.GetAllGuestsForAdmin();
+            if (string.IsNullOrWhiteSpace(guest.FirstName) || string.IsNullOrWhiteSpace(guest.LastName) || string.IsNullOrWhiteSpace(guest.Address))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(guest.ContactNo) || guest.ContactNo.Trim().Length != 11)
+            {
+                return false;
+            }
+
+            if (guest.Age < 18)
+            {
+                return false;
+            }
+
+            return guestRepository.UpdateGuest(guest);
         }
 
         public bool SoftDeleteGuest(string contactNo)
         {
             if (string.IsNullOrWhiteSpace(contactNo))
             {
-                throw new ArgumentException("Contact number is required.");
+                return false;
             }
 
-            return _guestRepository.SoftDeleteGuest(contactNo.Trim());
+            return guestRepository.SoftDeleteGuest(contactNo.Trim());
+        }
+
+        public List<GuestModel> GetGuests(bool includeInactive)
+        {
+            return guestRepository.GetGuests(includeInactive);
+        }
+
+        public List<GuestModel> SearchGuests(string searchText, bool includeInactive)
+        {
+            if (searchText == null)
+            {
+                searchText = "";
+            }
+
+            return guestRepository.SearchGuests(searchText.Trim(), includeInactive);
+        }
+
+        public bool IsMobileNumberRegistered(string contactNo, int currentGuestId)
+        {
+            if (string.IsNullOrWhiteSpace(contactNo))
+            {
+                return false;
+            }
+
+            return guestRepository.CheckMobileExists(contactNo.Trim(), currentGuestId);
         }
     }
 }

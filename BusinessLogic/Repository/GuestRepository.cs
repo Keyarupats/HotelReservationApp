@@ -1,196 +1,215 @@
-﻿using Model;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Model;
 
 namespace HotelReservation.BusinessLogic.Repository
 {
     public class GuestRepository
     {
-        private readonly string _connectionString = @"Data Source=Keyaru\SQLEXPRESS;Initial Catalog=HotelReservationDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connect Timeout=30;";
+        private string connectionString;
 
-        public GuestRepository(string connectionString = null)
+        public GuestRepository()
         {
-            if (!string.IsNullOrWhiteSpace(connectionString) && !connectionString.Contains("Multiple Active Result Sets"))
-            {
-                _connectionString = connectionString;
-            }
+            connectionString = DatabaseConfig.ConnectionString;
         }
 
         public int AddGuest(GuestModel guest)
         {
-            int newId = 0;
-
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            using (SqlCommand cmd = new SqlCommand("dbo.spAddGuest", conn))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@ContactNo", guest.ContactNo);
-                cmd.Parameters.AddWithValue("@FirstName", guest.FirstName);
-                cmd.Parameters.AddWithValue("@LastName", guest.LastName);
-                cmd.Parameters.AddWithValue("@MI", guest.MI);
-                cmd.Parameters.AddWithValue("@Age", guest.Age);
-                cmd.Parameters.AddWithValue("@Address", guest.Address);
-                cmd.Parameters.AddWithValue("@Email", guest.Email);
-                cmd.Parameters.AddWithValue("@IDType", guest.IDType);
-                cmd.Parameters.AddWithValue("@IDNum", guest.IDNum);
-
-                conn.Open();
-
-                object result = cmd.ExecuteScalar();
-                if (result != null && result != DBNull.Value)
+                using (SqlCommand cmd = new SqlCommand("spAddGuests", conn))
                 {
-                    newId = Convert.ToInt32(result);
-                }
-            }
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ContactNo", guest.ContactNo);
+                    cmd.Parameters.AddWithValue("@FirstName", guest.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", guest.LastName);
 
-            return newId;
-        }
-
-        public List<GuestModel> GetGuests(bool includeInactive = false)
-        {
-            List<GuestModel> guests = new List<GuestModel>();
-
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            using (SqlCommand cmd = new SqlCommand("dbo.spGetGuests", conn))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@IncludeInactive", includeInactive);
-
-                conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
+                    if (string.IsNullOrEmpty(guest.MI))
                     {
-                        guests.Add(new GuestModel
-                        {
-                            GuestId = Convert.ToInt32(reader["GuestId"]),
-                            ContactNo = reader["ContactNo"].ToString(),
-                            FirstName = reader["FirstName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            MI = reader["MI"].ToString(),
-                            Age = Convert.ToInt32(reader["Age"]),
-                            Address = reader["Address"].ToString(),
-                            Email = reader["Email"].ToString(),
-                            IDType = reader["IDType"].ToString(),
-                            IDNum = reader["IDNum"].ToString(),
-                            IsActive = Convert.ToBoolean(reader["IsActive"]),
-                            CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
-                        });
+                        cmd.Parameters.AddWithValue("@MI", DBNull.Value);
                     }
-                }
-            }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@MI", guest.MI);
+                    }
 
-            return guests;
-        }
+                    cmd.Parameters.AddWithValue("@Age", guest.Age);
+                    cmd.Parameters.AddWithValue("@Address", guest.Address);
+                    cmd.Parameters.AddWithValue("@Email", guest.Email);
+                    cmd.Parameters.AddWithValue("@IDType", guest.IDType);
+                    cmd.Parameters.AddWithValue("@IDNum", guest.IDNum);
 
-
-
-
-
-
-        public List<GuestModel> GetActiveGuests()
-        {
-            List<GuestModel> guestList = new List<GuestModel>();
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                {
                     conn.Open();
-                    string query = "SELECT * FROM dbo.tblGuests WHERE IsActive = 1 ORDER BY GuestId DESC";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
                     {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                guestList.Add(MapReaderToGuest(reader));
-                            }
-                        }
+                        return Convert.ToInt32(result);
                     }
+                    return 0;
                 }
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Error loading active guest list: " + ex.Message);
-            }
-
-            return guestList;
         }
 
-        public List<GuestModel> GetAllGuestsForAdmin()
+        public bool UpdateGuest(GuestModel guest)
         {
-            List<GuestModel> guestList = new List<GuestModel>();
-
-            try
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
+                using (SqlCommand cmd = new SqlCommand("spUpdateGuest", conn))
                 {
-                    conn.Open();
-                    string query = "SELECT * FROM dbo.tblGuests ORDER BY GuestId DESC";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GuestId", guest.GuestId);
+                    cmd.Parameters.AddWithValue("@ContactNo", guest.ContactNo);
+                    cmd.Parameters.AddWithValue("@FirstName", guest.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", guest.LastName);
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    if (string.IsNullOrEmpty(guest.MI))
                     {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                guestList.Add(MapReaderToGuest(reader));
-                            }
-                        }
+                        cmd.Parameters.AddWithValue("@MI", DBNull.Value);
                     }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@MI", guest.MI);
+                    }
+
+                    cmd.Parameters.AddWithValue("@Age", guest.Age);
+                    cmd.Parameters.AddWithValue("@Address", guest.Address);
+                    cmd.Parameters.AddWithValue("@Email", guest.Email);
+                    cmd.Parameters.AddWithValue("@IDType", guest.IDType);
+                    cmd.Parameters.AddWithValue("@IDNum", guest.IDNum);
+
+                    conn.Open();
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Error loading all guest records: " + ex.Message);
-            }
-
-            return guestList;
         }
 
         public bool SoftDeleteGuest(string contactNo)
         {
-            try
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
+                using (SqlCommand cmd = new SqlCommand("spDeleteGuest", conn))
                 {
-                    conn.Open();
-                    string query = "UPDATE dbo.tblGuests SET IsActive = 0 WHERE ContactNo = @ContactNo";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ContactNo", contactNo);
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    conn.Open();
+                    int rows = cmd.ExecuteNonQuery();
+                    if (rows > 0)
                     {
-                        cmd.Parameters.AddWithValue("@ContactNo", contactNo);
-                        int rowsAffected = cmd.ExecuteNonQuery();
-                        return rowsAffected > 0;
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        }
+
+        public List<GuestModel> GetGuests(bool includeInactive)
+        {
+            List<GuestModel> list = new List<GuestModel>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("spGetGuests", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@IncludeInactive", includeInactive ? 1 : 0);
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            GuestModel guest = MapReaderToGuest(reader);
+                            list.Add(guest);
+                        }
                     }
                 }
             }
-            catch (Exception ex)
+            return list;
+        }
+
+        public List<GuestModel> SearchGuests(string searchText, bool includeInactive)
+        {
+            List<GuestModel> list = new List<GuestModel>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                throw new Exception("Error deactivating guest: " + ex.Message);
+                using (SqlCommand cmd = new SqlCommand("spSearchGuests", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@SearchText", searchText);
+                    cmd.Parameters.AddWithValue("@IncludeInactive", includeInactive ? 1 : 0);
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            GuestModel guest = MapReaderToGuest(reader);
+                            list.Add(guest);
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        public bool CheckMobileExists(string contactNo, int currentGuestId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT COUNT(1) FROM tblGuests WHERE ContactNo = @ContactNo AND GuestId <> @GuestId";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ContactNo", contactNo.Trim());
+                    cmd.Parameters.AddWithValue("@GuestId", currentGuestId);
+
+                    conn.Open();
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
             }
         }
 
         private GuestModel MapReaderToGuest(SqlDataReader reader)
         {
-            return new GuestModel
+            GuestModel guest = new GuestModel();
+            guest.GuestId = Convert.ToInt32(reader["GuestId"]);
+            guest.GuestCode = reader["GuestCode"].ToString();
+            guest.ContactNo = reader["ContactNo"].ToString();
+            guest.FirstName = reader["FirstName"].ToString();
+            guest.LastName = reader["LastName"].ToString();
+
+            if (reader["MI"] != DBNull.Value)
             {
-                GuestId = Convert.ToInt32(reader["GuestId"]),
-                ContactNo = reader["ContactNo"].ToString(),
-                FirstName = reader["FirstName"].ToString(),
-                LastName = reader["LastName"].ToString(),
-                MI = reader["MI"].ToString(),
-                Age = Convert.ToInt32(reader["Age"]),
-                Address = reader["Address"].ToString(),
-                Email = reader["Email"].ToString(),
-                IDType = reader["IDType"].ToString(),
-                IDNum = reader["IDNum"].ToString(),
-                IsActive = Convert.ToBoolean(reader["IsActive"])
-            };
+                guest.MI = reader["MI"].ToString();
+            }
+            else
+            {
+                guest.MI = "";
+            }
+
+            guest.Age = Convert.ToInt32(reader["Age"]);
+            guest.Address = reader["Address"].ToString();
+            guest.Email = reader["Email"].ToString();
+            guest.IDType = reader["IDType"].ToString();
+            guest.IDNum = reader["IDNum"].ToString();
+            guest.IsActive = Convert.ToBoolean(reader["IsActive"]);
+            guest.CreatedAt = Convert.ToDateTime(reader["CreatedAt"]);
+
+            return guest;
         }
     }
 }
