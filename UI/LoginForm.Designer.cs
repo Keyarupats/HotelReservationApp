@@ -1,4 +1,4 @@
-﻿namespace HotelReswervation
+﻿namespace HotelReservation
 {
     partial class LoginForm
     {

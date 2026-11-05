@@ -36,7 +36,6 @@
             lblBilling = new Label();
             lblReservation = new Label();
             lblCheckIn = new Label();
-            lblAvailability = new Label();
             lblGuests = new Label();
             lblRoom = new Label();
             pnlContent = new Panel();
@@ -49,9 +48,9 @@
             btnLogout.BackColor = Color.CornflowerBlue;
             btnLogout.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLogout.ForeColor = SystemColors.ButtonHighlight;
-            btnLogout.Location = new Point(1680, 32);
+            btnLogout.Location = new Point(1680, 34);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(137, 45);
+            btnLogout.Size = new Size(137, 47);
             btnLogout.TabIndex = 0;
             btnLogout.Text = "Logout";
             btnLogout.UseVisualStyleBackColor = false;
@@ -64,7 +63,7 @@
             panel1.Controls.Add(btnLogout);
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1920, 112);
+            panel1.Size = new Size(1920, 118);
             panel1.TabIndex = 1;
             // 
             // label1
@@ -73,33 +72,33 @@
             label1.BackColor = Color.DarkBlue;
             label1.Font = new Font("Segoe UI", 22.2545452F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ButtonHighlight;
-            label1.Location = new Point(71, 31);
+            label1.Location = new Point(71, 33);
             label1.Name = "label1";
-            label1.Size = new Size(723, 46);
+            label1.Size = new Size(801, 51);
             label1.TabIndex = 0;
             label1.Text = "HOTEL RESERVATION AND BILLING SYSTEM";
             // 
             // panel2
             // 
+            panel2.BorderStyle = BorderStyle.FixedSingle;
             panel2.Controls.Add(lblReceipt);
             panel2.Controls.Add(lblBilling);
             panel2.Controls.Add(lblReservation);
             panel2.Controls.Add(lblCheckIn);
-            panel2.Controls.Add(lblAvailability);
             panel2.Controls.Add(lblGuests);
             panel2.Controls.Add(lblRoom);
-            panel2.Location = new Point(0, 111);
+            panel2.Location = new Point(0, 124);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1920, 90);
+            panel2.Size = new Size(1920, 88);
             panel2.TabIndex = 2;
             // 
             // lblReceipt
             // 
             lblReceipt.AutoSize = true;
             lblReceipt.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblReceipt.Location = new Point(889, 30);
+            lblReceipt.Location = new Point(730, 32);
             lblReceipt.Name = "lblReceipt";
-            lblReceipt.Size = new Size(83, 30);
+            lblReceipt.Size = new Size(90, 31);
             lblReceipt.TabIndex = 7;
             lblReceipt.Text = "Receipt";
             // 
@@ -107,76 +106,70 @@
             // 
             lblBilling.AutoSize = true;
             lblBilling.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblBilling.Location = new Point(768, 30);
+            lblBilling.Location = new Point(609, 32);
             lblBilling.Name = "lblBilling";
-            lblBilling.Size = new Size(71, 30);
+            lblBilling.Size = new Size(79, 31);
             lblBilling.TabIndex = 6;
             lblBilling.Text = "Billing";
+            lblBilling.Click += lblBilling_Click;
             // 
             // lblReservation
             // 
             lblReservation.AutoSize = true;
             lblReservation.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblReservation.Location = new Point(447, 30);
+            lblReservation.Location = new Point(288, 32);
             lblReservation.Name = "lblReservation";
-            lblReservation.Size = new Size(125, 30);
+            lblReservation.Size = new Size(136, 31);
             lblReservation.TabIndex = 5;
             lblReservation.Text = "Reservation";
+            lblReservation.Click += lblReservation_Click;
             // 
             // lblCheckIn
             // 
             lblCheckIn.AutoSize = true;
             lblCheckIn.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblCheckIn.Location = new Point(621, 30);
+            lblCheckIn.Location = new Point(462, 32);
             lblCheckIn.Name = "lblCheckIn";
-            lblCheckIn.Size = new Size(95, 30);
+            lblCheckIn.Size = new Size(104, 31);
             lblCheckIn.TabIndex = 4;
             lblCheckIn.Text = "Check-In";
-            // 
-            // lblAvailability
-            // 
-            lblAvailability.AutoSize = true;
-            lblAvailability.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblAvailability.Location = new Point(289, 29);
-            lblAvailability.Name = "lblAvailability";
-            lblAvailability.Size = new Size(117, 30);
-            lblAvailability.TabIndex = 3;
-            lblAvailability.Text = "Availability";
-            lblAvailability.Click += label4_Click;
+            lblCheckIn.Click += lblCheckIn_Click;
             // 
             // lblGuests
             // 
             lblGuests.AutoSize = true;
             lblGuests.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblGuests.Location = new Point(165, 30);
+            lblGuests.Location = new Point(165, 32);
             lblGuests.Name = "lblGuests";
-            lblGuests.Size = new Size(77, 30);
+            lblGuests.Size = new Size(83, 31);
             lblGuests.TabIndex = 3;
             lblGuests.Text = "Guests";
+            lblGuests.Click += lblGuests_Click;
             // 
             // lblRoom
             // 
             lblRoom.AutoSize = true;
             lblRoom.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblRoom.Location = new Point(48, 29);
+            lblRoom.Location = new Point(48, 31);
             lblRoom.Name = "lblRoom";
-            lblRoom.Size = new Size(79, 30);
+            lblRoom.Size = new Size(85, 31);
             lblRoom.TabIndex = 0;
             lblRoom.Text = "Rooms";
             lblRoom.Click += lblRoom_Click;
             // 
             // pnlContent
             // 
-            pnlContent.Location = new Point(3, 198);
+            pnlContent.BackColor = Color.Silver;
+            pnlContent.Location = new Point(0, 218);
             pnlContent.Name = "pnlContent";
-            pnlContent.Size = new Size(1920, 885);
+            pnlContent.Size = new Size(1920, 881);
             pnlContent.TabIndex = 3;
             // 
             // LandingPageForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 19F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1920, 1080);
+            ClientSize = new Size(1920, 1102);
             Controls.Add(pnlContent);
             Controls.Add(panel2);
             Controls.Add(panel1);
@@ -202,7 +195,6 @@
         private Label lblBilling;
         private Label lblReservation;
         private Label lblCheckIn;
-        private Label lblAvailability;
         private Label lblGuests;
         private Label lblRoom;
         private Panel pnlContent;
