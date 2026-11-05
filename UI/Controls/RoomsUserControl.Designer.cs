@@ -2,15 +2,8 @@
 {
     partial class RoomsUserControl
     {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,166 +15,271 @@
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            lblRoomType = new Label();
+            lblRoomTier = new Label();
             cmbRoomType = new ComboBox();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
-            panel1 = new Panel();
-            panel2 = new Panel();
-            panel3 = new Panel();
-            panel4 = new Panel();
-            panel5 = new Panel();
+            lblViewDate = new Label();
+            dtpViewDate = new DateTimePicker();
+            lblAvailable = new Label();
+            pnlColorAvailable = new Panel();
+            pnlUnderlineAvailable = new Panel();
+            lblReserved = new Label();
+            pnlColorReserved = new Panel();
+            pnlUnderlineReserved = new Panel();
+            lblOccupied = new Label();
+            pnlColorOccupied = new Panel();
+            pnlUnderlineOccupied = new Panel();
+            lblCleaning = new Label();
+            pnlColorCleaning = new Panel();
+            pnlUnderlineCleaning = new Panel();
+            lblMaintenance = new Label();
+            pnlColorMaintenance = new Panel();
+            pnlUnderlineMaintenance = new Panel();
+            btnEditRates = new Button();
             flpRooms = new FlowLayoutPanel();
             SuspendLayout();
             // 
-            // lblRoomType
+            // lblRoomTier
             // 
-            lblRoomType.AutoSize = true;
-            lblRoomType.Font = new Font("Segoe UI Semibold", 13.7454548F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblRoomType.Location = new Point(46, 25);
-            lblRoomType.Name = "lblRoomType";
-            lblRoomType.Size = new Size(127, 30);
-            lblRoomType.TabIndex = 1;
-            lblRoomType.Text = "Room Type:";
+            lblRoomTier.AutoSize = true;
+            lblRoomTier.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblRoomTier.Location = new Point(30, 23);
+            lblRoomTier.Name = "lblRoomTier";
+            lblRoomTier.Size = new Size(111, 28);
+            lblRoomTier.TabIndex = 1;
+            lblRoomTier.Text = "Room Tier:";
             // 
             // cmbRoomType
             // 
-            cmbRoomType.Font = new Font("Segoe UI", 13.7454548F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbRoomType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbRoomType.Font = new Font("Segoe UI", 11F);
             cmbRoomType.FormattingEnabled = true;
-            cmbRoomType.Items.AddRange(new object[] { "All", "Available", "Reserved", "Occupied", "Cleaning ", "Maintenance" });
-            cmbRoomType.Location = new Point(198, 22);
+            cmbRoomType.Location = new Point(147, 22);
             cmbRoomType.Name = "cmbRoomType";
-            cmbRoomType.Size = new Size(261, 38);
+            cmbRoomType.Size = new Size(160, 33);
             cmbRoomType.TabIndex = 2;
+            cmbRoomType.SelectedIndexChanged += cmbRoomType_SelectedIndexChanged;
             // 
-            // label1
+            // lblViewDate
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 13.7454548F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(1704, 30);
-            label1.Name = "label1";
-            label1.Size = new Size(134, 30);
-            label1.TabIndex = 3;
-            label1.Text = "Maintenance";
+            lblViewDate.AutoSize = true;
+            lblViewDate.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            lblViewDate.Location = new Point(326, 23);
+            lblViewDate.Name = "lblViewDate";
+            lblViewDate.Size = new Size(59, 28);
+            lblViewDate.TabIndex = 3;
+            lblViewDate.Text = "Date:";
             // 
-            // label2
+            // dtpViewDate
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 13.7454548F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(1514, 30);
-            label2.Name = "label2";
-            label2.Size = new Size(94, 30);
-            label2.TabIndex = 4;
-            label2.Text = "Cleaning";
+            dtpViewDate.CustomFormat = "yyyy-MM-dd";
+            dtpViewDate.Font = new Font("Segoe UI", 11F);
+            dtpViewDate.Location = new Point(391, 20);
+            dtpViewDate.Name = "dtpViewDate";
+            dtpViewDate.Size = new Size(312, 32);
+            dtpViewDate.TabIndex = 4;
+            dtpViewDate.ValueChanged += dtpViewDate_ValueChanged;
             // 
-            // label3
+            // lblAvailable
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 13.7454548F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.Location = new Point(1314, 30);
-            label3.Name = "label3";
-            label3.Size = new Size(101, 30);
-            label3.TabIndex = 5;
-            label3.Text = "Occupied";
+            lblAvailable.AutoSize = true;
+            lblAvailable.Cursor = Cursors.Hand;
+            lblAvailable.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblAvailable.Location = new Point(1045, 26);
+            lblAvailable.Name = "lblAvailable";
+            lblAvailable.Size = new Size(92, 25);
+            lblAvailable.TabIndex = 6;
+            lblAvailable.Text = "Available";
+            lblAvailable.Click += lblAvailable_Click;
             // 
-            // label4
+            // pnlColorAvailable
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 13.7454548F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(1129, 30);
-            label4.Name = "label4";
-            label4.Size = new Size(96, 30);
-            label4.TabIndex = 6;
-            label4.Text = "Reserved";
+            pnlColorAvailable.BackColor = Color.Green;
+            pnlColorAvailable.Location = new Point(1027, 28);
+            pnlColorAvailable.Name = "pnlColorAvailable";
+            pnlColorAvailable.Size = new Size(14, 15);
+            pnlColorAvailable.TabIndex = 5;
             // 
-            // label5
+            // pnlUnderlineAvailable
             // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 13.7454548F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label5.Location = new Point(947, 30);
-            label5.Name = "label5";
-            label5.Size = new Size(97, 30);
-            label5.TabIndex = 7;
-            label5.Text = "Available";
+            pnlUnderlineAvailable.BackColor = Color.Green;
+            pnlUnderlineAvailable.Location = new Point(1027, 50);
+            pnlUnderlineAvailable.Name = "pnlUnderlineAvailable";
+            pnlUnderlineAvailable.Size = new Size(95, 4);
+            pnlUnderlineAvailable.TabIndex = 7;
+            pnlUnderlineAvailable.Visible = false;
             // 
-            // panel1
+            // lblReserved
             // 
-            panel1.BackColor = Color.Green;
-            panel1.Location = new Point(923, 36);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(20, 20);
-            panel1.TabIndex = 8;
+            lblReserved.AutoSize = true;
+            lblReserved.Cursor = Cursors.Hand;
+            lblReserved.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblReserved.Location = new Point(1175, 26);
+            lblReserved.Name = "lblReserved";
+            lblReserved.Size = new Size(93, 25);
+            lblReserved.TabIndex = 9;
+            lblReserved.Text = "Reserved";
+            lblReserved.Click += lblReserved_Click;
             // 
-            // panel2
+            // pnlColorReserved
             // 
-            panel2.BackColor = Color.Blue;
-            panel2.Location = new Point(1103, 36);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(20, 20);
-            panel2.TabIndex = 9;
+            pnlColorReserved.BackColor = Color.Blue;
+            pnlColorReserved.Location = new Point(1157, 28);
+            pnlColorReserved.Name = "pnlColorReserved";
+            pnlColorReserved.Size = new Size(14, 15);
+            pnlColorReserved.TabIndex = 8;
             // 
-            // panel3
+            // pnlUnderlineReserved
             // 
-            panel3.BackColor = Color.Red;
-            panel3.Location = new Point(1288, 36);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(20, 20);
-            panel3.TabIndex = 10;
+            pnlUnderlineReserved.BackColor = Color.Blue;
+            pnlUnderlineReserved.Location = new Point(1157, 50);
+            pnlUnderlineReserved.Name = "pnlUnderlineReserved";
+            pnlUnderlineReserved.Size = new Size(95, 4);
+            pnlUnderlineReserved.TabIndex = 10;
+            pnlUnderlineReserved.Visible = false;
             // 
-            // panel4
+            // lblOccupied
             // 
-            panel4.BackColor = Color.Gold;
-            panel4.Location = new Point(1488, 36);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(20, 20);
-            panel4.TabIndex = 11;
+            lblOccupied.AutoSize = true;
+            lblOccupied.Cursor = Cursors.Hand;
+            lblOccupied.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblOccupied.Location = new Point(1305, 26);
+            lblOccupied.Name = "lblOccupied";
+            lblOccupied.Size = new Size(95, 25);
+            lblOccupied.TabIndex = 12;
+            lblOccupied.Text = "Occupied";
+            lblOccupied.Click += lblOccupied_Click;
             // 
-            // panel5
+            // pnlColorOccupied
             // 
-            panel5.BackColor = SystemColors.ControlDarkDark;
-            panel5.Location = new Point(1678, 36);
-            panel5.Name = "panel5";
-            panel5.Size = new Size(20, 20);
-            panel5.TabIndex = 12;
+            pnlColorOccupied.BackColor = Color.Red;
+            pnlColorOccupied.Location = new Point(1287, 28);
+            pnlColorOccupied.Name = "pnlColorOccupied";
+            pnlColorOccupied.Size = new Size(14, 15);
+            pnlColorOccupied.TabIndex = 11;
+            // 
+            // pnlUnderlineOccupied
+            // 
+            pnlUnderlineOccupied.BackColor = Color.Red;
+            pnlUnderlineOccupied.Location = new Point(1287, 50);
+            pnlUnderlineOccupied.Name = "pnlUnderlineOccupied";
+            pnlUnderlineOccupied.Size = new Size(95, 4);
+            pnlUnderlineOccupied.TabIndex = 13;
+            pnlUnderlineOccupied.Visible = false;
+            // 
+            // lblCleaning
+            // 
+            lblCleaning.AutoSize = true;
+            lblCleaning.Cursor = Cursors.Hand;
+            lblCleaning.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblCleaning.Location = new Point(1435, 26);
+            lblCleaning.Name = "lblCleaning";
+            lblCleaning.Size = new Size(90, 25);
+            lblCleaning.TabIndex = 15;
+            lblCleaning.Text = "Cleaning";
+            lblCleaning.Click += lblCleaning_Click;
+            // 
+            // pnlColorCleaning
+            // 
+            pnlColorCleaning.BackColor = Color.Gold;
+            pnlColorCleaning.Location = new Point(1417, 28);
+            pnlColorCleaning.Name = "pnlColorCleaning";
+            pnlColorCleaning.Size = new Size(14, 15);
+            pnlColorCleaning.TabIndex = 14;
+            // 
+            // pnlUnderlineCleaning
+            // 
+            pnlUnderlineCleaning.BackColor = Color.Gold;
+            pnlUnderlineCleaning.Location = new Point(1417, 50);
+            pnlUnderlineCleaning.Name = "pnlUnderlineCleaning";
+            pnlUnderlineCleaning.Size = new Size(90, 4);
+            pnlUnderlineCleaning.TabIndex = 16;
+            pnlUnderlineCleaning.Visible = false;
+            // 
+            // lblMaintenance
+            // 
+            lblMaintenance.AutoSize = true;
+            lblMaintenance.Cursor = Cursors.Hand;
+            lblMaintenance.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblMaintenance.Location = new Point(1560, 26);
+            lblMaintenance.Name = "lblMaintenance";
+            lblMaintenance.Size = new Size(127, 25);
+            lblMaintenance.TabIndex = 18;
+            lblMaintenance.Text = "Maintenance";
+            lblMaintenance.Click += lblMaintenance_Click;
+            // 
+            // pnlColorMaintenance
+            // 
+            pnlColorMaintenance.BackColor = SystemColors.ControlDarkDark;
+            pnlColorMaintenance.Location = new Point(1542, 28);
+            pnlColorMaintenance.Name = "pnlColorMaintenance";
+            pnlColorMaintenance.Size = new Size(14, 15);
+            pnlColorMaintenance.TabIndex = 17;
+            // 
+            // pnlUnderlineMaintenance
+            // 
+            pnlUnderlineMaintenance.BackColor = SystemColors.ControlDarkDark;
+            pnlUnderlineMaintenance.Location = new Point(1542, 50);
+            pnlUnderlineMaintenance.Name = "pnlUnderlineMaintenance";
+            pnlUnderlineMaintenance.Size = new Size(120, 4);
+            pnlUnderlineMaintenance.TabIndex = 19;
+            pnlUnderlineMaintenance.Visible = false;
+            // 
+            // btnEditRates
+            // 
+            btnEditRates.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnEditRates.BackColor = Color.FromArgb(2, 132, 199);
+            btnEditRates.FlatStyle = FlatStyle.Flat;
+            btnEditRates.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnEditRates.ForeColor = Color.White;
+            btnEditRates.Location = new Point(1730, 20);
+            btnEditRates.Name = "btnEditRates";
+            btnEditRates.Size = new Size(155, 36);
+            btnEditRates.TabIndex = 20;
+            btnEditRates.Text = "⚙ Adjust Rates";
+            btnEditRates.UseVisualStyleBackColor = false;
+            btnEditRates.Visible = false;
+            btnEditRates.Click += btnEditRates_Click;
             // 
             // flpRooms
             // 
             flpRooms.AutoScroll = true;
+            flpRooms.BackColor = Color.Silver;
             flpRooms.Dock = DockStyle.Bottom;
-            flpRooms.Location = new Point(0, 93);
+            flpRooms.Location = new Point(0, 64);
             flpRooms.Name = "flpRooms";
-            flpRooms.Size = new Size(1920, 792);
-            flpRooms.TabIndex = 13;
+            flpRooms.Size = new Size(1920, 817);
+            flpRooms.TabIndex = 21;
             // 
             // RoomsUserControl
             // 
-            AutoScaleDimensions = new SizeF(8F, 19F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.GradientInactiveCaption;
+            BackColor = Color.Silver;
             Controls.Add(flpRooms);
-            Controls.Add(panel5);
-            Controls.Add(panel4);
-            Controls.Add(panel3);
-            Controls.Add(panel2);
-            Controls.Add(panel1);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(btnEditRates);
+            Controls.Add(pnlUnderlineMaintenance);
+            Controls.Add(pnlUnderlineCleaning);
+            Controls.Add(pnlUnderlineOccupied);
+            Controls.Add(pnlUnderlineReserved);
+            Controls.Add(pnlUnderlineAvailable);
+            Controls.Add(pnlColorMaintenance);
+            Controls.Add(lblMaintenance);
+            Controls.Add(pnlColorCleaning);
+            Controls.Add(lblCleaning);
+            Controls.Add(pnlColorOccupied);
+            Controls.Add(lblOccupied);
+            Controls.Add(pnlColorReserved);
+            Controls.Add(lblReserved);
+            Controls.Add(pnlColorAvailable);
+            Controls.Add(lblAvailable);
+            Controls.Add(dtpViewDate);
+            Controls.Add(lblViewDate);
             Controls.Add(cmbRoomType);
-            Controls.Add(lblRoomType);
+            Controls.Add(lblRoomTier);
             Name = "RoomsUserControl";
-            Size = new Size(1920, 885);
+            Size = new Size(1920, 881);
             Load += RoomsUserControl_Load;
             ResumeLayout(false);
             PerformLayout();
@@ -189,18 +287,32 @@
 
         #endregion
 
-        private Label lblRoomType;
-        private ComboBox cmbRoomType;
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
-        private Label label5;
-        private Panel panel1;
-        private Panel panel2;
-        private Panel panel3;
-        private Panel panel4;
-        private Panel panel5;
-        private FlowLayoutPanel flpRooms;
+        private System.Windows.Forms.Label lblRoomTier;
+        private System.Windows.Forms.ComboBox cmbRoomType;
+        private System.Windows.Forms.Label lblViewDate;
+        private System.Windows.Forms.DateTimePicker dtpViewDate;
+
+        private System.Windows.Forms.Label lblAvailable;
+        private System.Windows.Forms.Panel pnlColorAvailable;
+        private System.Windows.Forms.Panel pnlUnderlineAvailable;
+
+        private System.Windows.Forms.Label lblReserved;
+        private System.Windows.Forms.Panel pnlColorReserved;
+        private System.Windows.Forms.Panel pnlUnderlineReserved;
+
+        private System.Windows.Forms.Label lblOccupied;
+        private System.Windows.Forms.Panel pnlColorOccupied;
+        private System.Windows.Forms.Panel pnlUnderlineOccupied;
+
+        private System.Windows.Forms.Label lblCleaning;
+        private System.Windows.Forms.Panel pnlColorCleaning;
+        private System.Windows.Forms.Panel pnlUnderlineCleaning;
+
+        private System.Windows.Forms.Label lblMaintenance;
+        private System.Windows.Forms.Panel pnlColorMaintenance;
+        private System.Windows.Forms.Panel pnlUnderlineMaintenance;
+
+        private System.Windows.Forms.Button btnEditRates;
+        private System.Windows.Forms.FlowLayoutPanel flpRooms;
     }
 }
