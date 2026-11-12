@@ -10,7 +10,6 @@
     @IDNum NVARCHAR(50)
 AS
 BEGIN
-    SET NOCOUNT ON;
     IF EXISTS (SELECT 1 FROM tblGuests WHERE ContactNo = @ContactNo)
     BEGIN
         SELECT -1 AS NewGuestId;

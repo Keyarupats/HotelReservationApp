@@ -3,7 +3,6 @@
     @Status NVARCHAR(20)
 AS
 BEGIN
-    SET NOCOUNT ON;
     IF @Status NOT IN ('Available', 'Reserved', 'Occupied', 'Cleaning', 'Maintenance')
     BEGIN
         RAISERROR('Invalid room status value.', 16, 1);

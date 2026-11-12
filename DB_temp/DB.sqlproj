@@ -60,35 +60,43 @@
     <Folder Include="dbo\Table" />
     <Folder Include="dbo\PostScript" />
     <Folder Include="dbo\StoredProc" />
+    <Folder Include="dbo\StoredProc\Guests" />
+    <Folder Include="dbo\StoredProc\Rooms" />
+    <Folder Include="dbo\StoredProc\RoomType" />
+    <Folder Include="dbo\StoredProc\Reservation" />
+    <Folder Include="dbo\StoredProc\LogIns" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\StoredProc\spAddGuests.sql" />
-    <Build Include="dbo\StoredProc\spAddRoom.sql" />
-    <Build Include="dbo\StoredProc\spGetAllRooms.sql" />
-    <Build Include="dbo\StoredProc\spGetGuests.sql" />
-    <Build Include="dbo\StoredProc\spValidateUserCredentials.sql" />
     <Build Include="dbo\Table\tblUsers.sql" />
     <Build Include="dbo\Table\tblGuests.sql" />
     <Build Include="dbo\Table\tblRooms.sql" />
-    <PostDeploy Include="dbo\PostScript\SeedUsers.sql" />
+    <None Include="dbo\PostScript\SeedUsers.sql">
+      <AnsiNulls>Off</AnsiNulls>
+    </None>
     <Build Include="dbo\Table\tblRoomTypes.sql" />
     <Build Include="dbo\Table\tblReservations.sql" />
-    <Build Include="dbo\StoredProc\spGetRoomTypes.sql" />
-    <Build Include="dbo\StoredProc\spUpdateRoomTypeRate.sql" />
-    <Build Include="dbo\StoredProc\spUpdateRoomStatus.sql" />
-    <Build Include="dbo\StoredProc\spUpdateGuest.sql" />
-    <Build Include="dbo\StoredProc\spDeleteGuest.sql" />
-    <Build Include="dbo\StoredProc\spCreateReservation.sql" />
-    <Build Include="dbo\StoredProc\spGetReservations.sql" />
-    <Build Include="dbo\StoredProc\spUpdateReservationStatus.sql" />
-    <Build Include="dbo\StoredProc\spGetAvailableRooms_1.sql" />
+    <Build Include="dbo\StoredProc\Guests\spAddGuests.sql" />
+    <Build Include="dbo\StoredProc\Rooms\spAddRoom.sql" />
+    <Build Include="dbo\StoredProc\Rooms\spGetAllRooms.sql" />
+    <Build Include="dbo\StoredProc\Rooms\spGetAvailableRooms.sql" />
+    <Build Include="dbo\StoredProc\Rooms\spUpdateRoomStatus.sql" />
+    <Build Include="dbo\StoredProc\RoomType\spGetRoomTypes.sql" />
+    <Build Include="dbo\StoredProc\RoomType\spUpdateRoomTypeRate.sql" />
+    <Build Include="dbo\StoredProc\Reservation\spCreateReservation.sql" />
+    <Build Include="dbo\StoredProc\Reservation\spGetReservations.sql" />
+    <Build Include="dbo\StoredProc\Reservation\spUpdateReservationStatus.sql" />
+    <Build Include="dbo\StoredProc\LogIns\spValidateUserCredentials.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
-    <None Include="dbo\StoredProc\spGetAvailableRooms.sql" />
-    <None Include="dbo\StoredProc\spSearchGuests.sql" />
     <None Include="dbo\PostScript\SeedRooms.sql" />
     <None Include="dbo\PostScript\SeedGuests.sql" />
-    <None Include="dbo\PostScript\Script_1.PostDeployment.sql" />
+    <PostDeploy Include="dbo\PostScript\Script_1.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\StoredProc\Guests\spDeleteGuest.sql" />
+    <Build Include="dbo\StoredProc\Guests\spGetGuests.sql" />
+    <Build Include="dbo\StoredProc\Guests\spSearchGuests.sql" />
+    <Build Include="dbo\StoredProc\Guests\spUpdateGuest.sql" />
   </ItemGroup>
 </Project>

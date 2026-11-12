@@ -2,7 +2,6 @@ CREATE PROCEDURE spGetGuests
     @IncludeInactive BIT = 0
 AS
 BEGIN
-    SET NOCOUNT ON;
     SELECT 
         GuestId,
         GuestCode,
