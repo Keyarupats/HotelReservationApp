@@ -18,6 +18,9 @@
         private void InitializeComponent()
         {
             pnlLeft = new Panel();
+            label3 = new Label();
+            label2 = new Label();
+            label1 = new Label();
             rdoPM = new RadioButton();
             rdoAM = new RadioButton();
             nudMinute = new NumericUpDown();
@@ -50,9 +53,6 @@
             btnConfirm = new Button();
             dgvReservations = new DataGridView();
             lblTitleRight = new Label();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
             pnlLeft.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudMinute).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudHour).BeginInit();
@@ -101,6 +101,39 @@
             pnlLeft.Name = "pnlLeft";
             pnlLeft.Size = new Size(557, 831);
             pnlLeft.TabIndex = 0;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 7.8F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label3.ForeColor = Color.DimGray;
+            label3.Location = new Point(300, 329);
+            label3.Name = "label3";
+            label3.Size = new Size(46, 17);
+            label3.TabIndex = 29;
+            label3.Text = "[MINS]";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 7.8F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label2.ForeColor = Color.DimGray;
+            label2.Location = new Point(222, 329);
+            label2.Name = "label2";
+            label2.Size = new Size(52, 17);
+            label2.TabIndex = 28;
+            label2.Text = "[HOUR]";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 7.8F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label1.ForeColor = Color.DimGray;
+            label1.Location = new Point(29, 329);
+            label1.Name = "label1";
+            label1.Size = new Size(94, 17);
+            label1.TabIndex = 27;
+            label1.Text = "[MM-DD-YYYY]";
             // 
             // rdoPM
             // 
@@ -166,9 +199,9 @@
             lblCheckInTime.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblCheckInTime.Location = new Point(225, 270);
             lblCheckInTime.Name = "lblCheckInTime";
-            lblCheckInTime.Size = new Size(124, 23);
+            lblCheckInTime.Size = new Size(137, 23);
             lblCheckInTime.TabIndex = 21;
-            lblCheckInTime.Text = "Check-In Time";
+            lblCheckInTime.Text = "Check-In Time *";
             // 
             // btnEditMultiRoom
             // 
@@ -176,7 +209,7 @@
             btnEditMultiRoom.FlatStyle = FlatStyle.Flat;
             btnEditMultiRoom.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnEditMultiRoom.ForeColor = Color.White;
-            btnEditMultiRoom.Location = new Point(352, 507);
+            btnEditMultiRoom.Location = new Point(335, 451);
             btnEditMultiRoom.Name = "btnEditMultiRoom";
             btnEditMultiRoom.Size = new Size(154, 42);
             btnEditMultiRoom.TabIndex = 20;
@@ -191,9 +224,9 @@
             btnSaveReservation.FlatStyle = FlatStyle.Flat;
             btnSaveReservation.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnSaveReservation.ForeColor = Color.White;
-            btnSaveReservation.Location = new Point(46, 728);
+            btnSaveReservation.Location = new Point(36, 694);
             btnSaveReservation.Name = "btnSaveReservation";
-            btnSaveReservation.Size = new Size(460, 60);
+            btnSaveReservation.Size = new Size(453, 60);
             btnSaveReservation.TabIndex = 17;
             btnSaveReservation.Text = "💾 Save Pending Reservation";
             btnSaveReservation.UseVisualStyleBackColor = false;
@@ -204,7 +237,7 @@
             lblTotalAmount.AutoSize = true;
             lblTotalAmount.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblTotalAmount.ForeColor = Color.Green;
-            lblTotalAmount.Location = new Point(44, 653);
+            lblTotalAmount.Location = new Point(44, 623);
             lblTotalAmount.Name = "lblTotalAmount";
             lblTotalAmount.Size = new Size(89, 37);
             lblTotalAmount.TabIndex = 16;
@@ -214,7 +247,7 @@
             // 
             lblTotalAmountHeader.AutoSize = true;
             lblTotalAmountHeader.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblTotalAmountHeader.Location = new Point(46, 623);
+            lblTotalAmountHeader.Location = new Point(46, 593);
             lblTotalAmountHeader.Name = "lblTotalAmountHeader";
             lblTotalAmountHeader.Size = new Size(146, 28);
             lblTotalAmountHeader.TabIndex = 15;
@@ -225,7 +258,7 @@
             lblSecondRoomChoice.AutoSize = true;
             lblSecondRoomChoice.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             lblSecondRoomChoice.ForeColor = Color.FromArgb(2, 132, 199);
-            lblSecondRoomChoice.Location = new Point(29, 538);
+            lblSecondRoomChoice.Location = new Point(36, 524);
             lblSecondRoomChoice.Name = "lblSecondRoomChoice";
             lblSecondRoomChoice.Size = new Size(155, 25);
             lblSecondRoomChoice.TabIndex = 19;
@@ -237,7 +270,7 @@
             lblFirstRoomChoice.AutoSize = true;
             lblFirstRoomChoice.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             lblFirstRoomChoice.ForeColor = Color.FromArgb(2, 132, 199);
-            lblFirstRoomChoice.Location = new Point(29, 496);
+            lblFirstRoomChoice.Location = new Point(36, 499);
             lblFirstRoomChoice.Name = "lblFirstRoomChoice";
             lblFirstRoomChoice.Size = new Size(148, 25);
             lblFirstRoomChoice.TabIndex = 18;
@@ -249,9 +282,9 @@
             cmbAvailableRooms.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbAvailableRooms.Font = new Font("Segoe UI", 11F);
             cmbAvailableRooms.FormattingEnabled = true;
-            cmbAvailableRooms.Location = new Point(29, 491);
+            cmbAvailableRooms.Location = new Point(36, 491);
             cmbAvailableRooms.Name = "cmbAvailableRooms";
-            cmbAvailableRooms.Size = new Size(477, 33);
+            cmbAvailableRooms.Size = new Size(453, 33);
             cmbAvailableRooms.TabIndex = 14;
             cmbAvailableRooms.SelectedIndexChanged += cmbAvailableRooms_SelectedIndexChanged;
             // 
@@ -261,9 +294,9 @@
             lblRoom.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblRoom.Location = new Point(29, 461);
             lblRoom.Name = "lblRoom";
-            lblRoom.Size = new Size(143, 23);
+            lblRoom.Size = new Size(156, 23);
             lblRoom.TabIndex = 13;
-            lblRoom.Text = "Available Rooms";
+            lblRoom.Text = "Available Rooms *";
             // 
             // lblCheckOut
             // 
@@ -282,9 +315,9 @@
             lblCheckOutHeader.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblCheckOutHeader.Location = new Point(29, 369);
             lblCheckOutHeader.Name = "lblCheckOutHeader";
-            lblCheckOutHeader.Size = new Size(254, 23);
+            lblCheckOutHeader.Size = new Size(267, 23);
             lblCheckOutHeader.TabIndex = 11;
-            lblCheckOutHeader.Text = "Check-Out Date/Time (22 Hrs)";
+            lblCheckOutHeader.Text = "Check-Out Date/Time (22 Hrs) *";
             // 
             // dtpCheckIn
             // 
@@ -303,9 +336,9 @@
             lblCheckIn.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblCheckIn.Location = new Point(29, 270);
             lblCheckIn.Name = "lblCheckIn";
-            lblCheckIn.Size = new Size(122, 23);
+            lblCheckIn.Size = new Size(135, 23);
             lblCheckIn.TabIndex = 9;
-            lblCheckIn.Text = "Check-In Date";
+            lblCheckIn.Text = "Check-In Date *";
             // 
             // nudNights
             // 
@@ -326,9 +359,9 @@
             lblNights.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblNights.Location = new Point(331, 178);
             lblNights.Name = "lblNights";
-            lblNights.Size = new Size(63, 23);
+            lblNights.Size = new Size(76, 23);
             lblNights.TabIndex = 7;
-            lblNights.Text = "Nights";
+            lblNights.Text = "Nights *";
             // 
             // nudChildren
             // 
@@ -347,9 +380,9 @@
             lblChildren.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblChildren.Location = new Point(180, 178);
             lblChildren.Name = "lblChildren";
-            lblChildren.Size = new Size(78, 23);
+            lblChildren.Size = new Size(91, 23);
             lblChildren.TabIndex = 5;
-            lblChildren.Text = "Children";
+            lblChildren.Text = "Children *";
             // 
             // nudAdults
             // 
@@ -370,9 +403,9 @@
             lblAdults.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblAdults.Location = new Point(29, 178);
             lblAdults.Name = "lblAdults";
-            lblAdults.Size = new Size(62, 23);
+            lblAdults.Size = new Size(75, 23);
             lblAdults.TabIndex = 3;
-            lblAdults.Text = "Adults";
+            lblAdults.Text = "Adults *";
             // 
             // txtGuestSearch
             // 
@@ -389,9 +422,9 @@
             lblGuestSearch.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblGuestSearch.Location = new Point(29, 90);
             lblGuestSearch.Name = "lblGuestSearch";
-            lblGuestSearch.Size = new Size(235, 23);
+            lblGuestSearch.Size = new Size(248, 23);
             lblGuestSearch.TabIndex = 1;
-            lblGuestSearch.Text = "Search Guest (Code/Mobile)";
+            lblGuestSearch.Text = "Search Guest (Code/Mobile) *";
             // 
             // lblTitleLeft
             // 
@@ -471,39 +504,6 @@
             lblTitleRight.Size = new Size(317, 37);
             lblTitleRight.TabIndex = 0;
             lblTitleRight.Text = "Reservation Dashboard";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 7.8F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.DimGray;
-            label1.Location = new Point(29, 329);
-            label1.Name = "label1";
-            label1.Size = new Size(94, 17);
-            label1.TabIndex = 27;
-            label1.Text = "[MM-DD-YYYY]";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 7.8F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label2.ForeColor = Color.DimGray;
-            label2.Location = new Point(222, 329);
-            label2.Name = "label2";
-            label2.Size = new Size(52, 17);
-            label2.TabIndex = 28;
-            label2.Text = "[HOUR]";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 7.8F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label3.ForeColor = Color.DimGray;
-            label3.Location = new Point(300, 329);
-            label3.Name = "label3";
-            label3.Size = new Size(46, 17);
-            label3.TabIndex = 29;
-            label3.Text = "[MINS]";
             // 
             // ReservationControl
             // 

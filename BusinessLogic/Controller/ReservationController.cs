@@ -107,5 +107,25 @@ namespace HotelReservation.BusinessLogic.Controller
             }
             return allSuccess;
         }
+
+        public int CreateWalkInBooking(ReservationModel reservation)
+        {
+            if (reservation == null || reservation.GuestId <= 0 || reservation.RoomId <= 0 || reservation.Adults < 1)
+            {
+                return 0;
+            }
+
+            reservation.Status = "Occupied";
+            reservation.AmountPaid = 0.00m;
+
+            int newReservationId = reservationRepository.CreateReservation(reservation);
+            if (newReservationId > 0)
+            {
+                reservationRepository.SetActualCheckInToScheduled(newReservationId);
+                roomRepository.UpdateRoomStatus(reservation.RoomId, "Occupied");
+            }
+
+            return newReservationId;
+        }
     }
 }

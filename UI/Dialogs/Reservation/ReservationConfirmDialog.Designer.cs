@@ -96,7 +96,7 @@
             lblTotalValue.AutoSize = true;
             lblTotalValue.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblTotalValue.ForeColor = Color.Green;
-            lblTotalValue.Location = new Point(155, 351);
+            lblTotalValue.Location = new Point(142, 351);
             lblTotalValue.Name = "lblTotalValue";
             lblTotalValue.Size = new Size(80, 35);
             lblTotalValue.TabIndex = 13;
@@ -117,7 +117,7 @@
             // 
             lblGuestsValue.AutoSize = true;
             lblGuestsValue.Font = new Font("Segoe UI", 10F);
-            lblGuestsValue.Location = new Point(156, 328);
+            lblGuestsValue.Location = new Point(143, 328);
             lblGuestsValue.Name = "lblGuestsValue";
             lblGuestsValue.Size = new Size(231, 23);
             lblGuestsValue.TabIndex = 11;
@@ -137,7 +137,7 @@
             // lblRoomsValue
             // 
             lblRoomsValue.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblRoomsValue.Location = new Point(155, 185);
+            lblRoomsValue.Location = new Point(142, 185);
             lblRoomsValue.Name = "lblRoomsValue";
             lblRoomsValue.Size = new Size(272, 143);
             lblRoomsValue.TabIndex = 9;
@@ -158,7 +158,7 @@
             // 
             lblCheckOutValue.AutoSize = true;
             lblCheckOutValue.Font = new Font("Segoe UI", 10F);
-            lblCheckOutValue.Location = new Point(155, 153);
+            lblCheckOutValue.Location = new Point(142, 153);
             lblCheckOutValue.Name = "lblCheckOutValue";
             lblCheckOutValue.Size = new Size(184, 23);
             lblCheckOutValue.TabIndex = 7;
@@ -179,7 +179,7 @@
             // 
             lblCheckInValue.AutoSize = true;
             lblCheckInValue.Font = new Font("Segoe UI", 10F);
-            lblCheckInValue.Location = new Point(155, 130);
+            lblCheckInValue.Location = new Point(142, 130);
             lblCheckInValue.Name = "lblCheckInValue";
             lblCheckInValue.Size = new Size(184, 23);
             lblCheckInValue.TabIndex = 5;
@@ -201,7 +201,7 @@
             lblGuestValue.AutoSize = true;
             lblGuestValue.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             lblGuestValue.ForeColor = Color.FromArgb(2, 132, 199);
-            lblGuestValue.Location = new Point(155, 91);
+            lblGuestValue.Location = new Point(142, 91);
             lblGuestValue.Name = "lblGuestValue";
             lblGuestValue.Size = new Size(116, 25);
             lblGuestValue.TabIndex = 3;
@@ -227,7 +227,7 @@
             lblSubtitle.Name = "lblSubtitle";
             lblSubtitle.Size = new Size(362, 21);
             lblSubtitle.TabIndex = 1;
-            lblSubtitle.Text = "Please review the booking summary before saving:";
+            lblSubtitle.Text = "Please review the booking summary before saving.";
             // 
             // lblHeader
             // 
