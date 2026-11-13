@@ -2,20 +2,19 @@
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using HotelReservation.BusinessLogic.Controller;
+using Model;
 
 namespace UI
 {
     public partial class PaymentUserControl : UserControl
     {
-        // TODO: set to false once the BillingController (SettlePayment / complete check-out) is connected
-        private static readonly bool DemoMode = true;
+        private readonly BillingController billingController = new BillingController();
 
-        // The main form subscribes to these to call the controller and to move between screens
-        public event EventHandler<PaymentRequestEventArgs> SettleRequested;
         public event EventHandler BackToBillRequested;
+        public event EventHandler CheckoutCompleted;
 
-        private int reservationId;
-        private decimal totalDue;
+        private CheckoutSettlementModel currentSettlement;
 
         public PaymentUserControl()
         {
@@ -24,31 +23,20 @@ namespace UI
 
         private void PaymentUserControl_Load(object sender, EventArgs e)
         {
-            if (DesignMode)
-            {
-                return;
-            }
-
+            if (DesignMode) return;
             ApplyMethodState();
-
-            if (DemoMode && reservationId == 0)
-            {
-                SetStay(7, "Carlo Mendoza", "1001 - Economy", "Oct 29, 2026  02:10 PM", "Oct 30, 2026  02:40 PM", "2 adults, 1 child", 3820m);
-            }
         }
 
-        // Call this from the main form after the Billing screen raises ProceedToPaymentRequested
-        public void SetStay(int reservationId, string guestName, string room, string checkIn, string checkOut, string guests, decimal totalDue)
+        public void LoadSettlement(CheckoutSettlementModel settlement)
         {
-            this.reservationId = reservationId;
-            this.totalDue = totalDue;
+            currentSettlement = settlement;
 
-            txtGuestName.Text = guestName;
-            txtRoom.Text = room;
-            txtCheckIn.Text = checkIn;
-            txtCheckOut.Text = checkOut;
-            txtGuests.Text = guests;
-            lblTotalDueValue.Text = Peso(totalDue);
+            txtGuestName.Text = settlement.GuestName;
+            txtRoom.Text = settlement.RoomDisplay;
+            txtCheckIn.Text = settlement.CheckInText;
+            txtCheckOut.Text = settlement.CheckOutText;
+            txtGuests.Text = settlement.GuestsText;
+            lblTotalDueValue.Text = Peso(settlement.GrandTotal);
 
             rdoCash.Checked = true;
             txtCashTendered.Clear();
@@ -89,10 +77,11 @@ namespace UI
 
         private void txtCashTendered_TextChanged(object sender, EventArgs e)
         {
-            decimal tendered;
-            if (TryParseMoney(txtCashTendered.Text, out tendered))
+            if (currentSettlement == null) return;
+
+            if (TryParseMoney(txtCashTendered.Text, out decimal tendered))
             {
-                decimal change = tendered - totalDue;
+                decimal change = tendered - currentSettlement.GrandTotal;
                 if (change >= 0)
                 {
                     txtChangeDue.Text = Peso(change);
@@ -114,29 +103,31 @@ namespace UI
         {
             lblErrorMessage.Text = "";
 
-            PaymentRequestEventArgs args = new PaymentRequestEventArgs();
-            args.ReservationId = reservationId;
-            args.AmountDue = totalDue;
+            if (currentSettlement == null)
+            {
+                lblErrorMessage.Text = "No stay summary loaded.";
+                return;
+            }
 
             if (rdoCash.Checked)
             {
-                decimal tendered;
-                if (TryParseMoney(txtCashTendered.Text, out tendered) == false)
+                if (!TryParseMoney(txtCashTendered.Text, out decimal tendered))
                 {
                     lblErrorMessage.Text = "Enter the cash tendered amount.";
                     txtCashTendered.Focus();
                     return;
                 }
 
-                if (tendered < totalDue)
+                if (tendered < currentSettlement.GrandTotal)
                 {
                     lblErrorMessage.Text = "Cash tendered is less than the total amount due.";
                     txtCashTendered.Focus();
                     return;
                 }
-
-                args.PaymentMethod = "Cash";
-                args.CashTendered = tendered;
+                currentSettlement.PaymentMethod = "Cash";
+                currentSettlement.CashTendered = tendered;
+                currentSettlement.ChangeDue = tendered - currentSettlement.GrandTotal;
+                currentSettlement.ReferenceNumber = null;
             }
             else
             {
@@ -147,28 +138,42 @@ namespace UI
                     txtReferenceNumber.Focus();
                     return;
                 }
-
-                args.PaymentMethod = "Card / QR";
-                args.ReferenceNumber = reference;
-                args.CashTendered = totalDue;
+                currentSettlement.PaymentMethod = "Card/e-Wallet (QR)";
+                currentSettlement.ReferenceNumber = reference;
+                currentSettlement.CashTendered = currentSettlement.GrandTotal;
+                currentSettlement.ChangeDue = 0m;
             }
 
-            if (SettleRequested == null)
+            try
             {
-                MessageBox.Show("Nothing was saved. The payment is not connected yet.\nSubscribe to SettleRequested in the main form and call the controller.",
-                                "Not connected", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+                bool success = billingController.CompleteCheckout(currentSettlement);
+                if (success)
+                {
+                    MessageBox.Show(
+                        $"Check-out settled for {currentSettlement.GuestName}!\n" +
+                        $"Total Paid: {Peso(currentSettlement.GrandTotal)}\n" +
+                        $"Change Due: {Peso(currentSettlement.ChangeDue)}\n" +
+                        $"Room(s) {currentSettlement.RoomDisplay} marked as Cleaning.",
+                        "Check-Out Complete",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
 
-            SettleRequested(this, args);
+                    CheckoutCompleted?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    lblErrorMessage.Text = "Failed to settle check-out in the database.";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error settling payment: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnBackToBill_Click(object sender, EventArgs e)
         {
-            if (BackToBillRequested != null)
-            {
-                BackToBillRequested(this, EventArgs.Empty);
-            }
+            BackToBillRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private static bool TryParseMoney(string text, out decimal value)
@@ -177,18 +182,29 @@ namespace UI
             return decimal.TryParse(cleaned, NumberStyles.Number, CultureInfo.InvariantCulture, out value) && value >= 0;
         }
 
-        private static string Peso(decimal value)
-        {
-            return "₱" + value.ToString("N2");
-        }
-    }
+        private static string Peso(decimal value) => "₱" + value.ToString("N2");
 
-    public class PaymentRequestEventArgs : EventArgs
-    {
-        public int ReservationId { get; set; }
-        public string PaymentMethod { get; set; }
-        public decimal AmountDue { get; set; }
-        public decimal CashTendered { get; set; }
-        public string ReferenceNumber { get; set; }
+        private void txtReferenceNumber_TextChanged(object sender, EventArgs e)
+        {
+            if (rdoCash.Checked) return;
+
+            string reference = txtReferenceNumber.Text.Trim();
+            bool isValidLength = reference.Length == 16;
+
+            if (isValidLength)
+            {
+                txtReferenceNumber.ForeColor = Color.Blue;
+                btnSettlePayment.Enabled = true;
+                btnSettlePayment.BackColor = Color.FromArgb(40, 167, 69); 
+                lblErrorMessage.Text = "";
+            }
+            else
+            {
+                txtReferenceNumber.ForeColor = Color.Red;
+                btnSettlePayment.Enabled = false;
+                btnSettlePayment.BackColor = Color.Gray; 
+                lblErrorMessage.Text = "Reference number must be exactly 16 characters.";
+            }
+        }
     }
 }

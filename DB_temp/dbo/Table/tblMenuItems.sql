@@ -1,0 +1,8 @@
+﻿CREATE TABLE tblMenuItems (
+    MenuItemId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    ItemCode AS ('ITEM-' + RIGHT('000' + CAST(MenuItemId AS VARCHAR(3)), 3)) PERSISTED NOT NULL,
+    ItemName NVARCHAR(100) UNIQUE NOT NULL,
+    Category NVARCHAR(50) NOT NULL DEFAULT 'Food & Beverage',
+    UnitPrice DECIMAL(10,2) NOT NULL CHECK (UnitPrice >= 0),
+    IsAvailable BIT NOT NULL DEFAULT 1
+);
