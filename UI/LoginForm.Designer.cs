@@ -126,6 +126,7 @@
             txtPassword.Text = "Password";
             txtPassword.Enter += txtPassword_Enter;
             txtPassword.Leave += txtPassword_Leave;
+            txtPassword.MouseHover += txtPassword_MouseHover;
             // 
             // panel2
             // 

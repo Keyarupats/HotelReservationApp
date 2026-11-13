@@ -108,7 +108,40 @@ namespace HotelReservation
 
         private void btnClear_Click(object sender, EventArgs e)
         {
+            if (txtPassword.Text == "Password" && txtUsername.Text == "Username")
+            {
+                txtPassword.Text = "";
+                txtPassword.ForeColor = Color.Black;
+                txtPassword.UseSystemPasswordChar = true;
 
+                txtUsername.Text = "";
+                txtUsername.ForeColor = Color.Black;
+                txtUsername.UseSystemPasswordChar = true;
+            }
+            else if (!string.IsNullOrWhiteSpace(txtPassword.Text) && !string.IsNullOrWhiteSpace(txtUsername.Text))
+            {
+                txtPassword.Text = "Password";
+                txtPassword.ForeColor = Color.Gray;
+                txtPassword.UseSystemPasswordChar = false;
+
+                txtUsername.Text = "Username";
+                txtUsername.ForeColor = Color.Gray;
+                txtUsername.UseSystemPasswordChar = false;
+            }
+            else if (string.IsNullOrWhiteSpace(txtPassword.Text) && string.IsNullOrWhiteSpace(txtUsername.Text))
+            {
+                txtPassword.Text = "Password";
+                txtPassword.ForeColor = Color.Gray;
+                txtPassword.UseSystemPasswordChar = false;
+
+                txtUsername.Text = "Username";
+                txtUsername.ForeColor = Color.Gray;
+                txtUsername.UseSystemPasswordChar = false;
+            }
+        }
+
+        private void txtPassword_MouseHover(object sender, EventArgs e)
+        {
         }
     }
 }
