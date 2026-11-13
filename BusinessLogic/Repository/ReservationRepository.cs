@@ -150,24 +150,25 @@ namespace HotelReservation.BusinessLogic.Repository
             }
         }
 
-        public DataTable SearchArrivingReservations(string keyword)
+        public bool CheckInReservation(int reservationId)
         {
-            DataTable dt = new DataTable();
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                // Replace "spSearchArrivingReservations" with your actual stored procedure or SQL query
-                using (SqlCommand cmd = new SqlCommand("spSearchArrivingReservations", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Keyword", string.IsNullOrEmpty(keyword) ? (object)DBNull.Value : keyword);
+                string query = @"
+                    UPDATE tblReservations 
+                    SET Status = 'Occupied',
+                        ActualCheckInDateTime = GETDATE()
+                    WHERE ReservationId = @ReservationId";
 
-                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                    {
-                        adapter.Fill(dt);
-                    }
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.Add("@ReservationId", SqlDbType.Int).Value = reservationId;
+
+                    conn.Open();
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
                 }
             }
-            return dt;
         }
 
         public DataTable GetArrivingReservations(string keyword)
@@ -177,23 +178,34 @@ namespace HotelReservation.BusinessLogic.Repository
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"
-            SELECT 
-                r.ReservationId,
-                g.FirstName + ' ' + g.LastName AS GuestName,
-                g.ContactNo,
-                rt.TypeName AS RoomType,
-                r.CheckInDateTime,
-                r.ExpectedCheckOutDateTime,
-                r.Status
-            FROM tblReservations r
-            INNER JOIN tblGuests g ON r.GuestId = g.GuestId
-            INNER JOIN tblRooms rm ON r.RoomId = rm.RoomId
-            INNER JOIN tblRoomTypes rt ON rm.RoomTypeId = rt.RoomTypeId
-            WHERE (r.Status = 'Confirmed' OR r.Status = 'Pending')
-              AND (@Keyword = '' OR g.ContactNo LIKE '%' + @Keyword + '%' 
-                   OR g.FirstName LIKE '%' + @Keyword + '%' 
-                   OR g.LastName LIKE '%' + @Keyword + '%'
-                   OR CAST(r.ReservationId AS VARCHAR) LIKE '%' + @Keyword + '%')";
+                    SELECT 
+                        r.ReservationId,
+                        r.ReservationCode,
+                        r.GuestId,
+                        g.FirstName + ' ' + g.LastName AS GuestName,
+                        g.ContactNo,
+                        r.RoomId,
+                        rt.TypeName AS RoomType,
+                        r.Adults,
+                        r.Children,
+                        r.TotalAmount,
+                        r.CreatedAt,
+                        r.CheckInDateTime,
+                        r.ExpectedCheckOutDateTime,
+                        r.Status
+                    FROM tblReservations r
+                    INNER JOIN tblGuests g ON r.GuestId = g.GuestId
+                    INNER JOIN tblRooms rm ON r.RoomId = rm.RoomId
+                    INNER JOIN tblRoomTypes rt ON rm.RoomTypeId = rt.RoomTypeId
+                    WHERE r.Status = 'Confirmed'
+                      AND (@Keyword = '' 
+                           OR g.ContactNo LIKE '%' + @Keyword + '%' 
+                           OR g.FirstName LIKE '%' + @Keyword + '%' 
+                           OR g.LastName LIKE '%' + @Keyword + '%'
+                           OR (g.FirstName + ' ' + g.LastName) LIKE '%' + @Keyword + '%'
+                           OR r.ReservationCode LIKE '%' + @Keyword + '%'
+                           OR CAST(r.ReservationId AS VARCHAR) LIKE '%' + @Keyword + '%')
+                    ORDER BY r.CheckInDateTime ASC, r.ReservationId ASC";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
