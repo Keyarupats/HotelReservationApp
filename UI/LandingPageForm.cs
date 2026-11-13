@@ -1,9 +1,7 @@
-﻿using System;
+﻿using HotelReservation;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using UI.Controls;
 
@@ -11,26 +9,87 @@ namespace UI
 {
     public partial class LandingPageForm : Form
     {
+        private Label activeNavLabel = null;
+        private readonly Dictionary<Label, int> restingTopPositions = new Dictionary<Label, int>();
+
+        // Neutral monochrome shadow palette
+        private readonly Color activeShadowBackColor = Color.FromArgb(232, 236, 241);
+        private readonly Color activeTextColor = Color.FromArgb(30, 34, 38);
+        private readonly Color inactiveTextColor = Color.FromArgb(95, 103, 112);
+
         public LandingPageForm()
         {
             InitializeComponent();
         }
 
+        private void LandingPageForm_Load(object sender, EventArgs e)
+        {
+            RegisterNavLabels();
+            SetActiveNav(lblHome);
+            LoadUserContorl(new ReportsUserControl());
+        }
+
+        private void RegisterNavLabels()
+        {
+            Label[] navLabels =
+            {
+                lblHome,
+                lblRoom,
+                lblGuests,
+                lblReservation,
+                lblCheckIn,
+                lblBilling,
+                lblReceipt
+            };
+
+            foreach (Label lbl in navLabels)
+            {
+                if (lbl == null) continue;
+
+                restingTopPositions[lbl] = lbl.Top;
+                lbl.Cursor = Cursors.Hand;
+                lbl.ForeColor = inactiveTextColor;
+                lbl.BackColor = Color.Transparent;
+            }
+        }
+
+        private void SetActiveNav(Label targetLabel)
+        {
+            if (targetLabel == null || activeNavLabel == targetLabel)
+            {
+                return;
+            }
+
+            // Reset all navigation labels to resting shadowless state
+            foreach (var entry in restingTopPositions)
+            {
+                Label lbl = entry.Key;
+                lbl.Top = entry.Value;
+                lbl.BackColor = Color.Transparent;
+                lbl.ForeColor = inactiveTextColor;
+                lbl.Font = new Font(lbl.Font.FontFamily, lbl.Font.Size, FontStyle.Regular);
+                lbl.Cursor = Cursors.Hand;
+            }
+
+            // Lift active label and apply subtle neutral shadow fill
+            if (restingTopPositions.TryGetValue(targetLabel, out int baseTop))
+            {
+                targetLabel.Top = baseTop - 4;
+            }
+
+            targetLabel.BackColor = activeShadowBackColor;
+            targetLabel.ForeColor = activeTextColor;
+            targetLabel.Font = new Font(targetLabel.Font.FontFamily, targetLabel.Font.Size, FontStyle.Bold);
+            targetLabel.Cursor = Cursors.Default;
+
+            activeNavLabel = targetLabel;
+        }
+
         private void btnLogout_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-
-        private void lblRoom_Click(object sender, EventArgs e)
-        {
-            LoadUserContorl(new RoomsUserControl());
-        }
-
-        private void LandingPageForm_Load(object sender, EventArgs e)
-        {
-            LoadUserContorl(new RoomsUserControl());
-
+            LoginForm loginForm = new LoginForm();
+            loginForm.Show();
         }
 
         private void LoadUserContorl(UserControl uc)
@@ -41,60 +100,53 @@ namespace UI
             uc.BringToFront();
         }
 
+        private void lblHome_Click(object sender, EventArgs e)
+        {
+            if (activeNavLabel == lblHome) return;
+            SetActiveNav(lblHome);
+            LoadUserContorl(new ReportsUserControl());
+        }
+
+        private void lblRoom_Click(object sender, EventArgs e)
+        {
+            if (activeNavLabel == lblRoom) return;
+            SetActiveNav(lblRoom);
+            LoadUserContorl(new RoomsUserControl());
+        }
+
         private void lblGuests_Click(object sender, EventArgs e)
         {
+            if (activeNavLabel == lblGuests) return;
+            SetActiveNav(lblGuests);
             LoadUserContorl(new GuestDirectoryControl());
         }
 
         private void lblReservation_Click(object sender, EventArgs e)
         {
+            if (activeNavLabel == lblReservation) return;
+            SetActiveNav(lblReservation);
             LoadUserContorl(new ReservationControl());
         }
 
         private void lblCheckIn_Click(object sender, EventArgs e)
         {
+            if (activeNavLabel == lblCheckIn) return;
+            SetActiveNav(lblCheckIn);
             LoadUserContorl(new CheckInContainer());
         }
 
         private void lblBilling_Click(object sender, EventArgs e)
         {
-            BillingUserControl billingControl = new BillingUserControl();
-
-            billingControl.ProceedToPaymentRequested += (sender, e) =>
-            {
-                ShowPaymentScreen(e.ReservationId, e.GrandTotal);
-            };
-
-            pnlContent.Controls.Clear();
-            pnlContent.Controls.Add(billingControl);
-            billingControl.Dock = DockStyle.Fill;
+            if (activeNavLabel == lblBilling) return;
+            SetActiveNav(lblBilling);
+            LoadUserContorl(new BillingUserControl());
         }
 
-        public void ShowPaymentScreen(int reservationId, decimal grandTotal)
+        private void lblReceipt_Click(object sender, EventArgs e)
         {
-            PaymentUserControl paymentControl = new PaymentUserControl();
-
-            paymentControl.SetStay(
-                reservationId,
-                "Guest Name",  
-                "Room Info",   
-                DateTime.Now.ToString("MMM dd, yyyy hh:mm tt"),
-                DateTime.Now.AddHours(22).ToString("MMM dd, yyyy hh:mm tt"),
-                "1 Guest",
-                grandTotal
-            );
-
-            paymentControl.BackToBillRequested += (s, args) =>
-            {
-                pnlContent.Controls.Clear();
-                BillingUserControl billing = new BillingUserControl();
-                pnlContent.Controls.Add(billing);
-                billing.Dock = DockStyle.Fill;
-            };
-
-            pnlContent.Controls.Clear();
-            pnlContent.Controls.Add(paymentControl);
-            paymentControl.Dock = DockStyle.Fill;
+            if (activeNavLabel == lblReceipt) return;
+            SetActiveNav(lblReceipt);
+            LoadUserContorl(new ReceiptUserControl());
         }
     }
 }
