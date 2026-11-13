@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace UI.Controls
 {
@@ -27,7 +26,12 @@ namespace UI.Controls
             lblEndDate = new Label();
             dtpEndDate = new DateTimePicker();
             btnFilter = new Button();
+            btnPresetToday = new Button();
+            btnPresetMonth = new Button();
+            btnPresetYear = new Button();
+            btnExportCsv = new Button();
             lblErrorMessage = new Label();
+            tlpKpiCards = new TableLayoutPanel();
             pnlCardRevenue = new Panel();
             pnlAccentRevenue = new Panel();
             lblRevenueTitle = new Label();
@@ -46,17 +50,19 @@ namespace UI.Controls
             lblFootnote = new Label();
             ((System.ComponentModel.ISupportInitialize)(dgvRevenueByType)).BeginInit();
             pnlFilter.SuspendLayout();
+            tlpKpiCards.SuspendLayout();
             pnlCardRevenue.SuspendLayout();
-            pnlAccentRevenue.SuspendLayout();
             pnlCardStays.SuspendLayout();
-            pnlAccentStays.SuspendLayout();
             pnlCardOccupancy.SuspendLayout();
-            pnlAccentOccupancy.SuspendLayout();
             pnlBreakdown.SuspendLayout();
             SuspendLayout();
             // 
             // pnlFilter
             // 
+            pnlFilter.Controls.Add(btnExportCsv);
+            pnlFilter.Controls.Add(btnPresetYear);
+            pnlFilter.Controls.Add(btnPresetMonth);
+            pnlFilter.Controls.Add(btnPresetToday);
             pnlFilter.Controls.Add(lblErrorMessage);
             pnlFilter.Controls.Add(btnFilter);
             pnlFilter.Controls.Add(dtpEndDate);
@@ -84,9 +90,9 @@ namespace UI.Controls
             // 
             // dtpStartDate
             // 
-            dtpStartDate.Location = new Point(130, 22);
+            dtpStartDate.Location = new Point(125, 22);
             dtpStartDate.Name = "dtpStartDate";
-            dtpStartDate.Size = new Size(200, 32);
+            dtpStartDate.Size = new Size(185, 32);
             dtpStartDate.Font = new Font("Segoe UI", 11F);
             dtpStartDate.Format = DateTimePickerFormat.Custom;
             dtpStartDate.CustomFormat = "MMM dd, yyyy";
@@ -94,7 +100,7 @@ namespace UI.Controls
             // 
             // lblEndDate
             // 
-            lblEndDate.Location = new Point(370, 28);
+            lblEndDate.Location = new Point(335, 28);
             lblEndDate.Name = "lblEndDate";
             lblEndDate.Text = "End Date";
             lblEndDate.ForeColor = Color.FromArgb(44, 62, 80);
@@ -105,9 +111,9 @@ namespace UI.Controls
             // 
             // dtpEndDate
             // 
-            dtpEndDate.Location = new Point(460, 22);
+            dtpEndDate.Location = new Point(425, 22);
             dtpEndDate.Name = "dtpEndDate";
-            dtpEndDate.Size = new Size(200, 32);
+            dtpEndDate.Size = new Size(185, 32);
             dtpEndDate.Font = new Font("Segoe UI", 11F);
             dtpEndDate.Format = DateTimePickerFormat.Custom;
             dtpEndDate.CustomFormat = "MMM dd, yyyy";
@@ -115,9 +121,9 @@ namespace UI.Controls
             // 
             // btnFilter
             // 
-            btnFilter.Location = new Point(700, 20);
+            btnFilter.Location = new Point(635, 20);
             btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(170, 38);
+            btnFilter.Size = new Size(145, 38);
             btnFilter.Text = "Filter Report";
             btnFilter.BackColor = Color.FromArgb(0, 120, 215);
             btnFilter.ForeColor = Color.White;
@@ -129,36 +135,119 @@ namespace UI.Controls
             btnFilter.TabIndex = 4;
             btnFilter.Click += btnFilter_Click;
             // 
+            // btnPresetToday
+            // 
+            btnPresetToday.Location = new Point(800, 22);
+            btnPresetToday.Name = "btnPresetToday";
+            btnPresetToday.Size = new Size(85, 34);
+            btnPresetToday.Text = "Today";
+            btnPresetToday.BackColor = Color.FromArgb(241, 243, 245);
+            btnPresetToday.ForeColor = Color.FromArgb(44, 62, 80);
+            btnPresetToday.FlatStyle = FlatStyle.Flat;
+            btnPresetToday.Font = new Font("Segoe UI", 9.5F);
+            btnPresetToday.UseVisualStyleBackColor = false;
+            btnPresetToday.Cursor = Cursors.Hand;
+            btnPresetToday.FlatAppearance.BorderColor = Color.FromArgb(206, 212, 218);
+            btnPresetToday.TabIndex = 5;
+            btnPresetToday.Click += btnPresetToday_Click;
+            // 
+            // btnPresetMonth
+            // 
+            btnPresetMonth.Location = new Point(893, 22);
+            btnPresetMonth.Name = "btnPresetMonth";
+            btnPresetMonth.Size = new Size(105, 34);
+            btnPresetMonth.Text = "This Month";
+            btnPresetMonth.BackColor = Color.FromArgb(241, 243, 245);
+            btnPresetMonth.ForeColor = Color.FromArgb(44, 62, 80);
+            btnPresetMonth.FlatStyle = FlatStyle.Flat;
+            btnPresetMonth.Font = new Font("Segoe UI", 9.5F);
+            btnPresetMonth.UseVisualStyleBackColor = false;
+            btnPresetMonth.Cursor = Cursors.Hand;
+            btnPresetMonth.FlatAppearance.BorderColor = Color.FromArgb(206, 212, 218);
+            btnPresetMonth.TabIndex = 6;
+            btnPresetMonth.Click += btnPresetMonth_Click;
+            // 
+            // btnPresetYear
+            // 
+            btnPresetYear.Location = new Point(1006, 22);
+            btnPresetYear.Name = "btnPresetYear";
+            btnPresetYear.Size = new Size(95, 34);
+            btnPresetYear.Text = "This Year";
+            btnPresetYear.BackColor = Color.FromArgb(241, 243, 245);
+            btnPresetYear.ForeColor = Color.FromArgb(44, 62, 80);
+            btnPresetYear.FlatStyle = FlatStyle.Flat;
+            btnPresetYear.Font = new Font("Segoe UI", 9.5F);
+            btnPresetYear.UseVisualStyleBackColor = false;
+            btnPresetYear.Cursor = Cursors.Hand;
+            btnPresetYear.FlatAppearance.BorderColor = Color.FromArgb(206, 212, 218);
+            btnPresetYear.TabIndex = 7;
+            btnPresetYear.Click += btnPresetYear_Click;
+            // 
+            // btnExportCsv
+            // 
+            btnExportCsv.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnExportCsv.Location = new Point(1706, 20);
+            btnExportCsv.Name = "btnExportCsv";
+            btnExportCsv.Size = new Size(140, 38);
+            btnExportCsv.Text = "Export CSV";
+            btnExportCsv.BackColor = Color.FromArgb(40, 167, 69);
+            btnExportCsv.ForeColor = Color.White;
+            btnExportCsv.FlatStyle = FlatStyle.Flat;
+            btnExportCsv.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            btnExportCsv.UseVisualStyleBackColor = false;
+            btnExportCsv.Cursor = Cursors.Hand;
+            btnExportCsv.FlatAppearance.BorderSize = 0;
+            btnExportCsv.TabIndex = 9;
+            btnExportCsv.Click += btnExportCsv_Click;
+            // 
             // lblErrorMessage
             // 
-            lblErrorMessage.Location = new Point(900, 28);
+            lblErrorMessage.Location = new Point(1120, 26);
             lblErrorMessage.Name = "lblErrorMessage";
-            lblErrorMessage.Size = new Size(700, 28);
+            lblErrorMessage.Size = new Size(560, 28);
             lblErrorMessage.Text = "";
             lblErrorMessage.ForeColor = Color.Red;
             lblErrorMessage.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
             lblErrorMessage.AutoSize = false;
             lblErrorMessage.UseMnemonic = false;
             lblErrorMessage.TextAlign = ContentAlignment.MiddleLeft;
-            lblErrorMessage.TabIndex = 5;
+            lblErrorMessage.TabIndex = 8;
+            // 
+            // tlpKpiCards
+            // 
+            tlpKpiCards.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            tlpKpiCards.ColumnCount = 3;
+            tlpKpiCards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
+            tlpKpiCards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
+            tlpKpiCards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33333F));
+            tlpKpiCards.Controls.Add(pnlCardRevenue, 0, 0);
+            tlpKpiCards.Controls.Add(pnlCardStays, 1, 0);
+            tlpKpiCards.Controls.Add(pnlCardOccupancy, 2, 0);
+            tlpKpiCards.Location = new Point(16, 128);
+            tlpKpiCards.Margin = new Padding(0);
+            tlpKpiCards.Name = "tlpKpiCards";
+            tlpKpiCards.RowCount = 1;
+            tlpKpiCards.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlpKpiCards.Size = new Size(1888, 162);
+            tlpKpiCards.TabIndex = 1;
             // 
             // pnlCardRevenue
             // 
             pnlCardRevenue.Controls.Add(lblRevenueValue);
             pnlCardRevenue.Controls.Add(lblRevenueTitle);
             pnlCardRevenue.Controls.Add(pnlAccentRevenue);
-            pnlCardRevenue.Location = new Point(24, 132);
+            pnlCardRevenue.Dock = DockStyle.Fill;
+            pnlCardRevenue.Margin = new Padding(8, 4, 12, 4);
             pnlCardRevenue.Name = "pnlCardRevenue";
-            pnlCardRevenue.Size = new Size(608, 150);
             pnlCardRevenue.BackColor = Color.White;
             pnlCardRevenue.BorderStyle = BorderStyle.FixedSingle;
-            pnlCardRevenue.TabIndex = 1;
+            pnlCardRevenue.TabIndex = 0;
             // 
             // pnlAccentRevenue
             // 
-            pnlAccentRevenue.Location = new Point(0, 0);
+            pnlAccentRevenue.Dock = DockStyle.Left;
             pnlAccentRevenue.Name = "pnlAccentRevenue";
-            pnlAccentRevenue.Size = new Size(10, 148);
+            pnlAccentRevenue.Size = new Size(10, 152);
             pnlAccentRevenue.BackColor = Color.FromArgb(40, 167, 69);
             pnlAccentRevenue.TabIndex = 0;
             // 
@@ -189,18 +278,18 @@ namespace UI.Controls
             pnlCardStays.Controls.Add(lblStaysValue);
             pnlCardStays.Controls.Add(lblStaysTitle);
             pnlCardStays.Controls.Add(pnlAccentStays);
-            pnlCardStays.Location = new Point(656, 132);
+            pnlCardStays.Dock = DockStyle.Fill;
+            pnlCardStays.Margin = new Padding(10, 4, 10, 4);
             pnlCardStays.Name = "pnlCardStays";
-            pnlCardStays.Size = new Size(608, 150);
             pnlCardStays.BackColor = Color.White;
             pnlCardStays.BorderStyle = BorderStyle.FixedSingle;
-            pnlCardStays.TabIndex = 2;
+            pnlCardStays.TabIndex = 1;
             // 
             // pnlAccentStays
             // 
-            pnlAccentStays.Location = new Point(0, 0);
+            pnlAccentStays.Dock = DockStyle.Left;
             pnlAccentStays.Name = "pnlAccentStays";
-            pnlAccentStays.Size = new Size(10, 148);
+            pnlAccentStays.Size = new Size(10, 152);
             pnlAccentStays.BackColor = Color.FromArgb(0, 120, 215);
             pnlAccentStays.TabIndex = 0;
             // 
@@ -231,18 +320,18 @@ namespace UI.Controls
             pnlCardOccupancy.Controls.Add(lblOccupancyValue);
             pnlCardOccupancy.Controls.Add(lblOccupancyTitle);
             pnlCardOccupancy.Controls.Add(pnlAccentOccupancy);
-            pnlCardOccupancy.Location = new Point(1288, 132);
+            pnlCardOccupancy.Dock = DockStyle.Fill;
+            pnlCardOccupancy.Margin = new Padding(12, 4, 8, 4);
             pnlCardOccupancy.Name = "pnlCardOccupancy";
-            pnlCardOccupancy.Size = new Size(608, 150);
             pnlCardOccupancy.BackColor = Color.White;
             pnlCardOccupancy.BorderStyle = BorderStyle.FixedSingle;
-            pnlCardOccupancy.TabIndex = 3;
+            pnlCardOccupancy.TabIndex = 2;
             // 
             // pnlAccentOccupancy
             // 
-            pnlAccentOccupancy.Location = new Point(0, 0);
+            pnlAccentOccupancy.Dock = DockStyle.Left;
             pnlAccentOccupancy.Name = "pnlAccentOccupancy";
-            pnlAccentOccupancy.Size = new Size(10, 148);
+            pnlAccentOccupancy.Size = new Size(10, 152);
             pnlAccentOccupancy.BackColor = Color.FromArgb(142, 68, 173);
             pnlAccentOccupancy.TabIndex = 0;
             // 
@@ -279,7 +368,7 @@ namespace UI.Controls
             pnlBreakdown.BackColor = Color.White;
             pnlBreakdown.BorderStyle = BorderStyle.FixedSingle;
             pnlBreakdown.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pnlBreakdown.TabIndex = 4;
+            pnlBreakdown.TabIndex = 2;
             // 
             // lblBreakdownTitle
             // 
@@ -309,6 +398,7 @@ namespace UI.Controls
             dgvRevenueByType.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvRevenueByType.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvRevenueByType.TabIndex = 1;
+            dgvRevenueByType.DataBindingComplete += dgvRevenueByType_DataBindingComplete;
             // 
             // lblFootnote
             // 
@@ -329,27 +419,20 @@ namespace UI.Controls
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.WhiteSmoke;
             Controls.Add(pnlBreakdown);
-            Controls.Add(pnlCardOccupancy);
-            Controls.Add(pnlCardStays);
-            Controls.Add(pnlCardRevenue);
+            Controls.Add(tlpKpiCards);
             Controls.Add(pnlFilter);
             Name = "ReportsUserControl";
             Size = new Size(1920, 881);
             Load += ReportsUserControl_Load;
             pnlFilter.ResumeLayout(false);
             pnlFilter.PerformLayout();
+            tlpKpiCards.ResumeLayout(false);
             pnlCardRevenue.ResumeLayout(false);
             pnlCardRevenue.PerformLayout();
-            pnlAccentRevenue.ResumeLayout(false);
-            pnlAccentRevenue.PerformLayout();
             pnlCardStays.ResumeLayout(false);
             pnlCardStays.PerformLayout();
-            pnlAccentStays.ResumeLayout(false);
-            pnlAccentStays.PerformLayout();
             pnlCardOccupancy.ResumeLayout(false);
             pnlCardOccupancy.PerformLayout();
-            pnlAccentOccupancy.ResumeLayout(false);
-            pnlAccentOccupancy.PerformLayout();
             pnlBreakdown.ResumeLayout(false);
             pnlBreakdown.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(dgvRevenueByType)).EndInit();
@@ -364,7 +447,12 @@ namespace UI.Controls
         private System.Windows.Forms.Label lblEndDate;
         private System.Windows.Forms.DateTimePicker dtpEndDate;
         private System.Windows.Forms.Button btnFilter;
+        private System.Windows.Forms.Button btnPresetToday;
+        private System.Windows.Forms.Button btnPresetMonth;
+        private System.Windows.Forms.Button btnPresetYear;
+        private System.Windows.Forms.Button btnExportCsv;
         private System.Windows.Forms.Label lblErrorMessage;
+        private System.Windows.Forms.TableLayoutPanel tlpKpiCards;
         private System.Windows.Forms.Panel pnlCardRevenue;
         private System.Windows.Forms.Panel pnlAccentRevenue;
         private System.Windows.Forms.Label lblRevenueTitle;

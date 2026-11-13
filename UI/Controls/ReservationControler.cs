@@ -265,10 +265,11 @@ namespace UI.Controls
                 var displayList = availableRooms.Select(r => new
                 {
                     r.RoomId,
+                    r.TypeName,
                     r.RatePerAdult,
                     r.MaxAdults,
                     r.MaxChildren,
-                    DisplayText = $"Room {r.RoomId} - {r.TypeName} (Max {r.MaxAdults}A / {r.MaxChildren}C) - ₱{r.RatePerAdult:N2}/adult"
+                    DisplayText = $"Room {r.RoomId} - {r.TypeName} - ₱{r.RatePerAdult:N2}/adult"
                 }).ToList();
 
                 cmbAvailableRooms.DataSource = null;

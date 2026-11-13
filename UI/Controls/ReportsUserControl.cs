@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using HotelReservation.BusinessLogic.Controller;
 using Model;
@@ -9,12 +11,12 @@ namespace UI.Controls
 {
     public partial class ReportsUserControl : UserControl
     {
-        // TODO: set to false and delete the demo data once the report controller is connected
-        private static readonly bool DemoMode = true;
+        private readonly ReportController reportController;
 
         public ReportsUserControl()
         {
             InitializeComponent();
+            reportController = new ReportController();
             StyleGrid(dgvRevenueByType);
         }
 
@@ -25,12 +27,9 @@ namespace UI.Controls
                 return;
             }
 
-            // Reports are for the Admin only
             if (UserSession.CurrentRole != "Admin")
             {
-                btnFilter.Enabled = false;
-                dtpStartDate.Enabled = false;
-                dtpEndDate.Enabled = false;
+                SetFilterControlsEnabled(false);
                 lblErrorMessage.Text = "Reports are available to the Admin only.";
                 return;
             }
@@ -42,8 +41,43 @@ namespace UI.Controls
             LoadReport();
         }
 
+        private void SetFilterControlsEnabled(bool enabled)
+        {
+            btnFilter.Enabled = enabled;
+            dtpStartDate.Enabled = enabled;
+            dtpEndDate.Enabled = enabled;
+            btnPresetToday.Enabled = enabled;
+            btnPresetMonth.Enabled = enabled;
+            btnPresetYear.Enabled = enabled;
+            btnExportCsv.Enabled = enabled;
+        }
+
         private void btnFilter_Click(object sender, EventArgs e)
         {
+            LoadReport();
+        }
+
+        private void btnPresetToday_Click(object sender, EventArgs e)
+        {
+            DateTime today = DateTime.Today;
+            dtpStartDate.Value = today;
+            dtpEndDate.Value = today;
+            LoadReport();
+        }
+
+        private void btnPresetMonth_Click(object sender, EventArgs e)
+        {
+            DateTime today = DateTime.Today;
+            dtpStartDate.Value = new DateTime(today.Year, today.Month, 1);
+            dtpEndDate.Value = today;
+            LoadReport();
+        }
+
+        private void btnPresetYear_Click(object sender, EventArgs e)
+        {
+            DateTime today = DateTime.Today;
+            dtpStartDate.Value = new DateTime(today.Year, 1, 1);
+            dtpEndDate.Value = today;
             LoadReport();
         }
 
@@ -60,41 +94,122 @@ namespace UI.Controls
                 return;
             }
 
-            // TODO: replace the demo numbers with the controller call for the selected range:
-            //   total revenue, number of completed stays, occupancy, and revenue and stays per room type
-            DataTable table = new DataTable();
-            table.Columns.Add("Room Type", typeof(string));
-            table.Columns.Add("Stays Completed", typeof(int));
-            table.Columns.Add("Total Generated Revenue", typeof(decimal));
-
-            table.Rows.Add("Economy", 14, 71800m);
-            table.Rows.Add("Deluxe", 7, 56000m);
-            table.Rows.Add("Suite", 3, 58600m);
-
-            int totalStays = 0;
-            decimal totalRevenue = 0m;
-            foreach (DataRow row in table.Rows)
+            try
             {
-                totalStays += Convert.ToInt32(row["Stays Completed"]);
-                totalRevenue += Convert.ToDecimal(row["Total Generated Revenue"]);
+                ReportSummaryModel summary = reportController.GetReportSummary(start, end);
+
+                DataTable table = new DataTable();
+                table.Columns.Add("Room Type", typeof(string));
+                table.Columns.Add("Stays Completed", typeof(int));
+                table.Columns.Add("Total Generated Revenue", typeof(decimal));
+
+                foreach (var item in summary.BreakdownByRoomType)
+                {
+                    table.Rows.Add(item.RoomType, item.StaysCompleted, item.TotalGeneratedRevenue);
+                }
+
+                table.Rows.Add("TOTAL", summary.CompletedStays, summary.TotalRevenue);
+
+                dgvRevenueByType.DataSource = table;
+
+                lblRevenueValue.Text = "₱" + summary.TotalRevenue.ToString("N2");
+                lblStaysValue.Text = summary.CompletedStays.ToString();
+                lblOccupancyValue.Text = summary.OccupancyRate.ToString("0.##") + "%";
+
+                lblFootnote.Text = $"Showing {start:MMM dd, yyyy} to {end:MMM dd, yyyy}";
+            }
+            catch (Exception ex)
+            {
+                lblErrorMessage.Text = "Failed to load report: " + ex.Message;
+            }
+        }
+
+        private void dgvRevenueByType_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            if (dgvRevenueByType.Columns.Contains("Total Generated Revenue"))
+            {
+                dgvRevenueByType.Columns["Total Generated Revenue"].DefaultCellStyle.Format = "₱#,##0.00";
+                dgvRevenueByType.Columns["Total Generated Revenue"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             }
 
-            table.Rows.Add("TOTAL", totalStays, totalRevenue);
+            foreach (DataGridViewColumn col in dgvRevenueByType.Columns)
+            {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
 
-            dgvRevenueByType.DataSource = table;
-            dgvRevenueByType.Columns["Total Generated Revenue"].DefaultCellStyle.Format = "₱#,##0.00";
-            dgvRevenueByType.Columns["Total Generated Revenue"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            foreach (DataGridViewRow row in dgvRevenueByType.Rows)
+            {
+                if (row.Cells["Room Type"].Value?.ToString() == "TOTAL")
+                {
+                    row.DefaultCellStyle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(234, 247, 240);
+                    row.DefaultCellStyle.SelectionBackColor = Color.FromArgb(212, 239, 223);
+                    row.DefaultCellStyle.SelectionForeColor = Color.FromArgb(30, 130, 76);
+                }
+            }
+        }
 
-            DataGridViewRow totalRow = dgvRevenueByType.Rows[dgvRevenueByType.Rows.Count - 1];
-            totalRow.DefaultCellStyle.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            totalRow.DefaultCellStyle.BackColor = Color.FromArgb(234, 247, 240);
+        private void btnExportCsv_Click(object sender, EventArgs e)
+        {
+            if (dgvRevenueByType.Rows.Count == 0)
+            {
+                lblErrorMessage.Text = "No report data available to export.";
+                return;
+            }
 
-            lblRevenueValue.Text = "₱" + totalRevenue.ToString("N2");
-            lblStaysValue.Text = totalStays.ToString();
-            lblOccupancyValue.Text = "41%";
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "CSV Files (*.csv)|*.csv";
+                sfd.FileName = $"HotelReport_{dtpStartDate.Value:yyyyMMdd}_to_{dtpEndDate.Value:yyyyMMdd}.csv";
 
-            lblFootnote.Text = "Showing " + start.ToString("MMM dd, yyyy") + " to " + end.ToString("MMM dd, yyyy") +
-                               (DemoMode ? "  (demo numbers)" : "");
+                if (sfd.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine($"Hotel Revenue & Occupancy Report ({dtpStartDate.Value:MMM dd, yyyy} - {dtpEndDate.Value:MMM dd, yyyy})");
+                    sb.AppendLine($"Total Revenue,{lblRevenueValue.Text.Replace(",", "")}");
+                    sb.AppendLine($"Completed Stays,{lblStaysValue.Text}");
+                    sb.AppendLine($"Occupancy Rate,{lblOccupancyValue.Text}");
+                    sb.AppendLine();
+
+                    string[] headers = new string[dgvRevenueByType.Columns.Count];
+                    for (int i = 0; i < dgvRevenueByType.Columns.Count; i++)
+                    {
+                        headers[i] = EscapeCsv(dgvRevenueByType.Columns[i].HeaderText);
+                    }
+                    sb.AppendLine(string.Join(",", headers));
+
+                    foreach (DataGridViewRow row in dgvRevenueByType.Rows)
+                    {
+                        string[] cells = new string[dgvRevenueByType.Columns.Count];
+                        for (int i = 0; i < dgvRevenueByType.Columns.Count; i++)
+                        {
+                            cells[i] = EscapeCsv(row.Cells[i].Value?.ToString() ?? "");
+                        }
+                        sb.AppendLine(string.Join(",", cells));
+                    }
+
+                    File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                    MessageBox.Show("Report exported successfully.", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    lblErrorMessage.Text = "Export failed: " + ex.Message;
+                }
+            }
+        }
+
+        private static string EscapeCsv(string value)
+        {
+            if (value.Contains(",") || value.Contains("\"") || value.Contains("\n"))
+            {
+                return "\"" + value.Replace("\"", "\"\"") + "\"";
+            }
+            return value;
         }
 
         private static void StyleGrid(DataGridView grid)

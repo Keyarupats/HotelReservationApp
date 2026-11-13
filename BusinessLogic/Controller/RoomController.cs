@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using HotelReservation.BusinessLogic.Repository;
+﻿using HotelReservation.BusinessLogic.Repository;
+using Microsoft.Data.SqlClient;
 using Model;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace HotelReservation.BusinessLogic.Controller
 {
@@ -55,6 +57,38 @@ namespace HotelReservation.BusinessLogic.Controller
             return roomRepository.UpdateTierRate(typeName, newRate);
         }
 
+        public List<RoomModel> GetRoomsByDate(DateTime targetDate)
+        {
+            List<RoomModel> rooms = new List<RoomModel>();
+
+            using (SqlConnection conn = new SqlConnection(DatabaseConfig.ConnectionString))
+            using (SqlCommand cmd = new SqlCommand("spGetRoomsByDate", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@TargetDate", SqlDbType.Date).Value = targetDate.Date;
+
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        rooms.Add(new RoomModel
+                        {
+                            RoomId = Convert.ToInt32(reader["RoomId"]),
+                            RoomTypeId = Convert.ToInt32(reader["RoomTypeId"]),
+                            TypeName = reader["TypeName"].ToString(),
+                            BedCount = Convert.ToInt32(reader["BedCount"]),
+                            MaxAdults = Convert.ToInt32(reader["MaxAdults"]),
+                            MaxChildren = Convert.ToInt32(reader["MaxChildren"]),
+                            RatePerAdult = Convert.ToDecimal(reader["RatePerAdult"]),
+                            Status = reader["Status"].ToString()
+                        });
+                    }
+                }
+            }
+
+            return rooms;
+        }
 
     }
 }
