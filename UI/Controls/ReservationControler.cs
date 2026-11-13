@@ -3,6 +3,7 @@ using HotelReservation.BusinessLogic.Controller;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using UI.Dialogs.Reservation;
@@ -14,12 +15,17 @@ namespace UI.Controls
         private ReservationController reservationController;
         private RoomController roomController;
         private GuestController guestController;
+
         private int resolvedGuestId = 0;
+        private string resolvedGuestDisplay = string.Empty;
+
         private bool isMultiRoomMode = false;
         private int multiRoom1Id = 0;
         private decimal multiRoom1Rate = 0m;
+        private string multiRoom1Summary = string.Empty;
         private int multiRoom2Id = 0;
         private decimal multiRoom2Rate = 0m;
+        private string multiRoom2Summary = string.Empty;
 
         public ReservationControl()
         {
@@ -31,7 +37,7 @@ namespace UI.Controls
 
         private void ReservationControl_Load(object sender, EventArgs e)
         {
-            dtpCheckIn.Value = DateTime.Now;
+            SetInitialCheckInTime(DateTime.Now);
             if (nudNights.Value < 1) nudNights.Value = 1;
 
             ResetFormState();
@@ -40,11 +46,37 @@ namespace UI.Controls
             LoadReservationsGrid();
         }
 
+        private void SetInitialCheckInTime(DateTime dt)
+        {
+            dtpCheckIn.Value = dt.Date;
+            int hour12 = dt.Hour % 12;
+            if (hour12 == 0) hour12 = 12;
+
+            nudHour.Value = hour12;
+            nudMinute.Value = dt.Minute;
+            rdoPM.Checked = dt.Hour >= 12;
+            rdoAM.Checked = dt.Hour < 12;
+        }
+
+        private DateTime GetCombinedCheckInDateTime()
+        {
+            DateTime datePart = dtpCheckIn.Value.Date;
+            int hour = (int)nudHour.Value;
+            int minute = (int)nudMinute.Value;
+
+            if (rdoPM.Checked && hour < 12) hour += 12;
+            if (rdoAM.Checked && hour == 12) hour = 0;
+
+            return datePart.AddHours(hour).AddMinutes(minute);
+        }
+
         private void ResetFormState()
         {
             isMultiRoomMode = false;
             multiRoom1Id = 0;
             multiRoom2Id = 0;
+            multiRoom1Summary = string.Empty;
+            multiRoom2Summary = string.Empty;
 
             cmbAvailableRooms.Visible = true;
             lblFirstRoomChoice.Visible = false;
@@ -105,17 +137,7 @@ namespace UI.Controls
             int children = (int)nudChildren.Value;
             int adults = (int)nudAdults.Value;
 
-            if (children > 4)
-            {
-                int extraChildren = children - 4;
-                nudAdults.Maximum = Math.Max(1, 8 - extraChildren);
-                adults = (int)nudAdults.Value;
-            }
-            else
-            {
-                nudAdults.Maximum = 8;
-            }
-            bool triggersMultiRoom = (adults + children >= 12) || (children > 4 && nudAdults.Maximum <= 5);
+            bool triggersMultiRoom = (children > 4) || (adults + children >= 12);
 
             if (triggersMultiRoom && !isMultiRoomMode)
             {
@@ -125,6 +147,7 @@ namespace UI.Controls
 
             if (!isMultiRoomMode)
             {
+                nudAdults.Maximum = 8;
                 LoadAvailableRooms();
                 UpdateTotalQuote();
             }
@@ -134,7 +157,7 @@ namespace UI.Controls
         {
             try
             {
-                var allAvailableRooms = roomController.GetAvailableRooms(dtpCheckIn.Value, 1, 0);
+                var allAvailableRooms = roomController.GetAvailableRooms(GetCombinedCheckInDateTime(), 1, 0);
 
                 if (allAvailableRooms == null || allAvailableRooms.Count < 2)
                 {
@@ -159,8 +182,10 @@ namespace UI.Controls
                         isMultiRoomMode = true;
                         multiRoom1Id = dialog.SelectedRoom1Id;
                         multiRoom1Rate = dialog.Room1Rate;
+                        multiRoom1Summary = dialog.SelectedRoom1Text;
                         multiRoom2Id = dialog.SelectedRoom2Id;
                         multiRoom2Rate = dialog.Room2Rate;
+                        multiRoom2Summary = dialog.SelectedRoom2Text;
 
                         nudAdults.Maximum = 16;
                         nudChildren.Maximum = 8;
@@ -173,8 +198,8 @@ namespace UI.Controls
                         nudNights.Enabled = false;
 
                         cmbAvailableRooms.Visible = false;
-                        lblFirstRoomChoice.Text = "1st Room: " + dialog.SelectedRoom1Text;
-                        lblSecondRoomChoice.Text = "2nd Room: " + dialog.SelectedRoom2Text;
+                        lblFirstRoomChoice.Text = "1st Room: " + multiRoom1Summary;
+                        lblSecondRoomChoice.Text = "2nd Room: " + multiRoom2Summary;
                         lblFirstRoomChoice.Visible = true;
                         lblSecondRoomChoice.Visible = true;
                         btnEditMultiRoom.Visible = true;
@@ -199,7 +224,7 @@ namespace UI.Controls
             }
         }
 
-        private void dtpCheckIn_ValueChanged(object sender, EventArgs e)
+        private void CheckInDateTime_Changed(object sender, EventArgs e)
         {
             ComputeAndDisplayCheckOut();
             if (!isMultiRoomMode)
@@ -220,7 +245,7 @@ namespace UI.Controls
             if (nights < 1) nights = 1;
 
             int totalHours = (24 * nights) - 2;
-            DateTime checkOutTime = dtpCheckIn.Value.AddHours(totalHours);
+            DateTime checkOutTime = GetCombinedCheckInDateTime().AddHours(totalHours);
 
             lblCheckOut.Text = checkOutTime.ToString("MMM dd, yyyy  hh:mm tt");
         }
@@ -233,7 +258,7 @@ namespace UI.Controls
             {
                 int requestedAdults = (int)nudAdults.Value;
                 int requestedChildren = (int)nudChildren.Value;
-                DateTime checkIn = dtpCheckIn.Value;
+                DateTime checkIn = GetCombinedCheckInDateTime();
 
                 var availableRooms = roomController.GetAvailableRooms(checkIn, requestedAdults, requestedChildren);
 
@@ -243,13 +268,19 @@ namespace UI.Controls
                     r.RatePerAdult,
                     r.MaxAdults,
                     r.MaxChildren,
-                    DisplayText = $"Room {r.RoomId}"
+                    DisplayText = $"Room {r.RoomId} - {r.TypeName} (Max {r.MaxAdults}A / {r.MaxChildren}C) - ₱{r.RatePerAdult:N2}/adult"
                 }).ToList();
 
                 cmbAvailableRooms.DataSource = null;
                 cmbAvailableRooms.DataSource = displayList;
                 cmbAvailableRooms.DisplayMember = "DisplayText";
                 cmbAvailableRooms.ValueMember = "RoomId";
+
+                if (availableRooms.Count == 0 && (requestedAdults > 1 || requestedChildren > 0))
+                {
+                    OpenMultiRoomDialog();
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -294,22 +325,101 @@ namespace UI.Controls
             try
             {
                 List<ReservationModel> list = reservationController.GetReservations(null, null);
+                var allGuests = guestController.GetGuests(false);
+
+                var grouped = list
+                    .GroupBy(r => new
+                    {
+                        r.GuestId,
+                        CheckInMinute = new DateTime(
+                            r.CheckInDateTime.Year,
+                            r.CheckInDateTime.Month,
+                            r.CheckInDateTime.Day,
+                            r.CheckInDateTime.Hour,
+                            r.CheckInDateTime.Minute,
+                            0),
+                        r.Status
+                    })
+                    .Select(g =>
+                    {
+                        var guest = allGuests.FirstOrDefault(x => x.GuestId == g.Key.GuestId);
+                        string guestDisplay = guest != null
+                            ? $"{guest.FirstName} {guest.LastName} ({guest.ContactNo})"
+                            : $"Guest #{g.Key.GuestId}";
+
+                        DateTime checkIn = g.First().CheckInDateTime;
+                        DateTime checkOut = g.First().ExpectedCheckOutDateTime;
+                        int nights = Math.Max(1, (int)Math.Round((checkOut - checkIn).TotalHours / 24.0));
+                        decimal totalQuote = g.Sum(x => x.Adults * x.RatePerAdult * nights);
+
+                        return new
+                        {
+                            PrimaryReservationId = g.Min(x => x.ReservationId),
+                            AllReservationIds = string.Join(",", g.Select(x => x.ReservationId)),
+                            GuestId = g.Key.GuestId,
+                            GuestDisplay = guestDisplay,
+                            RoomsDisplay = g.Count() > 1
+                                ? $"{string.Join(", ", g.Select(x => x.RoomId))} ({g.Count()} Rooms)"
+                                : $"Room {g.First().RoomId}",
+                            AllRoomIds = string.Join(",", g.Select(x => x.RoomId)),
+                            TotalAdults = g.Sum(x => x.Adults),
+                            TotalChildren = g.Sum(x => x.Children),
+                            Nights = nights,
+                            TotalQuote = totalQuote,
+                            CheckInRaw = checkIn,
+                            CheckOutRaw = checkOut,
+                            CheckIn = checkIn.ToString("MMM dd, yyyy hh:mm tt"),
+                            CheckOut = checkOut.ToString("MMM dd, yyyy hh:mm tt"),
+                            Status = g.Key.Status
+                        };
+                    })
+                    .ToList();
 
                 DataTable dt = new DataTable();
                 dt.Columns.Add("ReservationId", typeof(int));
                 dt.Columns.Add("GuestId", typeof(int));
-                dt.Columns.Add("RoomId", typeof(int));
+                dt.Columns.Add("Rooms", typeof(string));
                 dt.Columns.Add("Adults", typeof(int));
                 dt.Columns.Add("CheckIn Date", typeof(string));
                 dt.Columns.Add("CheckOut Date", typeof(string));
                 dt.Columns.Add("Status", typeof(string));
+                dt.Columns.Add("AllReservationIds", typeof(string));
+                dt.Columns.Add("AllRoomIds", typeof(string));
+                dt.Columns.Add("GuestDisplay", typeof(string));
+                dt.Columns.Add("TotalChildren", typeof(int));
+                dt.Columns.Add("Nights", typeof(int));
+                dt.Columns.Add("TotalQuote", typeof(decimal));
+                dt.Columns.Add("CheckInRaw", typeof(DateTime));
+                dt.Columns.Add("CheckOutRaw", typeof(DateTime));
 
-                foreach (var r in list)
+                foreach (var item in grouped)
                 {
-                    dt.Rows.Add(r.ReservationId, r.GuestId, r.RoomId, r.Adults, r.CheckInDateTime.ToString("MMM dd, yyyy hh:mm tt"), r.ExpectedCheckOutDateTime.ToString("MMM dd, yyyy hh:mm tt"), r.Status);
+                    dt.Rows.Add(
+                        item.PrimaryReservationId,
+                        item.GuestId,
+                        item.RoomsDisplay,
+                        item.TotalAdults,
+                        item.CheckIn,
+                        item.CheckOut,
+                        item.Status,
+                        item.AllReservationIds,
+                        item.AllRoomIds,
+                        item.GuestDisplay,
+                        item.TotalChildren,
+                        item.Nights,
+                        item.TotalQuote,
+                        item.CheckInRaw,
+                        item.CheckOutRaw);
                 }
 
                 dgvReservations.DataSource = dt;
+
+                string[] hiddenCols = { "AllReservationIds", "AllRoomIds", "GuestDisplay", "TotalChildren", "Nights", "TotalQuote", "CheckInRaw", "CheckOutRaw" };
+                foreach (string col in hiddenCols)
+                {
+                    if (dgvReservations.Columns[col] != null)
+                        dgvReservations.Columns[col].Visible = false;
+                }
             }
             catch (Exception ex)
             {
@@ -321,147 +431,155 @@ namespace UI.Controls
         {
             string searchInput = txtGuestSearch.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(searchInput))
-            {
-                MessageBox.Show("Please provide a guest search keyword.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            int targetGuestId = resolvedGuestId;
+            string guestDisplay = resolvedGuestDisplay;
 
-            if (!isMultiRoomMode && cmbAvailableRooms.SelectedIndex == -1)
-            {
-                MessageBox.Show("Please select an available room.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (isMultiRoomMode && (multiRoom1Id <= 0 || multiRoom2Id <= 0))
-            {
-                MessageBox.Show("Please complete the 2-room selection first.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (MessageBox.Show("Save this advance reservation as Pending?", "Confirm Reservation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (targetGuestId <= 0 && !string.IsNullOrWhiteSpace(searchInput))
             {
                 try
                 {
-                    int targetGuestId = resolvedGuestId;
-                    if (targetGuestId <= 0)
+                    if (long.TryParse(searchInput, out _) && searchInput.Length > 9)
                     {
-                        if (long.TryParse(searchInput, out long mobileCheck) && searchInput.Length > 9)
+                        var allGuests = guestController.GetGuests(true);
+                        var found = allGuests.Find(g => g.ContactNo == searchInput);
+                        if (found != null)
                         {
-                            var allGuests = guestController.GetGuests(true);
-                            var found = allGuests.Find(g => g.ContactNo == searchInput);
-                            if (found != null)
-                            {
-                                targetGuestId = found.GuestId;
-                            }
-                        }
-                        else
-                        {
-                            var matchedGuests = guestController.SearchGuests(searchInput, true);
-                            if (matchedGuests != null && matchedGuests.Count > 0)
-                            {
-                                targetGuestId = matchedGuests[0].GuestId;
-                            }
-                        }
-                    }
-
-                    if (targetGuestId <= 0)
-                    {
-                        MessageBox.Show("Guest not found. Please verify the name, email, or mobile number.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
-                    int nights = (int)nudNights.Value;
-                    int totalHours = (24 * nights) - 2;
-                    DateTime checkOutDateTime = dtpCheckIn.Value.AddHours(totalHours);
-                    int totalAdults = (int)nudAdults.Value;
-                    int totalChildren = (int)nudChildren.Value;
-
-                    if (isMultiRoomMode)
-                    {
-                        int room1Adults = (totalAdults + 1) / 2;
-                        int room1Children = (totalChildren + 1) / 2;
-                        int room2Adults = totalAdults - room1Adults;
-                        int room2Children = totalChildren - room1Children;
-
-                        ReservationModel res1 = new ReservationModel
-                        {
-                            GuestId = targetGuestId,
-                            RoomId = multiRoom1Id,
-                            Adults = room1Adults,
-                            Children = room1Children,
-                            RatePerAdult = multiRoom1Rate,
-                            CheckInDateTime = dtpCheckIn.Value,
-                            ExpectedCheckOutDateTime = checkOutDateTime,
-                            Status = "Pending"
-                        };
-
-                        ReservationModel res2 = new ReservationModel
-                        {
-                            GuestId = targetGuestId,
-                            RoomId = multiRoom2Id,
-                            Adults = room2Adults,
-                            Children = room2Children,
-                            RatePerAdult = multiRoom2Rate,
-                            CheckInDateTime = dtpCheckIn.Value,
-                            ExpectedCheckOutDateTime = checkOutDateTime,
-                            Status = "Pending"
-                        };
-
-                        int id1 = reservationController.CreateBooking(res1);
-                        int id2 = reservationController.CreateBooking(res2);
-
-                        if (id1 > 0 && id2 > 0)
-                        {
-                            MessageBox.Show("Both reservations saved successfully with status 'Pending'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            txtGuestSearch.Clear();
-                            resolvedGuestId = 0;
-                            ResetFormState();
-                            LoadReservationsGrid();
-                            LoadAvailableRooms();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to save one or both reservations. Please verify inputs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            targetGuestId = found.GuestId;
+                            guestDisplay = $"{found.FirstName} {found.LastName} ({found.ContactNo})";
                         }
                     }
                     else
                     {
-                        dynamic selectedRoom = cmbAvailableRooms.SelectedItem;
-
-                        ReservationModel newReservation = new ReservationModel
+                        var matchedGuests = guestController.SearchGuests(searchInput, true);
+                        if (matchedGuests != null && matchedGuests.Count == 1)
                         {
-                            GuestId = targetGuestId,
-                            RoomId = selectedRoom.RoomId,
-                            Adults = totalAdults,
-                            Children = totalChildren,
-                            RatePerAdult = selectedRoom.RatePerAdult,
-                            CheckInDateTime = dtpCheckIn.Value,
-                            ExpectedCheckOutDateTime = checkOutDateTime,
-                            Status = "Pending"
-                        };
-
-                        int newId = reservationController.CreateBooking(newReservation);
-
-                        if (newId > 0)
-                        {
-                            MessageBox.Show("Reservation saved successfully with status 'Pending'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            txtGuestSearch.Clear();
-                            resolvedGuestId = 0;
-                            ResetFormState();
-                            LoadReservationsGrid();
-                            LoadAvailableRooms();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to save reservation. Please verify inputs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            targetGuestId = matchedGuests[0].GuestId;
+                            guestDisplay = $"{matchedGuests[0].FirstName} {matchedGuests[0].LastName} ({matchedGuests[0].ContactNo})";
                         }
                     }
                 }
-                catch (Exception ex)
+                catch { }
+            }
+
+            List<string> errors = new List<string>();
+            if (targetGuestId <= 0)
+                errors.Add("• Valid registered guest (Code, Name, or Mobile)");
+            if (!isMultiRoomMode && cmbAvailableRooms.SelectedIndex == -1)
+                errors.Add("• An available room selection");
+            if (isMultiRoomMode && (multiRoom1Id <= 0 || multiRoom2Id <= 0))
+                errors.Add("• Both rooms in the 2-room selection");
+
+            if (errors.Count > 0)
+            {
+                MessageBox.Show("Please complete the following before saving:\n\n" + string.Join("\n", errors),
+                                "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DateTime checkInDateTime = GetCombinedCheckInDateTime();
+            int nights = (int)nudNights.Value;
+            int totalHours = (24 * nights) - 2;
+            DateTime checkOutDateTime = checkInDateTime.AddHours(totalHours);
+            int totalAdults = (int)nudAdults.Value;
+            int totalChildren = (int)nudChildren.Value;
+
+            string roomSummary = isMultiRoomMode
+                ? $"1st: {multiRoom1Summary}{Environment.NewLine}2nd: {multiRoom2Summary}"
+                : cmbAvailableRooms.Text;
+
+            using (ReservationConfirmDialog confirmDialog = new ReservationConfirmDialog(
+                guestDisplay,
+                checkInDateTime,
+                checkOutDateTime,
+                roomSummary,
+                totalAdults,
+                totalChildren,
+                nights,
+                lblTotalAmount.Text))
+            {
+                if (confirmDialog.ShowDialog(this) != DialogResult.OK)
                 {
-                    MessageBox.Show("Error: " + ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+            }
+
+            try
+            {
+                if (isMultiRoomMode)
+                {
+                    int room1Adults = (totalAdults + 1) / 2;
+                    int room1Children = (totalChildren + 1) / 2;
+                    int room2Adults = totalAdults - room1Adults;
+                    int room2Children = totalChildren - room1Children;
+
+                    ReservationModel res1 = new ReservationModel
+                    {
+                        GuestId = targetGuestId,
+                        RoomId = multiRoom1Id,
+                        Adults = room1Adults,
+                        Children = room1Children,
+                        RatePerAdult = multiRoom1Rate,
+                        CheckInDateTime = checkInDateTime,
+                        ExpectedCheckOutDateTime = checkOutDateTime,
+                        Status = "Pending"
+                    };
+
+                    ReservationModel res2 = new ReservationModel
+                    {
+                        GuestId = targetGuestId,
+                        RoomId = multiRoom2Id,
+                        Adults = room2Adults,
+                        Children = room2Children,
+                        RatePerAdult = multiRoom2Rate,
+                        CheckInDateTime = checkInDateTime,
+                        ExpectedCheckOutDateTime = checkOutDateTime,
+                        Status = "Pending"
+                    };
+
+                    int id1 = reservationController.CreateBooking(res1);
+                    int id2 = reservationController.CreateBooking(res2);
+
+                    if (id1 <= 0 || id2 <= 0)
+                    {
+                        MessageBox.Show("Failed to save one or both reservations. Please verify inputs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    dynamic selectedRoom = cmbAvailableRooms.SelectedItem;
+
+                    ReservationModel newReservation = new ReservationModel
+                    {
+                        GuestId = targetGuestId,
+                        RoomId = selectedRoom.RoomId,
+                        Adults = totalAdults,
+                        Children = totalChildren,
+                        RatePerAdult = selectedRoom.RatePerAdult,
+                        CheckInDateTime = checkInDateTime,
+                        ExpectedCheckOutDateTime = checkOutDateTime,
+                        Status = "Pending"
+                    };
+
+                    int newId = reservationController.CreateBooking(newReservation);
+
+                    if (newId <= 0)
+                    {
+                        MessageBox.Show("Failed to save reservation. Please verify inputs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                txtGuestSearch.Clear();
+                resolvedGuestId = 0;
+                resolvedGuestDisplay = string.Empty;
+                ResetFormState();
+                LoadReservationsGrid();
+                LoadAvailableRooms();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving reservation: " + ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -471,69 +589,119 @@ namespace UI.Controls
 
             try
             {
-                string currentStatus = dgvReservations.SelectedRows[0].Cells["Status"].Value.ToString();
+                var row = dgvReservations.SelectedRows[0];
+                string currentStatus = row.Cells["Status"].Value.ToString();
                 if (currentStatus != "Pending")
                 {
-                    MessageBox.Show($"Only 'Pending' reservations can be confirmed. This reservation is currently '{currentStatus}'.", "Invalid Action", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"Only 'Pending' reservations can be confirmed. Current status: '{currentStatus}'.",
+                                    "Invalid Action", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                int reservationId = Convert.ToInt32(dgvReservations.SelectedRows[0].Cells["ReservationId"].Value);
-                int roomId = Convert.ToInt32(dgvReservations.SelectedRows[0].Cells["RoomId"].Value);
+                int[] reservationIds = row.Cells["AllReservationIds"].Value.ToString().Split(',').Select(int.Parse).ToArray();
+                int[] roomIds = row.Cells["AllRoomIds"].Value.ToString().Split(',').Select(int.Parse).ToArray();
 
-                if (MessageBox.Show("Transition this reservation to 'Confirmed' status?", "Confirm Booking", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                string guestDisplay = row.Cells["GuestDisplay"].Value.ToString();
+                DateTime checkIn = Convert.ToDateTime(row.Cells["CheckInRaw"].Value);
+                DateTime checkOut = Convert.ToDateTime(row.Cells["CheckOutRaw"].Value);
+                string roomsText = row.Cells["Rooms"].Value.ToString();
+                int adults = Convert.ToInt32(row.Cells["Adults"].Value);
+                int children = Convert.ToInt32(row.Cells["TotalChildren"].Value);
+                int nights = Convert.ToInt32(row.Cells["Nights"].Value);
+                decimal totalQuote = Convert.ToDecimal(row.Cells["TotalQuote"].Value);
+
+                using (ReservationConfirmDialog confirmDialog = new ReservationConfirmDialog(
+                    guestDisplay,
+                    checkIn,
+                    checkOut,
+                    roomsText,
+                    adults,
+                    children,
+                    nights,
+                    $"₱{totalQuote:N2}",
+                    "Confirm Pending Reservation",
+                    "Verify booking details to lock in room(s) as Reserved:",
+                    "✔️ Confirm Booking"))
                 {
-                    bool isReservationUpdated = reservationController.ConfirmBooking(reservationId);
-
-                    if (isReservationUpdated)
+                    if (confirmDialog.ShowDialog(this) != DialogResult.OK)
                     {
-                        bool isRoomUpdated = roomController.ChangeRoomStatus(roomId, "Reserved");
+                        return;
+                    }
+                }
 
-                        MessageBox.Show("Reservation confirmed and room status updated to 'Reserved'.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        LoadReservationsGrid();
-                        LoadAvailableRooms();
+                bool allUpdated = true;
+                for (int i = 0; i < reservationIds.Length; i++)
+                {
+                    if (reservationController.ConfirmBooking(reservationIds[i]))
+                    {
+                        roomController.ChangeRoomStatus(roomIds[i], "Reserved");
                     }
                     else
                     {
-                        MessageBox.Show("Failed to update reservation status in the database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        allUpdated = false;
                     }
                 }
+
+                if (!allUpdated)
+                {
+                    MessageBox.Show("One or more linked reservations failed to update in the database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                LoadReservationsGrid();
+                LoadAvailableRooms();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error confirming reservation: " + ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            LoadReservationsGrid();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             if (dgvReservations.SelectedRows.Count == 0) return;
 
-            if (MessageBox.Show("Are you sure you want to cancel this booking? This will restore room availability.", "Cancel Booking", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            try
             {
-                try
+                var row = dgvReservations.SelectedRows[0];
+                int[] reservationIds = row.Cells["AllReservationIds"].Value.ToString()
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray();
+
+                int[] roomIds = row.Cells["AllRoomIds"].Value.ToString()
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToArray();
+
+                string roomsText = row.Cells["Rooms"].Value.ToString();
+                string prompt = reservationIds.Length > 1
+                    ? $"Cancel all {reservationIds.Length} linked reservations (Rooms {roomsText}) and restore room availability?"
+                    : $"Cancel Reservation #{reservationIds[0]} and restore Room {roomsText} availability?";
+
+                if (MessageBox.Show(prompt, "Cancel Booking", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
-                    int reservationId = Convert.ToInt32(dgvReservations.SelectedRows[0].Cells["ReservationId"].Value);
-                    int roomId = Convert.ToInt32(dgvReservations.SelectedRows[0].Cells["RoomId"].Value);
-
-                    bool success = reservationController.CancelBooking(reservationId, roomId);
-
-                    if (success)
+                    bool allCancelled = true;
+                    for (int i = 0; i < reservationIds.Length; i++)
                     {
-                        MessageBox.Show("Reservation Cancelled. Room availability restored.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadReservationsGrid();
-                        LoadAvailableRooms();
+                        if (!reservationController.CancelBooking(reservationIds[i], roomIds[i]))
+                        {
+                            allCancelled = false;
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Failed to cancel reservation: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    if (!allCancelled)
+                    {
+                        MessageBox.Show("One or more linked reservations failed to cancel in the database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    LoadReservationsGrid();
+                    LoadAvailableRooms();
                 }
             }
-            LoadReservationsGrid();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to cancel reservation: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void txtGuestSearch_TextChanged(object sender, EventArgs e)
@@ -542,7 +710,8 @@ namespace UI.Controls
             if (string.IsNullOrWhiteSpace(searchInput))
             {
                 resolvedGuestId = 0;
-                txtGuestSearch.ForeColor = Color.Red; 
+                resolvedGuestDisplay = string.Empty;
+                txtGuestSearch.ForeColor = Color.Red;
                 return;
             }
 
@@ -550,18 +719,15 @@ namespace UI.Controls
             {
                 bool isMatchFound = false;
 
-                if (long.TryParse(searchInput, out long mobileCheck) && searchInput.Length > 9)
+                if (long.TryParse(searchInput, out _) && searchInput.Length > 9)
                 {
                     var allGuests = guestController.GetGuests(true);
                     var found = allGuests.Find(g => g.ContactNo == searchInput);
                     if (found != null)
                     {
                         resolvedGuestId = found.GuestId;
+                        resolvedGuestDisplay = $"{found.FirstName} {found.LastName} ({found.ContactNo})";
                         isMatchFound = true;
-                    }
-                    else
-                    {
-                        resolvedGuestId = 0;
                     }
                 }
                 else
@@ -570,26 +736,26 @@ namespace UI.Controls
                     if (matchedGuests != null && matchedGuests.Count == 1)
                     {
                         resolvedGuestId = matchedGuests[0].GuestId;
+                        resolvedGuestDisplay = $"{matchedGuests[0].FirstName} {matchedGuests[0].LastName} ({matchedGuests[0].ContactNo})";
                         isMatchFound = true;
-                    }
-                    else
-                    {
-                        resolvedGuestId = 0;
                     }
                 }
 
                 if (isMatchFound)
                 {
-                    txtGuestSearch.ForeColor = Color.Blue; 
+                    txtGuestSearch.ForeColor = Color.Blue;
                 }
                 else
                 {
-                    txtGuestSearch.ForeColor = Color.Red;  
+                    resolvedGuestId = 0;
+                    resolvedGuestDisplay = string.Empty;
+                    txtGuestSearch.ForeColor = Color.Red;
                 }
             }
             catch
             {
                 resolvedGuestId = 0;
+                resolvedGuestDisplay = string.Empty;
                 txtGuestSearch.ForeColor = Color.Red;
             }
         }

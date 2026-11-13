@@ -18,7 +18,6 @@ namespace UI.Dialogs.Reservation
 
         private List<RoomOption> allAvailableRooms;
 
-        // Properties passed back to ReservationControl on Save
         public int SelectedRoom1Id { get; private set; }
         public string SelectedRoom1Text { get; private set; }
         public decimal Room1Rate { get; private set; }
@@ -32,7 +31,6 @@ namespace UI.Dialogs.Reservation
         public int FinalNights { get; private set; }
         public decimal CombinedTotal { get; private set; }
 
-        // Update constructor signature to accept hasPreviousSelection (default false)
         public MultiRoomBookingDialog(
             List<RoomModel> availableRooms,
             int initialAdults,
@@ -58,7 +56,6 @@ namespace UI.Dialogs.Reservation
 
             BindRoom1();
 
-            // Restore previous room choices when editing
             if (prevRoom1Id > 0)
             {
                 cmbRoom1.SelectedValue = prevRoom1Id;
@@ -83,7 +80,6 @@ namespace UI.Dialogs.Reservation
         {
             if (cmbRoom1.SelectedItem is RoomOption selected1)
             {
-                // Exclude the room chosen in cmbRoom1 from cmbRoom2 in memory only
                 var remainingRooms = allAvailableRooms
                     .Where(r => r.RoomId != selected1.RoomId)
                     .ToList();
@@ -160,14 +156,12 @@ namespace UI.Dialogs.Reservation
 
                 if (choice == DialogResult.Yes)
                 {
-                    // Keep existing 2-room selection on main UI
                     DialogResult = DialogResult.Ignore;
                     Close();
                     return;
                 }
             }
 
-            // Don't save -> reset main UI back to startup
             DialogResult = DialogResult.Cancel;
             Close();
         }
