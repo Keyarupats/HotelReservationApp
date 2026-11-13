@@ -18,7 +18,7 @@ namespace UI
         private GuestModel activeGuest;
         private DateTime walkInTimestamp;
 
-        // Multi-room selection state (matches ReservationControl)
+        // Multi-room selection state
         private bool isMultiRoomMode = false;
         private int multiRoom1Id = 0;
         private decimal multiRoom1Rate = 0m;
@@ -380,14 +380,14 @@ namespace UI
 
                 if (allAvailableRooms == null || allAvailableRooms.Count < 2)
                 {
-                    MessageBox.Show("At least 2 available rooms are required for a group of 12 or more, but fewer than 2 rooms are available.",
+                    MessageBox.Show("At least 2 available rooms are required for this group size, but fewer than 2 rooms are available.",
                                     "Insufficient Rooms", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 using (MultiRoomBookingDialog dialog = new MultiRoomBookingDialog(
                     allAvailableRooms,
-                    (int)numAdults.Value,
+                    Math.Max(2, (int)numAdults.Value),
                     (int)numChildren.Value,
                     (int)numNights.Value,
                     isMultiRoomMode,
@@ -408,7 +408,7 @@ namespace UI
 
                         numAdults.Maximum = 16;
                         numChildren.Maximum = 8;
-                        numAdults.Value = dialog.FinalAdults;
+                        numAdults.Value = Math.Max(2, dialog.FinalAdults);
                         numChildren.Value = dialog.FinalChildren;
                         numNights.Value = dialog.FinalNights;
 
@@ -417,8 +417,8 @@ namespace UI
                         numNights.Enabled = false;
 
                         cmbAvailableRooms.Visible = false;
-                        lblFirstRoomChoice.Text = "1st Room: " + multiRoom1Summary;
-                        lblSecondRoomChoice.Text = "2nd Room: " + multiRoom2Summary;
+                        lblFirstRoomChoice.Text = "1st: " + multiRoom1Summary;
+                        lblSecondRoomChoice.Text = "2nd: " + multiRoom2Summary;
                         lblFirstRoomChoice.Visible = true;
                         lblSecondRoomChoice.Visible = true;
                         btnEditMultiRoom.Visible = true;
@@ -426,7 +426,7 @@ namespace UI
                         lblErrorMsg.Text = "";
                         txtRateAdult.Text = $"₱{multiRoom1Rate:N2} / ₱{multiRoom2Rate:N2}";
                         txtTotalAmount.Text = $"₱{dialog.CombinedTotal:N2}";
-                        lblRoomStatusTransition.Text = $"Room: {multiRoom1Id}, and {multiRoom2Id} Statuses after check-in:";
+                        lblRoomStatusTransition.Text = $"Rooms {multiRoom1Id} & {multiRoom2Id} status after check-in:";
                         ComputeAndDisplayCheckOut();
                     }
                     else if (result == DialogResult.Ignore)
@@ -435,7 +435,6 @@ namespace UI
                     }
                     else
                     {
-                        isOpeningMultiRoomDialog = false;
                         ResetStayState();
                     }
                 }
@@ -465,7 +464,7 @@ namespace UI
 
         private void LoadAvailableRooms()
         {
-            if (isMultiRoomMode) return;
+            if (isMultiRoomMode || isOpeningMultiRoomDialog) return;
 
             txtRateAdult.Text = "₱0.00";
             txtTotalAmount.Text = "₱0.00";
@@ -485,7 +484,7 @@ namespace UI
                     r.RatePerAdult,
                     r.MaxAdults,
                     r.MaxChildren,
-                    DisplayText = $"Room {r.RoomId} - {r.TypeName} (Max {r.MaxAdults}A / {r.MaxChildren}C) - ₱{r.RatePerAdult:N2}/adult"
+                    DisplayText = $"Room {r.RoomId} - {r.TypeName} - ₱{r.RatePerAdult:N2}/adult"
                 }).ToList();
 
                 cmbAvailableRooms.DataSource = null;
@@ -527,7 +526,7 @@ namespace UI
                 decimal combined = ((room1Adults * multiRoom1Rate) + (room2Adults * multiRoom2Rate)) * nights;
                 txtRateAdult.Text = $"₱{multiRoom1Rate:N2} / ₱{multiRoom2Rate:N2}";
                 txtTotalAmount.Text = $"₱{combined:N2}";
-                lblRoomStatusTransition.Text = $"Room: {multiRoom1Id}, and {multiRoom2Id} Statuses after check-in:";
+                lblRoomStatusTransition.Text = $"Rooms {multiRoom1Id} & {multiRoom2Id} status after check-in:";
                 return;
             }
 
@@ -542,7 +541,7 @@ namespace UI
 
                 txtRateAdult.Text = $"₱{ratePerAdult:N2}";
                 txtTotalAmount.Text = $"₱{total:N2}";
-                lblRoomStatusTransition.Text = $"Room: {roomId} Status after check-in:";
+                lblRoomStatusTransition.Text = $"Room {roomId} status after check-in:";
             }
         }
 
@@ -582,6 +581,13 @@ namespace UI
                 DateTime expectedCheckOut = walkInTimestamp.AddHours(totalHours);
                 int totalAdults = (int)numAdults.Value;
                 int totalChildren = (int)numChildren.Value;
+
+                if (isMultiRoomMode && totalAdults < 2)
+                {
+                    MessageBox.Show("Booking 2 rooms requires at least 2 adults (minimum 1 adult per room).",
+                                    "Adult Requirement", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
                 string guestCode = string.IsNullOrWhiteSpace(activeGuest.GuestCode)
                     ? $"G-{activeGuest.GuestId:D4}"
