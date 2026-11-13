@@ -49,6 +49,10 @@ namespace UI.Controls
             lblErrorMessage = new Label();
             btnProceedToPayment = new Button();
             pnlSummary = new Panel();
+            lblSubtotalValue = new Label();
+            lblSubtotalDesc = new Label();
+            lblVatValue = new Label();
+            lblVatDesc = new Label();
             lblGrandTotalValue = new Label();
             lblGrandTotalText = new Label();
             pnlDivider2 = new Panel();
@@ -415,6 +419,10 @@ namespace UI.Controls
             pnlSummary.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pnlSummary.BackColor = Color.FromArgb(248, 250, 252);
             pnlSummary.BorderStyle = BorderStyle.FixedSingle;
+            pnlSummary.Controls.Add(lblSubtotalValue);
+            pnlSummary.Controls.Add(lblSubtotalDesc);
+            pnlSummary.Controls.Add(lblVatValue);
+            pnlSummary.Controls.Add(lblVatDesc);
             pnlSummary.Controls.Add(lblGrandTotalValue);
             pnlSummary.Controls.Add(lblGrandTotalText);
             pnlSummary.Controls.Add(pnlDivider2);
@@ -429,12 +437,62 @@ namespace UI.Controls
             pnlSummary.Size = new Size(948, 250);
             pnlSummary.TabIndex = 8;
             // 
+            // lblSubtotalValue
+            // 
+            lblSubtotalValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblSubtotalValue.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            lblSubtotalValue.ForeColor = Color.FromArgb(44, 62, 80);
+            lblSubtotalValue.Location = new Point(660, 112);
+            lblSubtotalValue.Name = "lblSubtotalValue";
+            lblSubtotalValue.Size = new Size(270, 26);
+            lblSubtotalValue.TabIndex = 5;
+            lblSubtotalValue.Text = "₱0.00";
+            lblSubtotalValue.TextAlign = ContentAlignment.MiddleRight;
+            lblSubtotalValue.UseMnemonic = false;
+            // 
+            // lblSubtotalDesc
+            // 
+            lblSubtotalDesc.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            lblSubtotalDesc.ForeColor = Color.FromArgb(44, 62, 80);
+            lblSubtotalDesc.Location = new Point(20, 103);
+            lblSubtotalDesc.Name = "lblSubtotalDesc";
+            lblSubtotalDesc.Size = new Size(782, 39);
+            lblSubtotalDesc.TabIndex = 4;
+            lblSubtotalDesc.Text = "Subtotal (VAT-Exclusive)";
+            lblSubtotalDesc.TextAlign = ContentAlignment.MiddleLeft;
+            lblSubtotalDesc.UseMnemonic = false;
+            // 
+            // lblVatValue
+            // 
+            lblVatValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblVatValue.Font = new Font("Segoe UI", 11F);
+            lblVatValue.ForeColor = Color.FromArgb(44, 62, 80);
+            lblVatValue.Location = new Point(660, 144);
+            lblVatValue.Name = "lblVatValue";
+            lblVatValue.Size = new Size(270, 30);
+            lblVatValue.TabIndex = 7;
+            lblVatValue.Text = "₱0.00";
+            lblVatValue.TextAlign = ContentAlignment.MiddleRight;
+            lblVatValue.UseMnemonic = false;
+            // 
+            // lblVatDesc
+            // 
+            lblVatDesc.Font = new Font("Segoe UI", 11F);
+            lblVatDesc.ForeColor = Color.FromArgb(44, 62, 80);
+            lblVatDesc.Location = new Point(20, 149);
+            lblVatDesc.Name = "lblVatDesc";
+            lblVatDesc.Size = new Size(782, 30);
+            lblVatDesc.TabIndex = 6;
+            lblVatDesc.Text = "VAT (12%)";
+            lblVatDesc.TextAlign = ContentAlignment.MiddleLeft;
+            lblVatDesc.UseMnemonic = false;
+            // 
             // lblGrandTotalValue
             // 
             lblGrandTotalValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblGrandTotalValue.Font = new Font("Segoe UI Semibold", 26F, FontStyle.Bold);
             lblGrandTotalValue.ForeColor = Color.FromArgb(40, 167, 69);
-            lblGrandTotalValue.Location = new Point(440, 164);
+            lblGrandTotalValue.Location = new Point(453, 179);
             lblGrandTotalValue.Name = "lblGrandTotalValue";
             lblGrandTotalValue.Size = new Size(490, 56);
             lblGrandTotalValue.TabIndex = 8;
@@ -447,7 +505,7 @@ namespace UI.Controls
             lblGrandTotalText.AutoSize = true;
             lblGrandTotalText.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
             lblGrandTotalText.ForeColor = Color.FromArgb(44, 62, 80);
-            lblGrandTotalText.Location = new Point(20, 176);
+            lblGrandTotalText.Location = new Point(20, 195);
             lblGrandTotalText.Name = "lblGrandTotalText";
             lblGrandTotalText.Size = new Size(158, 37);
             lblGrandTotalText.TabIndex = 7;
@@ -457,7 +515,7 @@ namespace UI.Controls
             // pnlDivider2
             // 
             pnlDivider2.BackColor = Color.FromArgb(222, 226, 230);
-            pnlDivider2.Location = new Point(20, 148);
+            pnlDivider2.Location = new Point(20, 116);
             pnlDivider2.Name = "pnlDivider2";
             pnlDivider2.Size = new Size(908, 1);
             pnlDivider2.TabIndex = 6;
@@ -467,7 +525,7 @@ namespace UI.Controls
             lblFoodValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblFoodValue.Font = new Font("Segoe UI", 11F);
             lblFoodValue.ForeColor = Color.FromArgb(44, 62, 80);
-            lblFoodValue.Location = new Point(660, 100);
+            lblFoodValue.Location = new Point(660, 75);
             lblFoodValue.Name = "lblFoodValue";
             lblFoodValue.Size = new Size(270, 30);
             lblFoodValue.TabIndex = 5;
@@ -479,9 +537,9 @@ namespace UI.Controls
             // 
             lblFoodDesc.Font = new Font("Segoe UI", 11F);
             lblFoodDesc.ForeColor = Color.FromArgb(44, 62, 80);
-            lblFoodDesc.Location = new Point(20, 100);
+            lblFoodDesc.Location = new Point(20, 75);
             lblFoodDesc.Name = "lblFoodDesc";
-            lblFoodDesc.Size = new Size(640, 30);
+            lblFoodDesc.Size = new Size(782, 30);
             lblFoodDesc.TabIndex = 4;
             lblFoodDesc.Text = "Food & Services";
             lblFoodDesc.TextAlign = ContentAlignment.MiddleLeft;
@@ -492,7 +550,7 @@ namespace UI.Controls
             lblOverstayValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblOverstayValue.Font = new Font("Segoe UI", 11F);
             lblOverstayValue.ForeColor = Color.FromArgb(44, 62, 80);
-            lblOverstayValue.Location = new Point(660, 60);
+            lblOverstayValue.Location = new Point(660, 47);
             lblOverstayValue.Name = "lblOverstayValue";
             lblOverstayValue.Size = new Size(270, 30);
             lblOverstayValue.TabIndex = 3;
@@ -504,9 +562,9 @@ namespace UI.Controls
             // 
             lblOverstayDesc.Font = new Font("Segoe UI", 11F);
             lblOverstayDesc.ForeColor = Color.FromArgb(44, 62, 80);
-            lblOverstayDesc.Location = new Point(20, 60);
+            lblOverstayDesc.Location = new Point(20, 47);
             lblOverstayDesc.Name = "lblOverstayDesc";
-            lblOverstayDesc.Size = new Size(640, 30);
+            lblOverstayDesc.Size = new Size(782, 30);
             lblOverstayDesc.TabIndex = 2;
             lblOverstayDesc.Text = "Overstay";
             lblOverstayDesc.TextAlign = ContentAlignment.MiddleLeft;
@@ -517,9 +575,9 @@ namespace UI.Controls
             lblRoomChargeValue.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblRoomChargeValue.Font = new Font("Segoe UI", 11F);
             lblRoomChargeValue.ForeColor = Color.FromArgb(44, 62, 80);
-            lblRoomChargeValue.Location = new Point(660, 20);
+            lblRoomChargeValue.Location = new Point(768, 20);
             lblRoomChargeValue.Name = "lblRoomChargeValue";
-            lblRoomChargeValue.Size = new Size(270, 30);
+            lblRoomChargeValue.Size = new Size(162, 30);
             lblRoomChargeValue.TabIndex = 1;
             lblRoomChargeValue.Text = "₱0.00";
             lblRoomChargeValue.TextAlign = ContentAlignment.MiddleRight;
@@ -531,7 +589,7 @@ namespace UI.Controls
             lblRoomChargeDesc.ForeColor = Color.FromArgb(44, 62, 80);
             lblRoomChargeDesc.Location = new Point(20, 20);
             lblRoomChargeDesc.Name = "lblRoomChargeDesc";
-            lblRoomChargeDesc.Size = new Size(640, 30);
+            lblRoomChargeDesc.Size = new Size(782, 30);
             lblRoomChargeDesc.TabIndex = 0;
             lblRoomChargeDesc.Text = "Room Charge";
             lblRoomChargeDesc.TextAlign = ContentAlignment.MiddleLeft;
@@ -715,5 +773,9 @@ namespace UI.Controls
         private System.Windows.Forms.Label lblGrandTotalValue;
         private System.Windows.Forms.Button btnProceedToPayment;
         private System.Windows.Forms.Label lblErrorMessage;
+        private Label lblVatValue;
+        private Label lblVatDesc;
+        private Label lblSubtotalValue;
+        private Label lblSubtotalDesc;
     }
 }

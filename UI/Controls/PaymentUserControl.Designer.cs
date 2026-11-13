@@ -22,53 +22,55 @@ namespace UI
         private void InitializeComponent()
         {
             pnlSummary = new Panel();
-            lblSummaryTitle = new Label();
-            lblGuestName = new Label();
-            txtGuestName = new TextBox();
-            lblRoom = new Label();
-            txtRoom = new TextBox();
-            lblCheckIn = new Label();
-            txtCheckIn = new TextBox();
-            lblCheckOut = new Label();
-            txtCheckOut = new TextBox();
-            lblGuests = new Label();
-            txtGuests = new TextBox();
             pnlTotalDue = new Panel();
-            lblTotalDueText = new Label();
             lblTotalDueValue = new Label();
+            lblTotalDueText = new Label();
+            txtGuests = new TextBox();
+            lblGuests = new Label();
+            txtCheckOut = new TextBox();
+            lblCheckOut = new Label();
+            txtCheckIn = new TextBox();
+            lblCheckIn = new Label();
+            txtRoom = new TextBox();
+            lblRoom = new Label();
+            txtGuestName = new TextBox();
+            lblGuestName = new Label();
+            lblSummaryTitle = new Label();
             pnlPayment = new Panel();
-            lblPaymentTitle = new Label();
-            lblMethod = new Label();
-            rdoCash = new RadioButton();
-            rdoCard = new RadioButton();
-            lblCashTendered = new Label();
-            txtCashTendered = new TextBox();
-            lblChangeDue = new Label();
-            txtChangeDue = new TextBox();
-            lblReference = new Label();
-            txtReferenceNumber = new TextBox();
-            lblReferenceHint = new Label();
-            pnlDivider = new Panel();
-            lblAfterTitle = new Label();
-            lblResStatusText = new Label();
-            lblResFrom = new Label();
-            lblArrow1 = new Label();
-            lblResTo = new Label();
-            lblRoomStatusText = new Label();
-            lblRoomFrom = new Label();
-            lblArrow2 = new Label();
-            lblRoomTo = new Label();
-            btnSettlePayment = new Button();
-            btnBackToBill = new Button();
             lblErrorMessage = new Label();
+            btnBackToBill = new Button();
+            btnSettlePayment = new Button();
+            lblRoomTo = new Label();
+            lblArrow2 = new Label();
+            lblRoomFrom = new Label();
+            lblRoomStatusText = new Label();
+            lblResTo = new Label();
+            lblArrow1 = new Label();
+            lblResFrom = new Label();
+            lblResStatusText = new Label();
+            lblAfterTitle = new Label();
+            pnlDivider = new Panel();
+            lblReferenceHint = new Label();
+            txtReferenceNumber = new TextBox();
+            lblReference = new Label();
+            txtChangeDue = new TextBox();
+            lblChangeDue = new Label();
+            txtCashTendered = new TextBox();
+            lblCashTendered = new Label();
+            rdoCard = new RadioButton();
+            rdoCash = new RadioButton();
+            lblMethod = new Label();
+            lblPaymentTitle = new Label();
             pnlSummary.SuspendLayout();
             pnlTotalDue.SuspendLayout();
             pnlPayment.SuspendLayout();
-            pnlDivider.SuspendLayout();
             SuspendLayout();
             // 
             // pnlSummary
             // 
+            pnlSummary.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            pnlSummary.BackColor = Color.White;
+            pnlSummary.BorderStyle = BorderStyle.FixedSingle;
             pnlSummary.Controls.Add(pnlTotalDue);
             pnlSummary.Controls.Add(txtGuests);
             pnlSummary.Controls.Add(lblGuests);
@@ -84,164 +86,170 @@ namespace UI
             pnlSummary.Location = new Point(24, 24);
             pnlSummary.Name = "pnlSummary";
             pnlSummary.Size = new Size(700, 833);
-            pnlSummary.BackColor = Color.White;
-            pnlSummary.BorderStyle = BorderStyle.FixedSingle;
-            pnlSummary.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom;
             pnlSummary.TabIndex = 0;
-            // 
-            // lblSummaryTitle
-            // 
-            lblSummaryTitle.Location = new Point(20, 16);
-            lblSummaryTitle.Name = "lblSummaryTitle";
-            lblSummaryTitle.Text = "Stay Summary";
-            lblSummaryTitle.ForeColor = Color.FromArgb(44, 62, 80);
-            lblSummaryTitle.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold);
-            lblSummaryTitle.AutoSize = true;
-            lblSummaryTitle.UseMnemonic = false;
-            lblSummaryTitle.TabIndex = 0;
-            // 
-            // lblGuestName
-            // 
-            lblGuestName.Location = new Point(20, 70);
-            lblGuestName.Name = "lblGuestName";
-            lblGuestName.Text = "Guest Name";
-            lblGuestName.ForeColor = Color.FromArgb(44, 62, 80);
-            lblGuestName.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblGuestName.AutoSize = true;
-            lblGuestName.UseMnemonic = false;
-            lblGuestName.TabIndex = 1;
-            // 
-            // txtGuestName
-            // 
-            txtGuestName.Location = new Point(20, 96);
-            txtGuestName.Name = "txtGuestName";
-            txtGuestName.Size = new Size(660, 30);
-            txtGuestName.Font = new Font("Segoe UI", 11F);
-            txtGuestName.ReadOnly = true;
-            txtGuestName.BackColor = Color.FromArgb(236, 239, 241);
-            txtGuestName.TabIndex = 2;
-            // 
-            // lblRoom
-            // 
-            lblRoom.Location = new Point(20, 160);
-            lblRoom.Name = "lblRoom";
-            lblRoom.Text = "Room";
-            lblRoom.ForeColor = Color.FromArgb(44, 62, 80);
-            lblRoom.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblRoom.AutoSize = true;
-            lblRoom.UseMnemonic = false;
-            lblRoom.TabIndex = 3;
-            // 
-            // txtRoom
-            // 
-            txtRoom.Location = new Point(20, 186);
-            txtRoom.Name = "txtRoom";
-            txtRoom.Size = new Size(660, 30);
-            txtRoom.Font = new Font("Segoe UI", 11F);
-            txtRoom.ReadOnly = true;
-            txtRoom.BackColor = Color.FromArgb(236, 239, 241);
-            txtRoom.TabIndex = 4;
-            // 
-            // lblCheckIn
-            // 
-            lblCheckIn.Location = new Point(20, 250);
-            lblCheckIn.Name = "lblCheckIn";
-            lblCheckIn.Text = "Check-In";
-            lblCheckIn.ForeColor = Color.FromArgb(44, 62, 80);
-            lblCheckIn.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblCheckIn.AutoSize = true;
-            lblCheckIn.UseMnemonic = false;
-            lblCheckIn.TabIndex = 5;
-            // 
-            // txtCheckIn
-            // 
-            txtCheckIn.Location = new Point(20, 276);
-            txtCheckIn.Name = "txtCheckIn";
-            txtCheckIn.Size = new Size(660, 30);
-            txtCheckIn.Font = new Font("Segoe UI", 11F);
-            txtCheckIn.ReadOnly = true;
-            txtCheckIn.BackColor = Color.FromArgb(236, 239, 241);
-            txtCheckIn.TabIndex = 6;
-            // 
-            // lblCheckOut
-            // 
-            lblCheckOut.Location = new Point(20, 340);
-            lblCheckOut.Name = "lblCheckOut";
-            lblCheckOut.Text = "Check-Out";
-            lblCheckOut.ForeColor = Color.FromArgb(44, 62, 80);
-            lblCheckOut.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblCheckOut.AutoSize = true;
-            lblCheckOut.UseMnemonic = false;
-            lblCheckOut.TabIndex = 7;
-            // 
-            // txtCheckOut
-            // 
-            txtCheckOut.Location = new Point(20, 366);
-            txtCheckOut.Name = "txtCheckOut";
-            txtCheckOut.Size = new Size(660, 30);
-            txtCheckOut.Font = new Font("Segoe UI", 11F);
-            txtCheckOut.ReadOnly = true;
-            txtCheckOut.BackColor = Color.FromArgb(236, 239, 241);
-            txtCheckOut.TabIndex = 8;
-            // 
-            // lblGuests
-            // 
-            lblGuests.Location = new Point(20, 430);
-            lblGuests.Name = "lblGuests";
-            lblGuests.Text = "Guests";
-            lblGuests.ForeColor = Color.FromArgb(44, 62, 80);
-            lblGuests.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblGuests.AutoSize = true;
-            lblGuests.UseMnemonic = false;
-            lblGuests.TabIndex = 9;
-            // 
-            // txtGuests
-            // 
-            txtGuests.Location = new Point(20, 456);
-            txtGuests.Name = "txtGuests";
-            txtGuests.Size = new Size(660, 30);
-            txtGuests.Font = new Font("Segoe UI", 11F);
-            txtGuests.ReadOnly = true;
-            txtGuests.BackColor = Color.FromArgb(236, 239, 241);
-            txtGuests.TabIndex = 10;
             // 
             // pnlTotalDue
             // 
+            pnlTotalDue.BackColor = Color.FromArgb(234, 247, 240);
+            pnlTotalDue.BorderStyle = BorderStyle.FixedSingle;
             pnlTotalDue.Controls.Add(lblTotalDueValue);
             pnlTotalDue.Controls.Add(lblTotalDueText);
             pnlTotalDue.Location = new Point(20, 540);
             pnlTotalDue.Name = "pnlTotalDue";
             pnlTotalDue.Size = new Size(660, 130);
-            pnlTotalDue.BackColor = Color.FromArgb(234, 247, 240);
-            pnlTotalDue.BorderStyle = BorderStyle.FixedSingle;
             pnlTotalDue.TabIndex = 11;
-            // 
-            // lblTotalDueText
-            // 
-            lblTotalDueText.Location = new Point(20, 14);
-            lblTotalDueText.Name = "lblTotalDueText";
-            lblTotalDueText.Text = "Total Amount Due";
-            lblTotalDueText.ForeColor = Color.FromArgb(44, 62, 80);
-            lblTotalDueText.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
-            lblTotalDueText.AutoSize = true;
-            lblTotalDueText.UseMnemonic = false;
-            lblTotalDueText.TabIndex = 0;
             // 
             // lblTotalDueValue
             // 
+            lblTotalDueValue.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
+            lblTotalDueValue.ForeColor = Color.FromArgb(40, 167, 69);
             lblTotalDueValue.Location = new Point(20, 50);
             lblTotalDueValue.Name = "lblTotalDueValue";
             lblTotalDueValue.Size = new Size(618, 64);
-            lblTotalDueValue.Text = "₱0.00";
-            lblTotalDueValue.ForeColor = Color.FromArgb(40, 167, 69);
-            lblTotalDueValue.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold);
-            lblTotalDueValue.AutoSize = false;
-            lblTotalDueValue.UseMnemonic = false;
-            lblTotalDueValue.TextAlign = ContentAlignment.MiddleRight;
             lblTotalDueValue.TabIndex = 1;
+            lblTotalDueValue.Text = "₱0.00";
+            lblTotalDueValue.TextAlign = ContentAlignment.MiddleRight;
+            lblTotalDueValue.UseMnemonic = false;
+            // 
+            // lblTotalDueText
+            // 
+            lblTotalDueText.AutoSize = true;
+            lblTotalDueText.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
+            lblTotalDueText.ForeColor = Color.FromArgb(44, 62, 80);
+            lblTotalDueText.Location = new Point(20, 14);
+            lblTotalDueText.Name = "lblTotalDueText";
+            lblTotalDueText.Size = new Size(195, 30);
+            lblTotalDueText.TabIndex = 0;
+            lblTotalDueText.Text = "Total Amount Due";
+            lblTotalDueText.UseMnemonic = false;
+            // 
+            // txtGuests
+            // 
+            txtGuests.BackColor = Color.FromArgb(236, 239, 241);
+            txtGuests.Font = new Font("Segoe UI", 11F);
+            txtGuests.Location = new Point(20, 456);
+            txtGuests.Name = "txtGuests";
+            txtGuests.ReadOnly = true;
+            txtGuests.Size = new Size(660, 32);
+            txtGuests.TabIndex = 10;
+            // 
+            // lblGuests
+            // 
+            lblGuests.AutoSize = true;
+            lblGuests.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblGuests.ForeColor = Color.FromArgb(44, 62, 80);
+            lblGuests.Location = new Point(20, 430);
+            lblGuests.Name = "lblGuests";
+            lblGuests.Size = new Size(61, 23);
+            lblGuests.TabIndex = 9;
+            lblGuests.Text = "Guests";
+            lblGuests.UseMnemonic = false;
+            // 
+            // txtCheckOut
+            // 
+            txtCheckOut.BackColor = Color.FromArgb(236, 239, 241);
+            txtCheckOut.Font = new Font("Segoe UI", 11F);
+            txtCheckOut.Location = new Point(20, 366);
+            txtCheckOut.Name = "txtCheckOut";
+            txtCheckOut.ReadOnly = true;
+            txtCheckOut.Size = new Size(660, 32);
+            txtCheckOut.TabIndex = 8;
+            // 
+            // lblCheckOut
+            // 
+            lblCheckOut.AutoSize = true;
+            lblCheckOut.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblCheckOut.ForeColor = Color.FromArgb(44, 62, 80);
+            lblCheckOut.Location = new Point(20, 340);
+            lblCheckOut.Name = "lblCheckOut";
+            lblCheckOut.Size = new Size(92, 23);
+            lblCheckOut.TabIndex = 7;
+            lblCheckOut.Text = "Check-Out";
+            lblCheckOut.UseMnemonic = false;
+            // 
+            // txtCheckIn
+            // 
+            txtCheckIn.BackColor = Color.FromArgb(236, 239, 241);
+            txtCheckIn.Font = new Font("Segoe UI", 11F);
+            txtCheckIn.Location = new Point(20, 276);
+            txtCheckIn.Name = "txtCheckIn";
+            txtCheckIn.ReadOnly = true;
+            txtCheckIn.Size = new Size(660, 32);
+            txtCheckIn.TabIndex = 6;
+            // 
+            // lblCheckIn
+            // 
+            lblCheckIn.AutoSize = true;
+            lblCheckIn.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblCheckIn.ForeColor = Color.FromArgb(44, 62, 80);
+            lblCheckIn.Location = new Point(20, 250);
+            lblCheckIn.Name = "lblCheckIn";
+            lblCheckIn.Size = new Size(78, 23);
+            lblCheckIn.TabIndex = 5;
+            lblCheckIn.Text = "Check-In";
+            lblCheckIn.UseMnemonic = false;
+            // 
+            // txtRoom
+            // 
+            txtRoom.BackColor = Color.FromArgb(236, 239, 241);
+            txtRoom.Font = new Font("Segoe UI", 11F);
+            txtRoom.Location = new Point(20, 186);
+            txtRoom.Name = "txtRoom";
+            txtRoom.ReadOnly = true;
+            txtRoom.Size = new Size(660, 32);
+            txtRoom.TabIndex = 4;
+            // 
+            // lblRoom
+            // 
+            lblRoom.AutoSize = true;
+            lblRoom.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblRoom.ForeColor = Color.FromArgb(44, 62, 80);
+            lblRoom.Location = new Point(20, 160);
+            lblRoom.Name = "lblRoom";
+            lblRoom.Size = new Size(56, 23);
+            lblRoom.TabIndex = 3;
+            lblRoom.Text = "Room";
+            lblRoom.UseMnemonic = false;
+            // 
+            // txtGuestName
+            // 
+            txtGuestName.BackColor = Color.FromArgb(236, 239, 241);
+            txtGuestName.Font = new Font("Segoe UI", 11F);
+            txtGuestName.Location = new Point(20, 96);
+            txtGuestName.Name = "txtGuestName";
+            txtGuestName.ReadOnly = true;
+            txtGuestName.Size = new Size(660, 32);
+            txtGuestName.TabIndex = 2;
+            // 
+            // lblGuestName
+            // 
+            lblGuestName.AutoSize = true;
+            lblGuestName.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblGuestName.ForeColor = Color.FromArgb(44, 62, 80);
+            lblGuestName.Location = new Point(20, 70);
+            lblGuestName.Name = "lblGuestName";
+            lblGuestName.Size = new Size(105, 23);
+            lblGuestName.TabIndex = 1;
+            lblGuestName.Text = "Guest Name";
+            lblGuestName.UseMnemonic = false;
+            // 
+            // lblSummaryTitle
+            // 
+            lblSummaryTitle.AutoSize = true;
+            lblSummaryTitle.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold);
+            lblSummaryTitle.ForeColor = Color.FromArgb(44, 62, 80);
+            lblSummaryTitle.Location = new Point(20, 16);
+            lblSummaryTitle.Name = "lblSummaryTitle";
+            lblSummaryTitle.Size = new Size(179, 35);
+            lblSummaryTitle.TabIndex = 0;
+            lblSummaryTitle.Text = "Stay Summary";
+            lblSummaryTitle.UseMnemonic = false;
             // 
             // pnlPayment
             // 
+            pnlPayment.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pnlPayment.BackColor = Color.White;
+            pnlPayment.BorderStyle = BorderStyle.FixedSingle;
             pnlPayment.Controls.Add(lblErrorMessage);
             pnlPayment.Controls.Add(btnBackToBill);
             pnlPayment.Controls.Add(btnSettlePayment);
@@ -269,294 +277,298 @@ namespace UI
             pnlPayment.Location = new Point(748, 24);
             pnlPayment.Name = "pnlPayment";
             pnlPayment.Size = new Size(1148, 833);
-            pnlPayment.BackColor = Color.White;
-            pnlPayment.BorderStyle = BorderStyle.FixedSingle;
-            pnlPayment.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pnlPayment.TabIndex = 1;
-            // 
-            // lblPaymentTitle
-            // 
-            lblPaymentTitle.Location = new Point(20, 16);
-            lblPaymentTitle.Name = "lblPaymentTitle";
-            lblPaymentTitle.Text = "Payment";
-            lblPaymentTitle.ForeColor = Color.FromArgb(44, 62, 80);
-            lblPaymentTitle.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold);
-            lblPaymentTitle.AutoSize = true;
-            lblPaymentTitle.UseMnemonic = false;
-            lblPaymentTitle.TabIndex = 0;
-            // 
-            // lblMethod
-            // 
-            lblMethod.Location = new Point(24, 70);
-            lblMethod.Name = "lblMethod";
-            lblMethod.Text = "Payment Method";
-            lblMethod.ForeColor = Color.FromArgb(44, 62, 80);
-            lblMethod.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblMethod.AutoSize = true;
-            lblMethod.UseMnemonic = false;
-            lblMethod.TabIndex = 1;
-            // 
-            // rdoCash
-            // 
-            rdoCash.Location = new Point(24, 100);
-            rdoCash.Name = "rdoCash";
-            rdoCash.Size = new Size(150, 30);
-            rdoCash.Text = "Cash";
-            rdoCash.Checked = true;
-            rdoCash.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-            rdoCash.AutoSize = true;
-            rdoCash.ForeColor = Color.FromArgb(44, 62, 80);
-            rdoCash.TabIndex = 2;
-            rdoCash.CheckedChanged += PaymentMethod_CheckedChanged;
-            // 
-            // rdoCard
-            // 
-            rdoCard.Location = new Point(200, 100);
-            rdoCard.Name = "rdoCard";
-            rdoCard.Size = new Size(160, 30);
-            rdoCard.Text = "Card / QR";
-            rdoCard.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-            rdoCard.AutoSize = true;
-            rdoCard.ForeColor = Color.FromArgb(44, 62, 80);
-            rdoCard.TabIndex = 3;
-            rdoCard.CheckedChanged += PaymentMethod_CheckedChanged;
-            // 
-            // lblCashTendered
-            // 
-            lblCashTendered.Location = new Point(24, 160);
-            lblCashTendered.Name = "lblCashTendered";
-            lblCashTendered.Text = "Cash Tendered";
-            lblCashTendered.ForeColor = Color.FromArgb(44, 62, 80);
-            lblCashTendered.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblCashTendered.AutoSize = true;
-            lblCashTendered.UseMnemonic = false;
-            lblCashTendered.TabIndex = 4;
-            // 
-            // txtCashTendered
-            // 
-            txtCashTendered.Location = new Point(24, 188);
-            txtCashTendered.Name = "txtCashTendered";
-            txtCashTendered.Size = new Size(440, 30);
-            txtCashTendered.Font = new Font("Segoe UI", 11F);
-            txtCashTendered.TabIndex = 5;
-            txtCashTendered.TextChanged += txtCashTendered_TextChanged;
-            // 
-            // lblChangeDue
-            // 
-            lblChangeDue.Location = new Point(504, 160);
-            lblChangeDue.Name = "lblChangeDue";
-            lblChangeDue.Text = "Change Due";
-            lblChangeDue.ForeColor = Color.FromArgb(44, 62, 80);
-            lblChangeDue.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblChangeDue.AutoSize = true;
-            lblChangeDue.UseMnemonic = false;
-            lblChangeDue.TabIndex = 6;
-            // 
-            // txtChangeDue
-            // 
-            txtChangeDue.Location = new Point(504, 188);
-            txtChangeDue.Name = "txtChangeDue";
-            txtChangeDue.Size = new Size(440, 30);
-            txtChangeDue.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-            txtChangeDue.ReadOnly = true;
-            txtChangeDue.BackColor = Color.FromArgb(236, 239, 241);
-            txtChangeDue.ForeColor = Color.FromArgb(40, 167, 69);
-            txtChangeDue.TabIndex = 7;
-            // 
-            // lblReference
-            // 
-            lblReference.Location = new Point(24, 250);
-            lblReference.Name = "lblReference";
-            lblReference.Text = "Reference Number (Card / QR only)";
-            lblReference.ForeColor = Color.FromArgb(44, 62, 80);
-            lblReference.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            lblReference.AutoSize = true;
-            lblReference.UseMnemonic = false;
-            lblReference.TabIndex = 8;
-            // 
-            // txtReferenceNumber
-            // 
-            txtReferenceNumber.Location = new Point(24, 278);
-            txtReferenceNumber.Name = "txtReferenceNumber";
-            txtReferenceNumber.Size = new Size(440, 30);
-            txtReferenceNumber.Font = new Font("Segoe UI", 11F);
-            txtReferenceNumber.Enabled = false;
-            txtReferenceNumber.TabIndex = 9;
-            // 
-            // lblReferenceHint
-            // 
-            lblReferenceHint.Location = new Point(504, 284);
-            lblReferenceHint.Name = "lblReferenceHint";
-            lblReferenceHint.Text = "Required only when Card / QR is selected.";
-            lblReferenceHint.ForeColor = Color.FromArgb(108, 117, 125);
-            lblReferenceHint.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
-            lblReferenceHint.AutoSize = true;
-            lblReferenceHint.UseMnemonic = false;
-            lblReferenceHint.TabIndex = 10;
-            // 
-            // pnlDivider
-            // 
-            pnlDivider.Location = new Point(24, 340);
-            pnlDivider.Name = "pnlDivider";
-            pnlDivider.Size = new Size(1100, 1);
-            pnlDivider.BackColor = Color.FromArgb(222, 226, 230);
-            pnlDivider.TabIndex = 11;
-            // 
-            // lblAfterTitle
-            // 
-            lblAfterTitle.Location = new Point(24, 360);
-            lblAfterTitle.Name = "lblAfterTitle";
-            lblAfterTitle.Text = "After settlement";
-            lblAfterTitle.ForeColor = Color.FromArgb(44, 62, 80);
-            lblAfterTitle.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
-            lblAfterTitle.AutoSize = true;
-            lblAfterTitle.UseMnemonic = false;
-            lblAfterTitle.TabIndex = 12;
-            // 
-            // lblResStatusText
-            // 
-            lblResStatusText.Location = new Point(24, 412);
-            lblResStatusText.Name = "lblResStatusText";
-            lblResStatusText.Text = "Reservation status";
-            lblResStatusText.ForeColor = Color.FromArgb(44, 62, 80);
-            lblResStatusText.Font = new Font("Segoe UI", 11F);
-            lblResStatusText.AutoSize = true;
-            lblResStatusText.UseMnemonic = false;
-            lblResStatusText.TabIndex = 13;
-            // 
-            // lblResFrom
-            // 
-            lblResFrom.Location = new Point(260, 406);
-            lblResFrom.Name = "lblResFrom";
-            lblResFrom.Size = new Size(140, 34);
-            lblResFrom.Text = "Occupied";
-            lblResFrom.ForeColor = Color.White;
-            lblResFrom.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
-            lblResFrom.AutoSize = false;
-            lblResFrom.UseMnemonic = false;
-            lblResFrom.TextAlign = ContentAlignment.MiddleCenter;
-            lblResFrom.BackColor = Color.FromArgb(192, 57, 43);
-            lblResFrom.TabIndex = 14;
-            // 
-            // lblArrow1
-            // 
-            lblArrow1.Location = new Point(418, 406);
-            lblArrow1.Name = "lblArrow1";
-            lblArrow1.Text = "→";
-            lblArrow1.ForeColor = Color.FromArgb(44, 62, 80);
-            lblArrow1.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
-            lblArrow1.AutoSize = true;
-            lblArrow1.UseMnemonic = false;
-            lblArrow1.TabIndex = 15;
-            // 
-            // lblResTo
-            // 
-            lblResTo.Location = new Point(470, 406);
-            lblResTo.Name = "lblResTo";
-            lblResTo.Size = new Size(140, 34);
-            lblResTo.Text = "Completed";
-            lblResTo.ForeColor = Color.White;
-            lblResTo.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
-            lblResTo.AutoSize = false;
-            lblResTo.UseMnemonic = false;
-            lblResTo.TextAlign = ContentAlignment.MiddleCenter;
-            lblResTo.BackColor = Color.FromArgb(108, 117, 125);
-            lblResTo.TabIndex = 16;
-            // 
-            // lblRoomStatusText
-            // 
-            lblRoomStatusText.Location = new Point(24, 468);
-            lblRoomStatusText.Name = "lblRoomStatusText";
-            lblRoomStatusText.Text = "Room status";
-            lblRoomStatusText.ForeColor = Color.FromArgb(44, 62, 80);
-            lblRoomStatusText.Font = new Font("Segoe UI", 11F);
-            lblRoomStatusText.AutoSize = true;
-            lblRoomStatusText.UseMnemonic = false;
-            lblRoomStatusText.TabIndex = 17;
-            // 
-            // lblRoomFrom
-            // 
-            lblRoomFrom.Location = new Point(260, 462);
-            lblRoomFrom.Name = "lblRoomFrom";
-            lblRoomFrom.Size = new Size(140, 34);
-            lblRoomFrom.Text = "Occupied";
-            lblRoomFrom.ForeColor = Color.White;
-            lblRoomFrom.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
-            lblRoomFrom.AutoSize = false;
-            lblRoomFrom.UseMnemonic = false;
-            lblRoomFrom.TextAlign = ContentAlignment.MiddleCenter;
-            lblRoomFrom.BackColor = Color.FromArgb(192, 57, 43);
-            lblRoomFrom.TabIndex = 18;
-            // 
-            // lblArrow2
-            // 
-            lblArrow2.Location = new Point(418, 462);
-            lblArrow2.Name = "lblArrow2";
-            lblArrow2.Text = "→";
-            lblArrow2.ForeColor = Color.FromArgb(44, 62, 80);
-            lblArrow2.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
-            lblArrow2.AutoSize = true;
-            lblArrow2.UseMnemonic = false;
-            lblArrow2.TabIndex = 19;
-            // 
-            // lblRoomTo
-            // 
-            lblRoomTo.Location = new Point(470, 462);
-            lblRoomTo.Name = "lblRoomTo";
-            lblRoomTo.Size = new Size(140, 34);
-            lblRoomTo.Text = "Cleaning";
-            lblRoomTo.ForeColor = Color.FromArgb(44, 62, 80);
-            lblRoomTo.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
-            lblRoomTo.AutoSize = false;
-            lblRoomTo.UseMnemonic = false;
-            lblRoomTo.TextAlign = ContentAlignment.MiddleCenter;
-            lblRoomTo.BackColor = Color.Gold;
-            lblRoomTo.TabIndex = 20;
-            // 
-            // btnSettlePayment
-            // 
-            btnSettlePayment.Location = new Point(24, 560);
-            btnSettlePayment.Name = "btnSettlePayment";
-            btnSettlePayment.Size = new Size(480, 56);
-            btnSettlePayment.Text = "Settle Payment && Check-Out";
-            btnSettlePayment.BackColor = Color.FromArgb(40, 167, 69);
-            btnSettlePayment.ForeColor = Color.White;
-            btnSettlePayment.FlatStyle = FlatStyle.Flat;
-            btnSettlePayment.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
-            btnSettlePayment.UseVisualStyleBackColor = false;
-            btnSettlePayment.Cursor = Cursors.Hand;
-            btnSettlePayment.FlatAppearance.BorderSize = 0;
-            btnSettlePayment.TabIndex = 21;
-            btnSettlePayment.Click += btnSettlePayment_Click;
-            // 
-            // btnBackToBill
-            // 
-            btnBackToBill.Location = new Point(524, 560);
-            btnBackToBill.Name = "btnBackToBill";
-            btnBackToBill.Size = new Size(200, 56);
-            btnBackToBill.Text = "Back to Bill";
-            btnBackToBill.BackColor = Color.FromArgb(108, 117, 125);
-            btnBackToBill.ForeColor = Color.White;
-            btnBackToBill.FlatStyle = FlatStyle.Flat;
-            btnBackToBill.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            btnBackToBill.UseVisualStyleBackColor = false;
-            btnBackToBill.Cursor = Cursors.Hand;
-            btnBackToBill.FlatAppearance.BorderSize = 0;
-            btnBackToBill.TabIndex = 22;
-            btnBackToBill.Click += btnBackToBill_Click;
             // 
             // lblErrorMessage
             // 
+            lblErrorMessage.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
+            lblErrorMessage.ForeColor = Color.Red;
             lblErrorMessage.Location = new Point(24, 636);
             lblErrorMessage.Name = "lblErrorMessage";
             lblErrorMessage.Size = new Size(1000, 30);
-            lblErrorMessage.Text = "";
-            lblErrorMessage.ForeColor = Color.Red;
-            lblErrorMessage.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
-            lblErrorMessage.AutoSize = false;
-            lblErrorMessage.UseMnemonic = false;
-            lblErrorMessage.TextAlign = ContentAlignment.MiddleLeft;
             lblErrorMessage.TabIndex = 23;
+            lblErrorMessage.TextAlign = ContentAlignment.MiddleLeft;
+            lblErrorMessage.UseMnemonic = false;
+            // 
+            // btnBackToBill
+            // 
+            btnBackToBill.BackColor = Color.FromArgb(108, 117, 125);
+            btnBackToBill.Cursor = Cursors.Hand;
+            btnBackToBill.FlatAppearance.BorderSize = 0;
+            btnBackToBill.FlatStyle = FlatStyle.Flat;
+            btnBackToBill.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            btnBackToBill.ForeColor = Color.White;
+            btnBackToBill.Location = new Point(524, 560);
+            btnBackToBill.Name = "btnBackToBill";
+            btnBackToBill.Size = new Size(200, 56);
+            btnBackToBill.TabIndex = 22;
+            btnBackToBill.Text = "Back to Bill";
+            btnBackToBill.UseVisualStyleBackColor = false;
+            btnBackToBill.Click += btnBackToBill_Click;
+            // 
+            // btnSettlePayment
+            // 
+            btnSettlePayment.BackColor = Color.FromArgb(40, 167, 69);
+            btnSettlePayment.Cursor = Cursors.Hand;
+            btnSettlePayment.FlatAppearance.BorderSize = 0;
+            btnSettlePayment.FlatStyle = FlatStyle.Flat;
+            btnSettlePayment.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
+            btnSettlePayment.ForeColor = Color.White;
+            btnSettlePayment.Location = new Point(24, 560);
+            btnSettlePayment.Name = "btnSettlePayment";
+            btnSettlePayment.Size = new Size(480, 56);
+            btnSettlePayment.TabIndex = 21;
+            btnSettlePayment.Text = "Settle Payment && Check-Out";
+            btnSettlePayment.UseVisualStyleBackColor = false;
+            btnSettlePayment.Click += btnSettlePayment_Click;
+            // 
+            // lblRoomTo
+            // 
+            lblRoomTo.BackColor = Color.Gold;
+            lblRoomTo.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
+            lblRoomTo.ForeColor = Color.FromArgb(44, 62, 80);
+            lblRoomTo.Location = new Point(470, 462);
+            lblRoomTo.Name = "lblRoomTo";
+            lblRoomTo.Size = new Size(140, 34);
+            lblRoomTo.TabIndex = 20;
+            lblRoomTo.Text = "Cleaning";
+            lblRoomTo.TextAlign = ContentAlignment.MiddleCenter;
+            lblRoomTo.UseMnemonic = false;
+            // 
+            // lblArrow2
+            // 
+            lblArrow2.AutoSize = true;
+            lblArrow2.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            lblArrow2.ForeColor = Color.FromArgb(44, 62, 80);
+            lblArrow2.Location = new Point(418, 462);
+            lblArrow2.Name = "lblArrow2";
+            lblArrow2.Size = new Size(40, 37);
+            lblArrow2.TabIndex = 19;
+            lblArrow2.Text = "→";
+            lblArrow2.UseMnemonic = false;
+            // 
+            // lblRoomFrom
+            // 
+            lblRoomFrom.BackColor = Color.FromArgb(192, 57, 43);
+            lblRoomFrom.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
+            lblRoomFrom.ForeColor = Color.White;
+            lblRoomFrom.Location = new Point(260, 462);
+            lblRoomFrom.Name = "lblRoomFrom";
+            lblRoomFrom.Size = new Size(140, 34);
+            lblRoomFrom.TabIndex = 18;
+            lblRoomFrom.Text = "Occupied";
+            lblRoomFrom.TextAlign = ContentAlignment.MiddleCenter;
+            lblRoomFrom.UseMnemonic = false;
+            // 
+            // lblRoomStatusText
+            // 
+            lblRoomStatusText.AutoSize = true;
+            lblRoomStatusText.Font = new Font("Segoe UI", 11F);
+            lblRoomStatusText.ForeColor = Color.FromArgb(44, 62, 80);
+            lblRoomStatusText.Location = new Point(24, 468);
+            lblRoomStatusText.Name = "lblRoomStatusText";
+            lblRoomStatusText.Size = new Size(114, 25);
+            lblRoomStatusText.TabIndex = 17;
+            lblRoomStatusText.Text = "Room status";
+            lblRoomStatusText.UseMnemonic = false;
+            // 
+            // lblResTo
+            // 
+            lblResTo.BackColor = Color.FromArgb(108, 117, 125);
+            lblResTo.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
+            lblResTo.ForeColor = Color.White;
+            lblResTo.Location = new Point(470, 406);
+            lblResTo.Name = "lblResTo";
+            lblResTo.Size = new Size(140, 34);
+            lblResTo.TabIndex = 16;
+            lblResTo.Text = "Completed";
+            lblResTo.TextAlign = ContentAlignment.MiddleCenter;
+            lblResTo.UseMnemonic = false;
+            // 
+            // lblArrow1
+            // 
+            lblArrow1.AutoSize = true;
+            lblArrow1.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            lblArrow1.ForeColor = Color.FromArgb(44, 62, 80);
+            lblArrow1.Location = new Point(418, 406);
+            lblArrow1.Name = "lblArrow1";
+            lblArrow1.Size = new Size(40, 37);
+            lblArrow1.TabIndex = 15;
+            lblArrow1.Text = "→";
+            lblArrow1.UseMnemonic = false;
+            // 
+            // lblResFrom
+            // 
+            lblResFrom.BackColor = Color.FromArgb(192, 57, 43);
+            lblResFrom.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
+            lblResFrom.ForeColor = Color.White;
+            lblResFrom.Location = new Point(260, 406);
+            lblResFrom.Name = "lblResFrom";
+            lblResFrom.Size = new Size(140, 34);
+            lblResFrom.TabIndex = 14;
+            lblResFrom.Text = "Occupied";
+            lblResFrom.TextAlign = ContentAlignment.MiddleCenter;
+            lblResFrom.UseMnemonic = false;
+            // 
+            // lblResStatusText
+            // 
+            lblResStatusText.AutoSize = true;
+            lblResStatusText.Font = new Font("Segoe UI", 11F);
+            lblResStatusText.ForeColor = Color.FromArgb(44, 62, 80);
+            lblResStatusText.Location = new Point(24, 412);
+            lblResStatusText.Name = "lblResStatusText";
+            lblResStatusText.Size = new Size(163, 25);
+            lblResStatusText.TabIndex = 13;
+            lblResStatusText.Text = "Reservation status";
+            lblResStatusText.UseMnemonic = false;
+            // 
+            // lblAfterTitle
+            // 
+            lblAfterTitle.AutoSize = true;
+            lblAfterTitle.Font = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
+            lblAfterTitle.ForeColor = Color.FromArgb(44, 62, 80);
+            lblAfterTitle.Location = new Point(24, 360);
+            lblAfterTitle.Name = "lblAfterTitle";
+            lblAfterTitle.Size = new Size(177, 30);
+            lblAfterTitle.TabIndex = 12;
+            lblAfterTitle.Text = "After settlement";
+            lblAfterTitle.UseMnemonic = false;
+            // 
+            // pnlDivider
+            // 
+            pnlDivider.BackColor = Color.FromArgb(222, 226, 230);
+            pnlDivider.Location = new Point(24, 340);
+            pnlDivider.Name = "pnlDivider";
+            pnlDivider.Size = new Size(1100, 1);
+            pnlDivider.TabIndex = 11;
+            // 
+            // lblReferenceHint
+            // 
+            lblReferenceHint.AutoSize = true;
+            lblReferenceHint.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
+            lblReferenceHint.ForeColor = Color.FromArgb(108, 117, 125);
+            lblReferenceHint.Location = new Point(504, 284);
+            lblReferenceHint.Name = "lblReferenceHint";
+            lblReferenceHint.Size = new Size(315, 23);
+            lblReferenceHint.TabIndex = 10;
+            lblReferenceHint.Text = "Required only when Card / QR is selected.";
+            lblReferenceHint.UseMnemonic = false;
+            // 
+            // txtReferenceNumber
+            // 
+            txtReferenceNumber.Enabled = false;
+            txtReferenceNumber.Font = new Font("Segoe UI", 11F);
+            txtReferenceNumber.Location = new Point(24, 278);
+            txtReferenceNumber.Name = "txtReferenceNumber";
+            txtReferenceNumber.Size = new Size(440, 32);
+            txtReferenceNumber.TabIndex = 9;
+            txtReferenceNumber.TextChanged += txtReferenceNumber_TextChanged;
+            // 
+            // lblReference
+            // 
+            lblReference.AutoSize = true;
+            lblReference.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblReference.ForeColor = Color.FromArgb(44, 62, 80);
+            lblReference.Location = new Point(24, 250);
+            lblReference.Name = "lblReference";
+            lblReference.Size = new Size(287, 23);
+            lblReference.TabIndex = 8;
+            lblReference.Text = "Reference Number (Card / QR only)";
+            lblReference.UseMnemonic = false;
+            // 
+            // txtChangeDue
+            // 
+            txtChangeDue.BackColor = Color.FromArgb(236, 239, 241);
+            txtChangeDue.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            txtChangeDue.ForeColor = Color.FromArgb(40, 167, 69);
+            txtChangeDue.Location = new Point(504, 188);
+            txtChangeDue.Name = "txtChangeDue";
+            txtChangeDue.ReadOnly = true;
+            txtChangeDue.Size = new Size(440, 32);
+            txtChangeDue.TabIndex = 7;
+            // 
+            // lblChangeDue
+            // 
+            lblChangeDue.AutoSize = true;
+            lblChangeDue.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblChangeDue.ForeColor = Color.FromArgb(44, 62, 80);
+            lblChangeDue.Location = new Point(504, 160);
+            lblChangeDue.Name = "lblChangeDue";
+            lblChangeDue.Size = new Size(105, 23);
+            lblChangeDue.TabIndex = 6;
+            lblChangeDue.Text = "Change Due";
+            lblChangeDue.UseMnemonic = false;
+            // 
+            // txtCashTendered
+            // 
+            txtCashTendered.Font = new Font("Segoe UI", 11F);
+            txtCashTendered.Location = new Point(24, 188);
+            txtCashTendered.Name = "txtCashTendered";
+            txtCashTendered.Size = new Size(440, 32);
+            txtCashTendered.TabIndex = 5;
+            txtCashTendered.TextChanged += txtCashTendered_TextChanged;
+            // 
+            // lblCashTendered
+            // 
+            lblCashTendered.AutoSize = true;
+            lblCashTendered.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblCashTendered.ForeColor = Color.FromArgb(44, 62, 80);
+            lblCashTendered.Location = new Point(24, 160);
+            lblCashTendered.Name = "lblCashTendered";
+            lblCashTendered.Size = new Size(122, 23);
+            lblCashTendered.TabIndex = 4;
+            lblCashTendered.Text = "Cash Tendered";
+            lblCashTendered.UseMnemonic = false;
+            // 
+            // rdoCard
+            // 
+            rdoCard.AutoSize = true;
+            rdoCard.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            rdoCard.ForeColor = Color.FromArgb(44, 62, 80);
+            rdoCard.Location = new Point(200, 100);
+            rdoCard.Name = "rdoCard";
+            rdoCard.Size = new Size(117, 29);
+            rdoCard.TabIndex = 3;
+            rdoCard.Text = "Card / QR";
+            rdoCard.CheckedChanged += PaymentMethod_CheckedChanged;
+            // 
+            // rdoCash
+            // 
+            rdoCash.AutoSize = true;
+            rdoCash.Checked = true;
+            rdoCash.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            rdoCash.ForeColor = Color.FromArgb(44, 62, 80);
+            rdoCash.Location = new Point(24, 100);
+            rdoCash.Name = "rdoCash";
+            rdoCash.Size = new Size(74, 29);
+            rdoCash.TabIndex = 2;
+            rdoCash.TabStop = true;
+            rdoCash.Text = "Cash";
+            rdoCash.CheckedChanged += PaymentMethod_CheckedChanged;
+            // 
+            // lblMethod
+            // 
+            lblMethod.AutoSize = true;
+            lblMethod.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            lblMethod.ForeColor = Color.FromArgb(44, 62, 80);
+            lblMethod.Location = new Point(24, 70);
+            lblMethod.Name = "lblMethod";
+            lblMethod.Size = new Size(144, 23);
+            lblMethod.TabIndex = 1;
+            lblMethod.Text = "Payment Method";
+            lblMethod.UseMnemonic = false;
+            // 
+            // lblPaymentTitle
+            // 
+            lblPaymentTitle.AutoSize = true;
+            lblPaymentTitle.Font = new Font("Segoe UI Semibold", 15F, FontStyle.Bold);
+            lblPaymentTitle.ForeColor = Color.FromArgb(44, 62, 80);
+            lblPaymentTitle.Location = new Point(20, 16);
+            lblPaymentTitle.Name = "lblPaymentTitle";
+            lblPaymentTitle.Size = new Size(114, 35);
+            lblPaymentTitle.TabIndex = 0;
+            lblPaymentTitle.Text = "Payment";
+            lblPaymentTitle.UseMnemonic = false;
             // 
             // PaymentUserControl
             // 
@@ -574,8 +586,6 @@ namespace UI
             pnlTotalDue.PerformLayout();
             pnlPayment.ResumeLayout(false);
             pnlPayment.PerformLayout();
-            pnlDivider.ResumeLayout(false);
-            pnlDivider.PerformLayout();
             ResumeLayout(false);
         }
 

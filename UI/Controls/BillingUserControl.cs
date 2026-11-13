@@ -1,38 +1,23 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
+using HotelReservation.BusinessLogic.Controller;
+using Model;
 
 namespace UI.Controls
 {
-  public partial class BillingUserControl : UserControl
+    public partial class BillingUserControl : UserControl
     {
-        private static readonly bool DemoMode = true;
-
-        public event EventHandler<BillSummaryEventArgs> ProceedToPaymentRequested;
+        private readonly BillingController billingController = new BillingController();
 
         private DataTable foodTable;
-        private DemoStay currentStay;
+        private ActiveStayBillingModel currentStay;
+        private decimal roomCharge;
+        private decimal overstayCharge;
+        private decimal foodCharge;
         private decimal grandTotal;
-
-        private class DemoStay
-        {
-            public int ReservationId;
-            public string Display;
-            public string GuestName;
-            public string Room;
-            public int Adults;
-            public int Children;
-            public DateTime CheckIn;
-            public DateTime ExpectedCheckOut;
-            public decimal RatePerAdult;
-            public decimal OverstayRatePerHour;
-            public override string ToString() { return Display; }
-        }
-
-        private class FoodItem
-        {
-            public string Name;
-            public decimal Price;
-            public override string ToString() { return Name + "  -  ₱" + Price.ToString("N2"); }
-        }
 
         public BillingUserControl()
         {
@@ -43,96 +28,81 @@ namespace UI.Controls
 
         private void BillingUserControl_Load(object sender, EventArgs e)
         {
-            if (DesignMode)
-            {
-                return;
-            }
-
-            if (DemoMode)
-            {
-                LoadFoodMenu();
-                LoadActiveStays();
-            }
+            if (DesignMode) return;
+            RefreshBillingData();
         }
 
-        // ---------------------------------------------------------------- data loading
+        public void RefreshBillingData()
+        {
+            LoadFoodMenu();
+            LoadActiveStays();
+        }
+
         private void LoadActiveStays()
         {
-            // TODO: replace with the controller call that returns reservations with Status = 'Occupied'
-            List<DemoStay> stays = new List<DemoStay>();
+            try
+            {
+                List<ActiveStayBillingModel> stays = billingController.GetActiveOccupiedStays();
+                cmbActiveStay.DataSource = null;
+                cmbActiveStay.DataSource = stays;
+                cmbActiveStay.SelectedIndex = stays.Count > 0 ? 0 : -1;
 
-            DateTime now = DateTime.Now;
-            DemoStay a = new DemoStay();
-            a.ReservationId = 7;
-            a.Display = "Room 1001 - Carlo Mendoza";
-            a.GuestName = "Carlo Mendoza";
-            a.Room = "1001 - Economy";
-            a.Adults = 2;
-            a.Children = 1;
-            a.CheckIn = now.AddHours(-24.5);
-            a.ExpectedCheckOut = a.CheckIn.AddHours(22);
-            a.RatePerAdult = 1200m;
-            a.OverstayRatePerHour = 200m;
-            stays.Add(a);
-
-            DemoStay b = new DemoStay();
-            b.ReservationId = 8;
-            b.Display = "Room 1010 - Jose Ramos";
-            b.GuestName = "Jose Ramos";
-            b.Room = "1010 - Economy";
-            b.Adults = 10;
-            b.Children = 3;
-            b.CheckIn = now.AddHours(-10);
-            b.ExpectedCheckOut = b.CheckIn.AddHours(22);
-            b.RatePerAdult = 1200m;
-            b.OverstayRatePerHour = 200m;
-            stays.Add(b);
-
-            cmbActiveStay.DataSource = null;
-            cmbActiveStay.DataSource = stays;
-            cmbActiveStay.SelectedIndex = stays.Count > 0 ? 0 : -1;
+                if (stays.Count == 0)
+                {
+                    ClearStayFields();
+                }
+            }
+            catch (Exception ex)
+            {
+                lblErrorMessage.Text = "Error loading occupied stays: " + ex.Message;
+            }
         }
 
         private void LoadFoodMenu()
         {
-            // TODO: replace with the fixed food menu (name and price) from the database
-            List<FoodItem> menu = new List<FoodItem>();
-            menu.Add(new FoodItem { Name = "Breakfast Set", Price = 250m });
-            menu.Add(new FoodItem { Name = "Chicken Meal", Price = 280m });
-            menu.Add(new FoodItem { Name = "Burger & Fries", Price = 220m });
-            menu.Add(new FoodItem { Name = "Pancit Canton", Price = 180m });
-            menu.Add(new FoodItem { Name = "Coffee", Price = 70m });
-            menu.Add(new FoodItem { Name = "Soft Drink", Price = 60m });
-            menu.Add(new FoodItem { Name = "Bottled Water", Price = 40m });
-
-            cmbFoodItem.DataSource = menu;
-            cmbFoodItem.SelectedIndex = menu.Count > 0 ? 0 : -1;
+            try
+            {
+                List<MenuItemModel> menu = billingController.GetAvailableMenuItems();
+                cmbFoodItem.DataSource = null;
+                cmbFoodItem.DataSource = menu;
+                cmbFoodItem.SelectedIndex = menu.Count > 0 ? 0 : -1;
+            }
+            catch (Exception ex)
+            {
+                lblErrorMessage.Text = "Error loading menu items: " + ex.Message;
+            }
         }
 
-        // ---------------------------------------------------------------- events
+        private void ClearStayFields()
+        {
+            currentStay = null;
+            txtGuestName.Clear();
+            txtRoom.Clear();
+            txtAdults.Clear();
+            txtChildren.Clear();
+            txtCheckIn.Clear();
+            txtExpectedCheckOut.Clear();
+            txtNow.Clear();
+            txtTimePast.Clear();
+            nudOverstayHours.Value = 0;
+            foodTable.Rows.Clear();
+            RecalculateTotals();
+        }
+
         private void cmbActiveStay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            currentStay = cmbActiveStay.SelectedItem as DemoStay;
+            currentStay = cmbActiveStay.SelectedItem as ActiveStayBillingModel;
             lblErrorMessage.Text = "";
             foodTable.Rows.Clear();
 
             if (currentStay == null)
             {
-                txtGuestName.Clear();
-                txtRoom.Clear();
-                txtAdults.Clear();
-                txtChildren.Clear();
-                txtCheckIn.Clear();
-                txtExpectedCheckOut.Clear();
-                txtNow.Clear();
-                txtTimePast.Clear();
-                nudOverstayHours.Value = 0;
-                RecalculateTotals();
+                ClearStayFields();
                 return;
             }
 
             txtGuestName.Text = currentStay.GuestName;
-            txtRoom.Text = currentStay.Room;
+            txtRoom.Text = currentStay.RoomDisplay;
             txtAdults.Text = currentStay.Adults.ToString();
             txtChildren.Text = currentStay.Children.ToString();
             txtCheckIn.Text = currentStay.CheckIn.ToString("MMM dd, yyyy  hh:mm tt");
@@ -144,11 +114,11 @@ namespace UI.Controls
             TimeSpan late = now - currentStay.ExpectedCheckOut;
             if (late.TotalMinutes > 0)
             {
-                txtTimePast.Text = ((int)late.TotalHours).ToString() + " h " + late.Minutes.ToString() + " min";
+                txtTimePast.Text = $"{(int)late.TotalHours} h {late.Minutes} min";
                 txtTimePast.ForeColor = Color.DarkOrange;
-                // Suggested billable hours = whole hours late (the front desk can change it)
-                decimal suggested = (decimal)Math.Floor(late.TotalHours);
-                nudOverstayHours.Value = Math.Min(suggested, nudOverstayHours.Maximum);
+
+                int suggestedHours = (int)late.TotalHours + (late.Minutes >= 30 ? 1 : 0);
+                nudOverstayHours.Value = Math.Min((decimal)suggestedHours, nudOverstayHours.Maximum);
             }
             else
             {
@@ -168,17 +138,16 @@ namespace UI.Controls
         private void btnAddFood_Click(object sender, EventArgs e)
         {
             lblErrorMessage.Text = "";
-            FoodItem item = cmbFoodItem.SelectedItem as FoodItem;
+            MenuItemModel item = cmbFoodItem.SelectedItem as MenuItemModel;
 
             if (currentStay == null)
             {
                 lblErrorMessage.Text = "Select an active stay first.";
                 return;
             }
-
             if (item == null)
             {
-                lblErrorMessage.Text = "Select a food item to add.";
+                lblErrorMessage.Text = "Select a food or service item to add.";
                 return;
             }
 
@@ -186,17 +155,17 @@ namespace UI.Controls
 
             foreach (DataRow row in foodTable.Rows)
             {
-                if (row["Item"].ToString() == item.Name)
+                if (Convert.ToInt32(row["MenuItemId"]) == item.MenuItemId)
                 {
                     int newQty = Convert.ToInt32(row["Qty"]) + qty;
                     row["Qty"] = newQty;
-                    row["Amount"] = newQty * item.Price;
+                    row["Amount"] = newQty * item.UnitPrice;
                     RecalculateTotals();
                     return;
                 }
             }
 
-            foodTable.Rows.Add(item.Name, qty, item.Price, qty * item.Price);
+            foodTable.Rows.Add(item.MenuItemId, item.ItemName, qty, item.UnitPrice, qty * item.UnitPrice);
             RecalculateTotals();
         }
 
@@ -206,12 +175,11 @@ namespace UI.Controls
 
             if (dgvFoodOrders.CurrentRow == null)
             {
-                lblErrorMessage.Text = "Select a food row to remove.";
+                lblErrorMessage.Text = "Select an item row to remove.";
                 return;
             }
 
-            DataRowView view = dgvFoodOrders.CurrentRow.DataBoundItem as DataRowView;
-            if (view != null)
+            if (dgvFoodOrders.CurrentRow.DataBoundItem is DataRowView view)
             {
                 foodTable.Rows.Remove(view.Row);
                 RecalculateTotals();
@@ -228,38 +196,76 @@ namespace UI.Controls
                 return;
             }
 
-            if (ProceedToPaymentRequested == null)
+            var orders = new List<FoodOrderItemModel>();
+            foreach (DataRow row in foodTable.Rows)
             {
-                // Simplified, non-technical message box text:
-                MessageBox.Show("The payment window is not linked to the main dashboard yet.",
-                                "Payment Form Missing", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                orders.Add(new FoodOrderItemModel
+                {
+                    MenuItemId = Convert.ToInt32(row["MenuItemId"]),
+                    ItemName = row["Item"].ToString(),
+                    Quantity = Convert.ToInt32(row["Qty"]),
+                    UnitPrice = Convert.ToDecimal(row["Price"])
+                });
             }
 
-            PaymentUserControl payment = new PaymentUserControl();
-            payment.Show();
+            var settlement = new CheckoutSettlementModel
+            {
+                PrimaryReservationId = currentStay.PrimaryReservationId,
+                ReservationIds = new List<int>(currentStay.ReservationIds),
+                GuestName = currentStay.GuestName,
+                RoomDisplay = currentStay.RoomDisplay,
+                CheckInText = txtCheckIn.Text,
+                CheckOutText = txtNow.Text,
+                GuestsText = $"{currentStay.Adults} adult(s), {currentStay.Children} child(ren)",
+                RoomCharge = roomCharge,
+                OverstayCharge = overstayCharge,
+                FoodCharge = foodCharge,
+                FoodOrders = orders
+            };
+            Control container = this.Parent;
+            if (container != null)
+            {
+                PaymentUserControl paymentUc = new PaymentUserControl();
+                paymentUc.Dock = DockStyle.Fill;
+                paymentUc.LoadSettlement(settlement);
 
-            BillSummaryEventArgs args = new BillSummaryEventArgs();
-            args.ReservationId = currentStay.ReservationId;
-            args.GrandTotal = grandTotal;
-            ProceedToPaymentRequested(payment, args);
+                paymentUc.BackToBillRequested += (s, args) =>
+                {
+                    container.Controls.Remove(paymentUc);
+                    paymentUc.Dispose();
+                    this.Visible = true;
+                    this.BringToFront();
+                };
+
+                paymentUc.CheckoutCompleted += (s, args) =>
+                {
+                    container.Controls.Remove(paymentUc);
+                    paymentUc.Dispose();
+                    this.Visible = true;
+                    this.BringToFront();
+                    RefreshBillingData();
+                };
+
+                this.Visible = false;
+                container.Controls.Add(paymentUc);
+                paymentUc.BringToFront();
+            }
         }
 
-        // ---------------------------------------------------------------- helpers
         private void RecalculateTotals()
         {
-            decimal roomCharge = 0m;
-            decimal overstayCharge = 0m;
-            decimal foodCharge = 0m;
+            roomCharge = 0m;
+            overstayCharge = 0m;
+            foodCharge = 0m;
 
             if (currentStay != null)
             {
-                // TODO: move these formulas into the BillingController so the form only displays results
-                roomCharge = currentStay.Adults * currentStay.RatePerAdult;
-                overstayCharge = (int)nudOverstayHours.Value * currentStay.Adults * currentStay.OverstayRatePerHour;
+                roomCharge = currentStay.RoomChargeTotal;
+                int hours = (int)nudOverstayHours.Value;
+                overstayCharge = billingController.CalculateOverstayCharge(currentStay, hours);
 
-                lblRoomChargeDesc.Text = "Room Charge  (" + currentStay.Adults.ToString() + " adults x " + Peso(currentStay.RatePerAdult) + ")";
-                lblOverstayDesc.Text = "Overstay  (" + ((int)nudOverstayHours.Value).ToString() + " h x " + currentStay.Adults.ToString() + " adults x " + Peso(currentStay.OverstayRatePerHour) + ")";
+                lblRoomChargeDesc.Text = $"Room Charge  ({currentStay.RateBreakdownLabel})";
+                lblOverstayDesc.Text = $"Overstay  ({hours} h × {currentStay.OverstayBreakdownLabel})";
             }
             else
             {
@@ -272,32 +278,36 @@ namespace UI.Controls
                 foodCharge += Convert.ToDecimal(row["Amount"]);
             }
 
-            grandTotal = roomCharge + overstayCharge + foodCharge;
+            decimal subTotal = roomCharge + overstayCharge + foodCharge;
+            decimal vat = Math.Round(subTotal * 0.12m, 2);
+            grandTotal = subTotal + vat;
 
             lblRoomChargeValue.Text = Peso(roomCharge);
             lblOverstayValue.Text = Peso(overstayCharge);
             lblFoodValue.Text = Peso(foodCharge);
-            lblGrandTotalValue.Text = Peso(grandTotal);
+            lblSubtotalValue.Text = Peso(subTotal); 
+            lblVatValue.Text = Peso(vat);           
+            lblGrandTotalValue.Text = Peso(grandTotal); 
         }
 
         private void BuildFoodTable()
         {
             foodTable = new DataTable();
+            foodTable.Columns.Add("MenuItemId", typeof(int));
             foodTable.Columns.Add("Item", typeof(string));
             foodTable.Columns.Add("Qty", typeof(int));
             foodTable.Columns.Add("Price", typeof(decimal));
             foodTable.Columns.Add("Amount", typeof(decimal));
+
             dgvFoodOrders.DataSource = foodTable;
+            dgvFoodOrders.Columns["MenuItemId"].Visible = false;
             dgvFoodOrders.Columns["Price"].DefaultCellStyle.Format = "₱#,##0.00";
             dgvFoodOrders.Columns["Amount"].DefaultCellStyle.Format = "₱#,##0.00";
             dgvFoodOrders.Columns["Price"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvFoodOrders.Columns["Amount"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
 
-        private static string Peso(decimal value)
-        {
-            return "₱" + value.ToString("N2");
-        }
+        private static string Peso(decimal value) => "₱" + value.ToString("N2");
 
         private static void StyleGrid(DataGridView grid)
         {
@@ -312,11 +322,5 @@ namespace UI.Controls
             grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
             grid.RowTemplate.Height = 32;
         }
-    }
-
-    public class BillSummaryEventArgs : EventArgs
-    {
-        public int ReservationId { get; set; }
-        public decimal GrandTotal { get; set; }
     }
 }
