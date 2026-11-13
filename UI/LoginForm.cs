@@ -1,11 +1,8 @@
-﻿using HotelReservation;
-using HotelReservation.BusinessLogic.Controller;
-using System;
-using System.Collections;
-using System.Drawing;
-using System.Windows.Forms;
-using UI;
+﻿using HotelReservation.BusinessLogic.Controller;
 using Model;
+using System.Collections;
+using UI;
+using UI.Dialogs.LogIn;
 
 namespace HotelReservation
 {
@@ -76,7 +73,7 @@ namespace HotelReservation
             string role = cmbRole.SelectedItem != null ? cmbRole.SelectedItem.ToString() : "";
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(role))
             {
-                lblErrorMessage.Text = "Please fill in Username, Password, and select a Role.";
+                lblErrorMessage.Text = "Please fill fields and select a Role.";
                 lblErrorMessage.Visible = true;
                 return;
             }
@@ -91,9 +88,27 @@ namespace HotelReservation
             }
             else
             {
-                lblErrorMessage.Text = "Invalid username, password, or role mismatch.";
+                lblErrorMessage.Text = "Invalid field or role mismatch.";
                 lblErrorMessage.Visible = true;
             }
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            using (ExitConfirmDialog confirmDialog = new ExitConfirmDialog())
+            {
+                DialogResult result = confirmDialog.ShowDialog(this);
+
+                if (result == DialogResult.Yes)
+                {
+                    Application.Exit();
+                }
+            }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

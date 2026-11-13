@@ -11,7 +11,6 @@
     @IDNum NVARCHAR(50)
 AS
 BEGIN
-    SET NOCOUNT ON;
     UPDATE tblGuests
     SET ContactNo = @ContactNo,
         FirstName = @FirstName,

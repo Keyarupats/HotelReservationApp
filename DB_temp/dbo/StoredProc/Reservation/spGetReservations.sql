@@ -3,7 +3,6 @@
     @FilterDate DATETIME = NULL
 AS
 BEGIN
-    SET NOCOUNT ON;
     SELECT 
         res.ReservationId,
         res.ReservationCode,

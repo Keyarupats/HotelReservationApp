@@ -5,7 +5,6 @@
     @Children INT
 AS
 BEGIN
-    SET NOCOUNT ON;
 
     SELECT 
         r.RoomId,

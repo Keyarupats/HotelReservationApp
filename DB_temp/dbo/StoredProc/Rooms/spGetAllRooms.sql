@@ -2,7 +2,6 @@
     @TypeNameFilter NVARCHAR(30) = 'ALL'
 AS
 BEGIN
-    SET NOCOUNT ON;
     SELECT 
         r.RoomId,
         rt.RoomTypeId,
