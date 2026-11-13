@@ -18,7 +18,6 @@ namespace UI
             InitializeComponent();
             roomController = new RoomController();
 
-            // 1. Populate the Tier ComboBox (Default: ALL)
             cmbRoomType.Items.Clear();
             cmbRoomType.Items.Add("ALL");
             cmbRoomType.Items.Add("Economy");
@@ -26,13 +25,10 @@ namespace UI
             cmbRoomType.Items.Add("Suite");
             cmbRoomType.SelectedIndex = 0;
 
-            // 2. Set default date to today
             dtpViewDate.Value = DateTime.Today;
 
-            // 3. Reset labels and underlines to default
             ResetStatusIndicators();
 
-            // 4. Initial load of rooms
             LoadRooms();
         }
 
@@ -57,36 +53,42 @@ namespace UI
 
         private void ResetStatusIndicators()
         {
-            // Hide all underline panels
             pnlUnderlineAvailable.Visible = false;
             pnlUnderlineReserved.Visible = false;
             pnlUnderlineOccupied.Visible = false;
             pnlUnderlineCleaning.Visible = false;
             pnlUnderlineMaintenance.Visible = false;
 
-            // Reset label vertical positions (default Top = 30)
             lblAvailable.Top = 30;
             lblReserved.Top = 30;
             lblOccupied.Top = 30;
             lblCleaning.Top = 30;
             lblMaintenance.Top = 30;
 
-            // Hide the edit rates button by default
+            SetLabelClickable(lblAvailable, true);
+            SetLabelClickable(lblReserved, true);
+            SetLabelClickable(lblOccupied, true);
+            SetLabelClickable(lblCleaning, true);
+            SetLabelClickable(lblMaintenance, true);
+
             btnEditRates.Visible = false;
         }
 
-        // --- Status Label Click Events ---
+        private void SetLabelClickable(Label lbl, bool clickable)
+        {
+            lbl.Enabled = clickable;
+            lbl.Cursor = clickable ? Cursors.Hand : Cursors.Default;
+        }
 
         private void lblAvailable_Click(object sender, EventArgs e)
         {
             ResetStatusIndicators();
 
-            // Shift up 5px and show underline
             lblAvailable.Top = 25;
             pnlUnderlineAvailable.Visible = true;
+            SetLabelClickable(lblAvailable, false); 
             activeStatusFilter = "Available";
 
-            // If logged in as Admin, show the Edit Rates button!
             if (UserSession.CurrentRole == "Admin")
             {
                 btnEditRates.Visible = true;
@@ -101,6 +103,7 @@ namespace UI
 
             lblReserved.Top = 25;
             pnlUnderlineReserved.Visible = true;
+            SetLabelClickable(lblReserved, false); 
             activeStatusFilter = "Reserved";
 
             LoadRooms();
@@ -112,6 +115,7 @@ namespace UI
 
             lblOccupied.Top = 25;
             pnlUnderlineOccupied.Visible = true;
+            SetLabelClickable(lblOccupied, false); 
             activeStatusFilter = "Occupied";
 
             LoadRooms();
@@ -123,6 +127,7 @@ namespace UI
 
             lblCleaning.Top = 25;
             pnlUnderlineCleaning.Visible = true;
+            SetLabelClickable(lblCleaning, false); 
             activeStatusFilter = "Cleaning";
 
             LoadRooms();
@@ -134,12 +139,12 @@ namespace UI
 
             lblMaintenance.Top = 25;
             pnlUnderlineMaintenance.Visible = true;
+            SetLabelClickable(lblMaintenance, false); 
             activeStatusFilter = "Maintenance";
 
             LoadRooms();
         }
 
-        // --- Main Room Card Loading Logic ---
 
         public void LoadRooms()
         {
@@ -151,14 +156,11 @@ namespace UI
             flpRooms.Controls.Clear();
             selectedCardControl = null;
 
-            // Tier Filter (ALL, Economy, Deluxe, Suite)
             string tierFilter = "ALL";
             if (cmbRoomType.SelectedItem != null)
             {
                 tierFilter = cmbRoomType.SelectedItem.ToString().Trim();
             }
-
-            // Fetch rooms from SQL Server
             List<RoomModel> allRooms = roomController.GetRooms("All");
 
             if (allRooms == null || allRooms.Count == 0)
@@ -179,19 +181,15 @@ namespace UI
                 bool matchesTier = false;
                 bool matchesStatus = false;
 
-                // 1. Check Tier Match
                 if (tierFilter == "ALL" || string.Equals(room.TypeName.Trim(), tierFilter, StringComparison.OrdinalIgnoreCase))
                 {
                     matchesTier = true;
                 }
-
-                // 2. Check Status Match (from clicked status label)
                 if (activeStatusFilter == "All" || string.Equals(room.Status.Trim(), activeStatusFilter, StringComparison.OrdinalIgnoreCase))
                 {
                     matchesStatus = true;
                 }
 
-                // If both match, display the card
                 if (matchesTier && matchesStatus)
                 {
                     RoomCardControl card = new RoomCardControl();
@@ -206,9 +204,7 @@ namespace UI
 
         public void RefreshRoomView()
         {
-            // Re-fetch all rooms from the controller and re-bind/re-draw your room cards
             List<RoomModel> rooms = roomController.GetRooms(null);
-            // Draw or bind your RoomCardControls here...
         }
 
         private void OnRoomCard_Clicked(object sender, EventArgs e)
@@ -275,86 +271,118 @@ namespace UI
 
         private void btnEditRates_Click(object sender, EventArgs e)
         {
-            Form dialog = new Form();
-            dialog.Text = "Admin - Update Room Tier Rate";
-            dialog.Size = new Size(420, 260);
-            dialog.StartPosition = FormStartPosition.CenterParent;
-            dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-            dialog.MaximizeBox = false;
-            dialog.MinimizeBox = false;
-            dialog.BackColor = Color.White;
-            Label lblTier = new Label();
-            lblTier.Text = "Select Tier:";
-            lblTier.Location = new Point(30, 25);
-            lblTier.AutoSize = true;
-            lblTier.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            ComboBox cmbTierSelect = new ComboBox();
-            cmbTierSelect.Items.AddRange(new object[] { "Economy", "Deluxe", "Suite" });
-            cmbTierSelect.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbTierSelect.Location = new Point(30, 50);
-            cmbTierSelect.Size = new Size(340, 28);
-            cmbTierSelect.Font = new Font("Segoe UI", 10F);
-            Label lblRate = new Label();
-            lblRate.Text = "Rate per Adult (₱):";
-            lblRate.Location = new Point(30, 95);
-            lblRate.AutoSize = true;
-            lblRate.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            TextBox txtRate = new TextBox();
-            txtRate.Location = new Point(30, 120);
-            txtRate.Size = new Size(340, 28);
-            txtRate.Font = new Font("Segoe UI", 11F);
-            // Event: When selection in ComboBox changes, automatically load the rate from SQL!
-            cmbTierSelect.SelectedIndexChanged += new EventHandler(delegate (object s, EventArgs ev)
+            if (UserSession.CurrentRole != "Admin")
             {
-                string selectedTier = cmbTierSelect.SelectedItem.ToString();
-                decimal currentRate = roomController.GetTierRate(selectedTier);
-                txtRate.Text = currentRate.ToString("0.00");
-            });
-            // Default select Economy on load
-            cmbTierSelect.SelectedIndex = 0;
-            Button btnSave = new Button();
-            btnSave.Text = "Update Rate";
-            btnSave.Location = new Point(230, 165);
-            btnSave.Size = new Size(140, 36);
-            btnSave.BackColor = Color.FromArgb(2, 132, 199);
-            btnSave.ForeColor = Color.White;
-            btnSave.FlatStyle = FlatStyle.Flat;
-            btnSave.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            // Event: Save new rate to SQL
-            btnSave.Click += new EventHandler(delegate (object s, EventArgs ev)
+                MessageBox.Show("Only Administrators can update room rates.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (Form dialog = new Form())
             {
-                decimal newRate = 0;
-                if (decimal.TryParse(txtRate.Text.Trim(), out newRate) && newRate > 0)
+                dialog.Text = "Admin - Update Room Tier Rate";
+                dialog.Size = new Size(420, 260);
+                dialog.StartPosition = FormStartPosition.CenterParent;
+                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                dialog.MaximizeBox = false;
+                dialog.MinimizeBox = false;
+                dialog.BackColor = Color.White;
+
+                Label lblTier = new Label
                 {
-                    string tier = cmbTierSelect.SelectedItem.ToString();
-                    // Real SQL UPDATE
-                    bool success = roomController.UpdateTierRate(tier, newRate);
-                    if (success)
+                    Text = "Select Tier:",
+                    Location = new Point(30, 25),
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+                };
+
+                ComboBox cmbTierSelect = new ComboBox
+                {
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Location = new Point(30, 50),
+                    Size = new Size(340, 28),
+                    Font = new Font("Segoe UI", 10F)
+                };
+                cmbTierSelect.Items.AddRange(new object[] { "Economy", "Deluxe", "Suite" });
+
+                Label lblRate = new Label
+                {
+                    Text = "Rate per Adult (₱):",
+                    Location = new Point(30, 95),
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+                };
+
+                TextBox txtRate = new TextBox
+                {
+                    Location = new Point(30, 120),
+                    Size = new Size(340, 28),
+                    Font = new Font("Segoe UI", 11F)
+                };
+
+                cmbTierSelect.SelectedIndexChanged += (s, ev) =>
+                {
+                    string selectedTier = cmbTierSelect.SelectedItem.ToString();
+                    decimal currentRate = roomController.GetTierRate(selectedTier);
+                    txtRate.Text = currentRate.ToString("0.00");
+                };
+                cmbTierSelect.SelectedIndex = 0;
+
+                Button btnSave = new Button
+                {
+                    Text = "Update Rate",
+                    Location = new Point(230, 165),
+                    Size = new Size(140, 36),
+                    BackColor = Color.FromArgb(2, 132, 199),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnSave.FlatAppearance.BorderSize = 0;
+
+                btnSave.Click += (s, ev) =>
+                {
+                    if (!decimal.TryParse(txtRate.Text.Trim(), out decimal newRate) || newRate <= 0)
                     {
-                        MessageBox.Show("Rate for " + tier + " tier successfully updated to ₱" + newRate.ToString("N2") + "!",
-                                        "Success",
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Information);
+                        MessageBox.Show("Please enter a valid rate greater than 0.", "Invalid Rate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txtRate.Focus();
+                        return;
+                    }
+
+                    string tier = cmbTierSelect.SelectedItem.ToString();
+
+                    // Check live availability at the exact moment the button is clicked
+                    List<RoomModel> currentRooms = roomController.GetRooms(tier);
+                    bool hasAvailableRoom = currentRooms.Exists(r =>
+                        string.Equals(r.TypeName.Trim(), tier, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(r.Status.Trim(), "Available", StringComparison.OrdinalIgnoreCase));
+
+                    if (!hasAvailableRoom)
+                    {
+                        MessageBox.Show($"Cannot update {tier} rate: there are currently no Available rooms in this tier.",
+                                        "No Available Rooms", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    if (roomController.UpdateTierRate(tier, newRate))
+                    {
+                        MessageBox.Show($"Rate for {tier} tier successfully updated to ₱{newRate:N2}!",
+                                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        dialog.DialogResult = DialogResult.OK;
                         dialog.Close();
-                        LoadRooms(); // Refresh the room cards with the new rate!
+                        LoadRooms();
                     }
                     else
                     {
-                        MessageBox.Show("Failed to update rate in database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Rate update failed: no Available {tier} rooms were found at the time of update.",
+                                        "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                }
-                else
-                {
-                    MessageBox.Show("Please enter a valid rate greater than 0.", "Invalid Rate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txtRate.Focus();
-                }
-            });
-            dialog.Controls.Add(lblTier);
-            dialog.Controls.Add(cmbTierSelect);
-            dialog.Controls.Add(lblRate);
-            dialog.Controls.Add(txtRate);
-            dialog.Controls.Add(btnSave);
-            dialog.ShowDialog();
+                };
+
+                dialog.AcceptButton = btnSave;
+                dialog.Controls.AddRange(new Control[] { lblTier, cmbTierSelect, lblRate, txtRate, btnSave });
+                dialog.ShowDialog(this);
+            }
         }
     }
 }
