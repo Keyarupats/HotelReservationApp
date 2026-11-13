@@ -60,7 +60,7 @@
             pnlCard.Dock = DockStyle.Fill;
             pnlCard.Location = new Point(0, 0);
             pnlCard.Name = "pnlCard";
-            pnlCard.Size = new Size(510, 480);
+            pnlCard.Size = new Size(585, 480);
             pnlCard.TabIndex = 0;
             // 
             // btnCancel
@@ -69,9 +69,9 @@
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(51, 65, 85);
-            btnCancel.Location = new Point(322, 400);
+            btnCancel.Location = new Point(374, 399);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(158, 48);
+            btnCancel.Size = new Size(167, 48);
             btnCancel.TabIndex = 15;
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = false;
@@ -83,9 +83,9 @@
             btnConfirmSave.FlatStyle = FlatStyle.Flat;
             btnConfirmSave.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
             btnConfirmSave.ForeColor = Color.White;
-            btnConfirmSave.Location = new Point(25, 400);
+            btnConfirmSave.Location = new Point(25, 399);
             btnConfirmSave.Name = "btnConfirmSave";
-            btnConfirmSave.Size = new Size(274, 48);
+            btnConfirmSave.Size = new Size(328, 48);
             btnConfirmSave.TabIndex = 14;
             btnConfirmSave.Text = "💾 Confirm && Save";
             btnConfirmSave.UseVisualStyleBackColor = false;
@@ -96,7 +96,7 @@
             lblTotalValue.AutoSize = true;
             lblTotalValue.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblTotalValue.ForeColor = Color.Green;
-            lblTotalValue.Location = new Point(142, 351);
+            lblTotalValue.Location = new Point(141, 352);
             lblTotalValue.Name = "lblTotalValue";
             lblTotalValue.Size = new Size(80, 35);
             lblTotalValue.TabIndex = 13;
@@ -107,7 +107,7 @@
             lblTotalTitle.AutoSize = true;
             lblTotalTitle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lblTotalTitle.ForeColor = Color.FromArgb(15, 23, 42);
-            lblTotalTitle.Location = new Point(25, 356);
+            lblTotalTitle.Location = new Point(24, 357);
             lblTotalTitle.Name = "lblTotalTitle";
             lblTotalTitle.Size = new Size(120, 25);
             lblTotalTitle.TabIndex = 12;
@@ -117,7 +117,7 @@
             // 
             lblGuestsValue.AutoSize = true;
             lblGuestsValue.Font = new Font("Segoe UI", 10F);
-            lblGuestsValue.Location = new Point(143, 328);
+            lblGuestsValue.Location = new Point(142, 329);
             lblGuestsValue.Name = "lblGuestsValue";
             lblGuestsValue.Size = new Size(231, 23);
             lblGuestsValue.TabIndex = 11;
@@ -128,7 +128,7 @@
             lblGuestsTitle.AutoSize = true;
             lblGuestsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblGuestsTitle.ForeColor = Color.FromArgb(71, 85, 105);
-            lblGuestsTitle.Location = new Point(26, 328);
+            lblGuestsTitle.Location = new Point(25, 329);
             lblGuestsTitle.Name = "lblGuestsTitle";
             lblGuestsTitle.Size = new Size(101, 23);
             lblGuestsTitle.TabIndex = 10;
@@ -244,7 +244,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(510, 480);
+            ClientSize = new Size(585, 480);
             Controls.Add(pnlCard);
             FormBorderStyle = FormBorderStyle.None;
             Name = "ReservationConfirmDialog";

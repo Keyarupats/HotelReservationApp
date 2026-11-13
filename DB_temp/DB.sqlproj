@@ -65,6 +65,7 @@
     <Folder Include="dbo\StoredProc\RoomType" />
     <Folder Include="dbo\StoredProc\Reservation" />
     <Folder Include="dbo\StoredProc\LogIns" />
+    <Folder Include="dbo\StoredProc\Billings" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Table\tblUsers.sql" />
@@ -86,12 +87,21 @@
     <Build Include="dbo\StoredProc\Reservation\spGetReservations.sql" />
     <Build Include="dbo\StoredProc\Reservation\spUpdateReservationStatus.sql" />
     <Build Include="dbo\StoredProc\LogIns\spValidateUserCredentials.sql" />
+    <Build Include="dbo\Table\tblMenuItems.sql" />
+    <Build Include="dbo\Table\tblReservationAddOns.sql" />
+    <Build Include="dbo\StoredProc\Billings\spGetMenuItems.sql" />
+    <Build Include="dbo\StoredProc\Billings\spGetOccupiedStaysForBilling.sql" />
+    <Build Include="dbo\StoredProc\Billings\spSettleCheckout.sql" />
+    <Build Include="dbo\StoredProc\Reservation\spAddReservationAddOn.sql" />
+    <Build Include="dbo\StoredProc\Billings\spGetCompletedTransactions.sql" />
+    <Build Include="dbo\StoredProc\Rooms\spGetRoomsByDate.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DB.publish.xml" />
     <None Include="dbo\PostScript\SeedRooms.sql" />
     <None Include="dbo\PostScript\SeedGuests.sql" />
     <PostDeploy Include="dbo\PostScript\Script_1.PostDeployment.sql" />
+    <None Include="dbo\PostScript\SeedMenu.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\StoredProc\Guests\spDeleteGuest.sql" />

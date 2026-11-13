@@ -128,19 +128,29 @@ namespace HotelReservation.BusinessLogic.Repository
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("spUpdateRoomTypeRate", conn))
+                string query = @"
+            UPDATE rt
+            SET rt.RatePerAdult = @NewRate
+            FROM tblRoomTypes rt
+            WHERE rt.TypeName = @TypeName
+              AND EXISTS (
+                  SELECT 1 
+                  FROM tblRooms r 
+                  WHERE r.RoomTypeId = rt.RoomTypeId 
+                    AND r.Status = 'Available'
+              );";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@TypeName", typeName);
-                    cmd.Parameters.AddWithValue("@NewRate", newRate);
+                    cmd.Parameters.Add("@TypeName", SqlDbType.NVarChar, 30).Value = typeName.Trim();
+                    SqlParameter rateParam = cmd.Parameters.Add("@NewRate", SqlDbType.Decimal);
+                    rateParam.Precision = 10;
+                    rateParam.Scale = 2;
+                    rateParam.Value = newRate;
 
                     conn.Open();
-                    int rows = cmd.ExecuteNonQuery();
-                    if (rows > 0)
-                    {
-                        return true;
-                    }
-                    return false;
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
                 }
             }
         }
