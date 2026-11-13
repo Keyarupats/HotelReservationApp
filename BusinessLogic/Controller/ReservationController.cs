@@ -66,7 +66,6 @@ namespace HotelReservation.BusinessLogic.Controller
             return reservationRepository.GetReservations(statusFilter, filterDate);
         }
 
-        // Added to support ArrivingReservation search and grid loading
         public DataTable GetArrivingReservations(string keyword)
         {
             return reservationRepository.GetArrivingReservations(keyword);
@@ -85,6 +84,28 @@ namespace HotelReservation.BusinessLogic.Controller
                 roomRepository.UpdateRoomStatus(roomId, "Available");
             }
             return success;
+        }
+
+        public bool CheckInBooking(int[] reservationIds, int[] roomIds)
+        {
+            if (reservationIds == null || roomIds == null || reservationIds.Length != roomIds.Length)
+            {
+                return false;
+            }
+
+            bool allSuccess = true;
+            for (int i = 0; i < reservationIds.Length; i++)
+            {
+                if (reservationRepository.CheckInReservation(reservationIds[i]))
+                {
+                    roomRepository.UpdateRoomStatus(roomIds[i], "Occupied");
+                }
+                else
+                {
+                    allSuccess = false;
+                }
+            }
+            return allSuccess;
         }
     }
 }
