@@ -18,9 +18,12 @@
         private void InitializeComponent()
         {
             pnlLeft = new Panel();
+            btnEditMultiRoom = new Button();
             btnSaveReservation = new Button();
             lblTotalAmount = new Label();
             lblTotalAmountHeader = new Label();
+            lblSecondRoomChoice = new Label();
+            lblFirstRoomChoice = new Label();
             cmbAvailableRooms = new ComboBox();
             lblRoom = new Label();
             lblCheckOut = new Label();
@@ -53,9 +56,12 @@
             // 
             pnlLeft.BackColor = Color.White;
             pnlLeft.BorderStyle = BorderStyle.FixedSingle;
+            pnlLeft.Controls.Add(btnEditMultiRoom);
             pnlLeft.Controls.Add(btnSaveReservation);
             pnlLeft.Controls.Add(lblTotalAmount);
             pnlLeft.Controls.Add(lblTotalAmountHeader);
+            pnlLeft.Controls.Add(lblSecondRoomChoice);
+            pnlLeft.Controls.Add(lblFirstRoomChoice);
             pnlLeft.Controls.Add(cmbAvailableRooms);
             pnlLeft.Controls.Add(lblRoom);
             pnlLeft.Controls.Add(lblCheckOut);
@@ -76,6 +82,21 @@
             pnlLeft.Size = new Size(541, 756);
             pnlLeft.TabIndex = 0;
             // 
+            // btnEditMultiRoom
+            // 
+            btnEditMultiRoom.BackColor = Color.FromArgb(2, 132, 199);
+            btnEditMultiRoom.FlatStyle = FlatStyle.Flat;
+            btnEditMultiRoom.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            btnEditMultiRoom.ForeColor = Color.White;
+            btnEditMultiRoom.Location = new Point(323, 270);
+            btnEditMultiRoom.Name = "btnEditMultiRoom";
+            btnEditMultiRoom.Size = new Size(166, 38);
+            btnEditMultiRoom.TabIndex = 20;
+            btnEditMultiRoom.Text = "✎ Edit Rooms";
+            btnEditMultiRoom.UseVisualStyleBackColor = false;
+            btnEditMultiRoom.Visible = false;
+            btnEditMultiRoom.Click += btnEditMultiRoom_Click;
+            // 
             // btnSaveReservation
             // 
             btnSaveReservation.BackColor = Color.FromArgb(2, 132, 199);
@@ -95,7 +116,7 @@
             lblTotalAmount.AutoSize = true;
             lblTotalAmount.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblTotalAmount.ForeColor = Color.Green;
-            lblTotalAmount.Location = new Point(27, 530);
+            lblTotalAmount.Location = new Point(27, 540);
             lblTotalAmount.Name = "lblTotalAmount";
             lblTotalAmount.Size = new Size(89, 37);
             lblTotalAmount.TabIndex = 16;
@@ -105,11 +126,35 @@
             // 
             lblTotalAmountHeader.AutoSize = true;
             lblTotalAmountHeader.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblTotalAmountHeader.Location = new Point(29, 500);
+            lblTotalAmountHeader.Location = new Point(29, 510);
             lblTotalAmountHeader.Name = "lblTotalAmountHeader";
             lblTotalAmountHeader.Size = new Size(146, 28);
             lblTotalAmountHeader.TabIndex = 15;
             lblTotalAmountHeader.Text = "Total Amount:";
+            // 
+            // lblSecondRoomChoice
+            // 
+            lblSecondRoomChoice.AutoSize = true;
+            lblSecondRoomChoice.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            lblSecondRoomChoice.ForeColor = Color.FromArgb(2, 132, 199);
+            lblSecondRoomChoice.Location = new Point(29, 460);
+            lblSecondRoomChoice.Name = "lblSecondRoomChoice";
+            lblSecondRoomChoice.Size = new Size(155, 25);
+            lblSecondRoomChoice.TabIndex = 19;
+            lblSecondRoomChoice.Text = "2nd Room: None";
+            lblSecondRoomChoice.Visible = false;
+            // 
+            // lblFirstRoomChoice
+            // 
+            lblFirstRoomChoice.AutoSize = true;
+            lblFirstRoomChoice.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            lblFirstRoomChoice.ForeColor = Color.FromArgb(2, 132, 199);
+            lblFirstRoomChoice.Location = new Point(29, 430);
+            lblFirstRoomChoice.Name = "lblFirstRoomChoice";
+            lblFirstRoomChoice.Size = new Size(148, 25);
+            lblFirstRoomChoice.TabIndex = 18;
+            lblFirstRoomChoice.Text = "1st Room: None";
+            lblFirstRoomChoice.Visible = false;
             // 
             // cmbAvailableRooms
             // 
@@ -156,11 +201,11 @@
             // dtpCheckIn
             // 
             dtpCheckIn.CustomFormat = "MMM dd, yyyy  hh:mm tt";
-            dtpCheckIn.Font = new Font("Segoe UI", 11F);
+            dtpCheckIn.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dtpCheckIn.Format = DateTimePickerFormat.Custom;
             dtpCheckIn.Location = new Point(29, 270);
             dtpCheckIn.Name = "dtpCheckIn";
-            dtpCheckIn.Size = new Size(300, 32);
+            dtpCheckIn.Size = new Size(288, 38);
             dtpCheckIn.TabIndex = 10;
             dtpCheckIn.ValueChanged += dtpCheckIn_ValueChanged;
             // 
@@ -176,6 +221,7 @@
             // 
             // nudNights
             // 
+            nudNights.Enabled = false;
             nudNights.Font = new Font("Segoe UI", 11F);
             nudNights.Location = new Point(331, 190);
             nudNights.Maximum = new decimal(new int[] { 30, 0, 0, 0 });
@@ -200,11 +246,12 @@
             // 
             nudChildren.Font = new Font("Segoe UI", 11F);
             nudChildren.Location = new Point(180, 190);
-            nudChildren.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            nudChildren.Maximum = new decimal(new int[] { 8, 0, 0, 0 });
             nudChildren.Name = "nudChildren";
             nudChildren.Size = new Size(130, 32);
             nudChildren.TabIndex = 6;
-            nudChildren.ValueChanged += Criteria_ValueChanged;
+            nudChildren.ValueChanged += nudChildren_ValueChanged;
+            nudChildren.Leave += nudChildren_Leave;
             // 
             // lblChildren
             // 
@@ -218,15 +265,16 @@
             // 
             // nudAdults
             // 
+            nudAdults.Enabled = false;
             nudAdults.Font = new Font("Segoe UI", 11F);
             nudAdults.Location = new Point(29, 190);
-            nudAdults.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            nudAdults.Maximum = new decimal(new int[] { 8, 0, 0, 0 });
             nudAdults.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudAdults.Name = "nudAdults";
             nudAdults.Size = new Size(130, 32);
             nudAdults.TabIndex = 4;
             nudAdults.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            nudAdults.ValueChanged += Criteria_ValueChanged;
+            nudAdults.ValueChanged += nudAdults_ValueChanged;
             // 
             // lblAdults
             // 
@@ -336,14 +384,14 @@
             lblTitleRight.TabIndex = 0;
             lblTitleRight.Text = "Reservation Dashboard";
             // 
-            // ReservationControll
+            // ReservationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Silver;
             Controls.Add(pnlRight);
             Controls.Add(pnlLeft);
-            Name = "ReservationControll";
+            Name = "ReservationControl";
             Size = new Size(1920, 881);
             Load += ReservationControl_Load;
             pnlLeft.ResumeLayout(false);
@@ -376,6 +424,8 @@
         private System.Windows.Forms.Label lblCheckOut;
         private System.Windows.Forms.Label lblRoom;
         private System.Windows.Forms.ComboBox cmbAvailableRooms;
+        private System.Windows.Forms.Label lblFirstRoomChoice;
+        private System.Windows.Forms.Label lblSecondRoomChoice;
         private System.Windows.Forms.Label lblTotalAmountHeader;
         private System.Windows.Forms.Label lblTotalAmount;
         private System.Windows.Forms.Button btnSaveReservation;
@@ -383,5 +433,6 @@
         private System.Windows.Forms.DataGridView dgvReservations;
         private System.Windows.Forms.Button btnConfirm;
         private System.Windows.Forms.Button btnCancel;
+        private Button btnEditMultiRoom;
     }
 }
