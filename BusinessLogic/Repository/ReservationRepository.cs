@@ -220,5 +220,25 @@ namespace HotelReservation.BusinessLogic.Repository
 
             return dt;
         }
+
+        public bool SetActualCheckInToScheduled(int reservationId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = @"
+                    UPDATE tblReservations 
+                    SET ActualCheckInDateTime = CheckInDateTime
+                    WHERE ReservationId = @ReservationId";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.Add("@ReservationId", SqlDbType.Int).Value = reservationId;
+
+                    conn.Open();
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
+                }
+            }
+        }
     }
 }
