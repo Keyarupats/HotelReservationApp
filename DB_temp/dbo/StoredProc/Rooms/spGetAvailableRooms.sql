@@ -5,7 +5,6 @@
     @Children INT
 AS
 BEGIN
-
     SELECT 
         r.RoomId,
         t.TypeName,
@@ -16,7 +15,7 @@ BEGIN
         r.Status
     FROM [dbo].[tblRooms] r
     INNER JOIN [dbo].[tblRoomTypes] t ON r.RoomTypeId = t.RoomTypeId
-    WHERE r.Status <> 'Maintenance'
+    WHERE r.Status IN ('Available', 'Reserved')
       AND r.MaxAdults >= @Adults
       AND r.MaxChildren >= @Children
       AND r.RoomId NOT IN (
@@ -27,3 +26,4 @@ BEGIN
       )
     ORDER BY r.RoomId ASC;
 END
+GO
